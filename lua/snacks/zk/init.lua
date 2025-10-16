@@ -9,24 +9,109 @@ function M.show_zk()
    vim.notify("zk dayo!", vim.log.levels.INFO)
 end
 
--- lua/snacks/picker/zk/init.lua           : このファイル
--- lua/snacks/explorer/init.lua            : エントリーポイント。ユーザー利用のインターフェースを提供
---                                         : action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
--- lua/snacks/picker/source/explorer.lua   :
---                                         : ツリー型ファイル探索
---                                         :    ファイルシステムをツリー構造で表示・操作
---                                         :    ディレクトリの開閉状態を管理
---                                         :    階層的なファイル表示（親子関係の追跡）
---                                         : 統合機能
---                                         :    Git 統合: ファイルの変更状態を表示
---                                         :    診断統合: LSP の診断情報を表示
---                                         :    自動更新: ファイル変更、ディレクトリ変更、診断変更を検知して更新
---                                         :    カスタムマッチャー: 検索時に親ディレクトリも自動的にマッチに含める
---                                         : search   関数 = ツリー構造でファイルを検索
---                                         : explorer 関数 = ツリー構造でファイルを表示
+-- Based on explorer (lua/snacks/picker/)
+-- M = vim.tbl_deep_extend("force", explorer, M) -- DEBUG:
+-- マージでは足りなかった。各関数内部の修正が必要なので、コピペする
 
--- Based on explorer
--- M = vim.tbl_deep_extend("force", explorer, M) -- DEBUG: lua/snacks/picker/izk
+-- Copied from `lua/snacks/explorer/init.lua` (Modified for zk)
+
+---@class snacks.explorer
+---@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
+local M = setmetatable({}, {
+   __call = function(M, ...)
+      return M.open(...)
+   end,
+})
+
+M.meta = {
+   desc = "A zk file explorer (picker in disguise)",
+   needs_setup = true,
+}
+
+--- These are just the general explorer settings.
+--- To configure the explorer picker, see `snacks.picker.explorer.Config`
+---@class snacks.explorer.Config
+local defaults = {
+   replace_netrw = true, -- Replace netrw with the snacks explorer
+}
+
+---@private
+---@param event? vim.api.keyset.create_autocmd.callback_args
+function M.setup(event)
+   local opts = Snacks.config.get("zk", defaults)
+   if opts.replace_netrw then
+      -- Disable netrw
+      pcall(vim.api.nvim_del_augroup_by_name, "FileExplorer")
+
+      local group = vim.api.nvim_create_augroup("snacks.explorer", { clear = true })
+
+      local function handle(ev)
+         if ev.file ~= "" and vim.fn.isdirectory(ev.file) == 1 then
+            local picker = M.open({ cwd = ev.file })
+            if picker and vim.v.vim_did_enter == 0 then
+               -- clear bufname so we don't try loading this one again
+               vim.api.nvim_buf_set_name(ev.buf, "")
+               picker:show()
+               local ref = picker:ref()
+               -- focus on UIEnter, since focusing before doesn't work
+               vim.api.nvim_create_autocmd("UIEnter", {
+                  once = true,
+                  group = group,
+                  callback = function()
+                     local p = ref()
+                     if p then
+                        p:focus()
+                     end
+                  end,
+               })
+            else
+               -- after vim has entered, we also need to delete the directory buffer
+               -- use bufdelete to keep the window layout
+               Snacks.bufdelete.delete(ev.buf)
+            end
+         end
+      end
+
+      -- event from snacks loader
+      if event then
+         handle(event)
+      end
+
+      -- Open the explorer when opening a directory
+      vim.api.nvim_create_autocmd("BufEnter", {
+         group = group,
+         callback = handle,
+      })
+   end
+end
+
+--- Shortcut to open the explorer picker
+---@param opts? snacks.picker.explorer.Config|{}
+function M.open(opts)
+   return Snacks.picker.explorer(opts)
+end
+
+--- Reveals the given file/buffer or the current buffer in the explorer
+---@param opts? {file?:string, buf?:number}
+function M.reveal(opts)
+   local Actions = require("snacks.explorer.actions")
+   local Tree = require("snacks.explorer.tree")
+   opts = opts or {}
+   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
+   local explorer = Snacks.picker.get({ source = "explorer" })[1] or M.open()
+   local cwd = explorer:cwd()
+   if not Tree:in_cwd(cwd, file) then
+      for parent in vim.fs.parents(file) do
+         if Tree:in_cwd(parent, cwd) then
+            explorer:set_cwd(parent)
+            break
+         end
+      end
+   end
+   Tree:open(file)
+   Actions.update(explorer, { target = file, refresh = true })
+   return explorer
+end
 
 -- M.setup()
 -- M.open()
