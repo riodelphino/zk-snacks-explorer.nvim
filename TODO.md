@@ -2,8 +2,9 @@
 
 - [ ] Snacks.zk として使えるようにしたい
 - [ ] 最初から pickers リストに表示されるように
-- [ ] format で title を表示できるの？
-
+- [ ] zk
+   - [ ] setup か open で notes_cache を取得。
+   - [ ] format で title を表示してみる
 
 ## ファイルの役割とディレクトリ構造
 
@@ -39,6 +40,9 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 
 なるべく、流用できるものは流用する。M をマージ出来るものはマージする。
 
+- finder は "explorer" を流用
+- format を追加して変更すれば、表示項目名をカスタムできる
+- sort はどうする？
 
 ## その他
 

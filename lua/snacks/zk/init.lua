@@ -1,9 +1,9 @@
 -- local sources = require("snacks.picker.config.sources")
 -- local sources = require("snacks.picker.sources") -- NG
 -- local explorer = require("snacks.explorer")
-local format = require("snacks.picker.format")
-local config = require("snacks.picker.config")
-local zk_format = require("snacks.zk.format")
+-- local format = require("snacks.picker.format")
+-- local config = require("snacks.picker.config")
+-- local zk_format = require("snacks.zk.format")
 local zk_source = require("snacks.zk.source")
 local M = {}
 
@@ -20,34 +20,15 @@ M.meta = {
    needs_setup = true,
 }
 
-function M.show_zk()
-   vim.notify("zk dayo!", vim.log.levels.INFO)
-end
-
 -- ╭───────────────────────────────────────────────────────────────╮
 -- │                   Merge into snacks M table                   │
 -- ╰───────────────────────────────────────────────────────────────╯
 
--- Add zk-explorer config
--- sources = vim.tbl_deep_extend("force", sources, zk_source) -- NG 起動できず
-require("snacks.picker").sources.zk = zk_source -- WORKS & 必須
--- DEBUG: 登録はできるが、Snacks.zk で呼び出せない
--- NOTE: pikers list には表示された！
-
--- Add zk_format
--- format = vim.tbl_deep_extend("force", format, zk_format) -- DEBUG: 意味なかった
--- Snacks.picker.format["zk_file"] = zk_format.zk_file -- DEBUG: ダメ。tree とかの関数がない
--- Snacks.picker.format["zk_filename"] = zk_format.zk_filename
-
--- Register zk as picker
--- config.wrap("zk", zk_source) -- DEBUG: いらない。てか遅いのかも
--- config.setup() -- DEBUG: 上記といずれかが必要。あと did_setup フラグのために2回目の実行は不可
-
--- Snacks.picker["zk"] = M -- DEBUG: ⚠️これは違うでしょ。
--- Snacks.picker["zk"] = zk_source -- DEBUG: ⚠️これは違うでしょ。
-
--- TODO: zk -> zk_explorer などに改名が必要か？
--- TODO: pickers に表示されてない
+-- Add zk source
+require("snacks.picker").sources.zk = zk_source -- DEBUG: 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示された
+-- Add zk format functions
+Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
+Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
 
 -- ╭───────────────────────────────────────────────────────────────╮
 -- │                  Copied from explorer's init                  │
@@ -65,7 +46,6 @@ local defaults = {
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
    local opts = Snacks.config.get("zk", defaults)
-   vim.notify("opts: " .. vim.inspect(opts), vim.log.levels.INFO) -- DEBUG:
 
    if opts.replace_netrw then
       -- Disable netrw
@@ -116,8 +96,7 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-   -- return Snacks.picker.explorer(opts) -- DEBUG: OK だが、意味がない
-   return Snacks.picker.zk(opts) -- DEBUG: zk is nil となる
+   return Snacks.picker.zk(opts)
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer
@@ -141,20 +120,5 @@ function M.reveal(opts)
    Actions.update(explorer, { target = file, refresh = true })
    return explorer
 end
-
--- M.setup()
--- M.open()
--- M.reveal()
-
--- OK
--- :lua require('snacks.zk').show_zk()
--- :lua require('snacks.zk').setup()
--- :lua require('snacks.zk').open()
--- :lua require('snacks.zk').reveal()
-
--- DEBUG: だめ。Snacks.zk で起動したいのだけど。
--- Snacks["zk"] = function()
---    M.open()
--- end
 
 return M

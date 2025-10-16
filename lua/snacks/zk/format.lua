@@ -1,10 +1,6 @@
 local format = require("snacks.picker.format")
-local uv = vim.uv or vim.loop
 
 local M = {}
-
--- 大本の format.lua の関数をぜんぶコピー
-M = vim.tbl_deep_extend("force", format, M) -- DEBUG: どうだ？ OK ぽい 荒業すぎるなぁ
 
 ---@param item snacks.picker.Item
 function M.zk_filename(item, picker)
@@ -106,18 +102,18 @@ function M.zk_file(item, picker)
    end
 
    if item.parent then
-      vim.list_extend(ret, M.tree(item, picker))
+      vim.list_extend(ret, format.tree(item, picker))
    end
 
    if item.status then
-      vim.list_extend(ret, M.file_git_status(item, picker))
+      vim.list_extend(ret, format.file_git_status(item, picker))
    end
 
    if item.severity then
-      vim.list_extend(ret, M.severity(item, picker))
+      vim.list_extend(ret, format.severity(item, picker))
    end
 
-   vim.list_extend(ret, M.zk_filename(item, picker))
+   vim.list_extend(ret, format.zk_filename(item, picker))
 
    if item.comment then
       table.insert(ret, { item.comment, "SnacksPickerComment" })
