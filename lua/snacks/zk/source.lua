@@ -12,6 +12,7 @@
 local source = {
    -- finder =
    finder = "explorer", -- "zk", -- "explorer" is enough
+   reveal = true,
    sort = { fields = { "sort" } },
    supports_live = true,
    tree = false,
