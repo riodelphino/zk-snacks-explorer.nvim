@@ -10,7 +10,8 @@
 ---@field exclude? string[] exclude glob patterns
 ---@field include? string[] include glob patterns. These take precedence over `exclude`, `ignored` and `hidden`
 local source = {
-   finder = "explorer", -- NOTE: この finder は explorer のままで OK。zk とかにしない。たぶん。
+   -- finder = "zk", -- DEBUG: finder は explorer でよくね？
+   finder = "explorer",
    sort = { fields = { "sort" } },
    supports_live = true,
    tree = false,
@@ -29,14 +30,23 @@ local source = {
    -- your config under `opts.picker.sources.explorer`
    -- layout = { layout = { position = "right" } },
    formatters = {
-      file = { filename_only = true },
+      zk_file = { filename_only = true }, -- DEBUG: これは zk_file を呼び出してはくれないのか？
       severity = { pos = "right" },
    },
+   -- format = "zk_file", -- DEBUG: どうだ！？
+   -- format = require("snacks.picker.format").zk_file, -- DEBUG: どうだ！？
+   -- format = function(item, picker) -- DEBUG: 遅延させないとだめみたい。まだマージされて無いから？ これでもだめ。
+   --    return require("snacks.picker.format").zk_file(item, picker)
+   -- end,
+   --
+   format = require("snacks.zk.format").zk_file, -- WORKS! 荒業すぎる
    matcher = { sort_empty = false, fuzzy = false },
    config = function(opts)
-      return require("snacks.picker.source.zk").setup(opts)
+      -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: lua/snacks/picker/source/zk.lua を改名して仮削除 いらないんじゃね？ってことで
+      return require("snacks.picker.source.explorer").setup(opts)
    end,
    win = {
+
       list = {
          keys = {
             ["<BS>"] = "explorer_up",

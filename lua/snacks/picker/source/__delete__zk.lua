@@ -213,7 +213,7 @@ end
 
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
-function M.zk(opts, ctx)
+function M.zk(opts, ctx) -- DEBUG: Finder だったか？ 名前これで大丈夫か？ zk_finder とかにしなくて？
    local state = M.get_state(ctx.picker)
 
    if state:setup(ctx) then
@@ -252,7 +252,7 @@ function M.zk(opts, ctx)
             status = parent.dir_status
          end
          local item = {
-            file = node.path .. "aaa",
+            file = node.path,
             dir = node.dir,
             open = node.open,
             dir_status = node.dir_status or parent and parent.dir_status,
@@ -265,7 +265,7 @@ function M.zk(opts, ctx)
             type = node.type,
             severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil,
          }
-         print("item: " .. vim.inspect(item))
+         -- print("item: " .. vim.inspect(item))
          if last[node.parent] then
             last[node.parent].last = false
          end

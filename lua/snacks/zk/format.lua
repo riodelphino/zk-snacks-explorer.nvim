@@ -1,4 +1,10 @@
+local format = require("snacks.picker.format")
+local uv = vim.uv or vim.loop
+
 local M = {}
+
+-- 大本の format.lua の関数をぜんぶコピー
+M = vim.tbl_deep_extend("force", format, M) -- DEBUG: どうだ？ OK ぽい 荒業すぎるなぁ
 
 ---@param item snacks.picker.Item
 function M.zk_filename(item, picker)
@@ -49,21 +55,21 @@ function M.zk_filename(item, picker)
    local dir_hl = "SnacksPickerDir"
 
    if picker.opts.formatters.file.filename_only then
-      path = vim.fn.fnamemodify(item.file, ":t")
+      path = vim.fn.fnamemodify(item.file, ":t") .. " da" -- DEBUG: ここは何だ？
       ret[#ret + 1] = { path, base_hl, field = "file" }
    else
       local dir, base = path:match("^(.*)/(.+)$")
       if base and dir then
          if picker.opts.formatters.file.filename_first then
-            ret[#ret + 1] = { base, base_hl, field = "file" }
+            ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
             ret[#ret + 1] = { " " }
             ret[#ret + 1] = { dir, dir_hl, field = "file" }
          else
             ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" }
-            ret[#ret + 1] = { base, base_hl, field = "file" }
+            ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
          end
       else
-         ret[#ret + 1] = { path, base_hl, field = "file" }
+         ret[#ret + 1] = { path .. " yo", base_hl, field = "file" } -- DEBUG: ここで note.title を表示できる
       end
    end
    if item.pos and item.pos[1] > 0 then
@@ -90,6 +96,7 @@ function M.zk_filename(item, picker)
 end
 
 function M.zk_file(item, picker)
+   print("zk_file called")
    ---@type snacks.picker.Highlight[]
    local ret = {}
 
@@ -110,7 +117,7 @@ function M.zk_file(item, picker)
       vim.list_extend(ret, M.severity(item, picker))
    end
 
-   vim.list_extend(ret, M.filename(item, picker))
+   vim.list_extend(ret, M.zk_filename(item, picker))
 
    if item.comment then
       table.insert(ret, { item.comment, "SnacksPickerComment" })

@@ -34,8 +34,10 @@ require("snacks.picker").sources.zk = zk_source -- WORKS & 必須
 -- DEBUG: 登録はできるが、Snacks.zk で呼び出せない
 -- NOTE: pikers list には表示された！
 
--- Add zk_config
-format = vim.tbl_deep_extend("force", format, zk_format)
+-- Add zk_format
+-- format = vim.tbl_deep_extend("force", format, zk_format) -- DEBUG: 意味なかった
+-- Snacks.picker.format["zk_file"] = zk_format.zk_file -- DEBUG: ダメ。tree とかの関数がない
+-- Snacks.picker.format["zk_filename"] = zk_format.zk_filename
 
 -- Register zk as picker
 -- config.wrap("zk", zk_source) -- DEBUG: いらない。てか遅いのかも
