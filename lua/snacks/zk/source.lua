@@ -1,5 +1,3 @@
-local M = {}
-
 ---@class snacks.picker.explorer.Config: snacks.picker.files.Config|{}
 ---@field follow_file? boolean follow the file from the current buffer
 ---@field tree? boolean show the file tree (default: true)
@@ -11,16 +9,15 @@ local M = {}
 ---@field watch? boolean watch for file changes
 ---@field exclude? string[] exclude glob patterns
 ---@field include? string[] include glob patterns. These take precedence over `exclude`, `ignored` and `hidden`
-M.zk = {
-   -- DEBUG: これ全体的に効いていない
-   finder = "explorer",
+local source = {
+   finder = "explorer", -- NOTE: この finder は explorer のままで OK。zk とかにしない。たぶん。
    sort = { fields = { "sort" } },
    supports_live = true,
-   tree = true,
+   tree = false,
    watch = true,
    diagnostics = true,
    diagnostics_open = false,
-   git_status = true,
+   git_status = false,
    git_status_open = false,
    git_untracked = true,
    follow_file = true,
@@ -37,7 +34,7 @@ M.zk = {
    },
    matcher = { sort_empty = false, fuzzy = false },
    config = function(opts)
-      return require("snacks.picker.source.zk").setup(opts) -- DEBUG: これ効いてる？
+      return require("snacks.picker.source.zk").setup(opts)
    end,
    win = {
       list = {
@@ -75,4 +72,4 @@ M.zk = {
    },
 }
 
-return M
+return source

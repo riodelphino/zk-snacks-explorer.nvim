@@ -1,5 +1,9 @@
 # TODO
 
+- [ ] Snacks.zk として使えるようにしたい
+- [ ] 最初から pickers リストに表示されるように
+- [ ] format で title を表示できるの？
+
 
 ## ファイルの役割とディレクトリ構造
 
@@ -29,9 +33,17 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 - search   関数 = ツリー構造でファイルを検索
 - explorer 関数 = ツリー構造でファイルを表示
 
+* これを finder = "explorer" のように指定するようだ。
 
 ## 方針
 
 なるべく、流用できるものは流用する。M をマージ出来るものはマージする。
 
 
+## その他
+
+```lua
+M.explorer = {
+  finder = "explorer",
+```
+この finder は、lua/snacks/picker/source/*.lua の中で M.explorer のように設定されているものたち。

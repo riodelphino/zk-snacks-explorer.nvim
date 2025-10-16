@@ -252,7 +252,7 @@ function M.zk(opts, ctx)
             status = parent.dir_status
          end
          local item = {
-            file = node.path,
+            file = node.path .. "aaa",
             dir = node.dir,
             open = node.open,
             dir_status = node.dir_status or parent and parent.dir_status,
@@ -265,6 +265,7 @@ function M.zk(opts, ctx)
             type = node.type,
             severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil,
          }
+         print("item: " .. vim.inspect(item))
          if last[node.parent] then
             last[node.parent].last = false
          end
