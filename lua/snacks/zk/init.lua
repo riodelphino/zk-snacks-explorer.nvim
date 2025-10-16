@@ -42,6 +42,14 @@ local defaults = {
    replace_netrw = true, -- Replace netrw with the snacks explorer
 }
 
+local function index_notes_by_path(notes)
+   local tbl = {}
+   for _, note in ipairs(notes) do
+      tbl[note.absPath] = note
+   end
+   return tbl
+end
+
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
@@ -96,7 +104,15 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-   return Snacks.picker.zk(opts)
+   local zk_api = require("zk.api")
+   local zk_opts = { select = { "absPath", "title", "filename" } }
+   zk_api.list(nil, zk_opts, function(err, notes)
+      if err then
+         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
+      end
+      vim.g.notes_cache = index_notes_by_path(notes)
+      return Snacks.picker.zk(opts)
+   end)
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer

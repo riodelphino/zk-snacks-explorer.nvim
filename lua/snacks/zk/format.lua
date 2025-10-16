@@ -55,6 +55,8 @@ function M.zk_filename(item, picker)
       ret[#ret + 1] = { path, base_hl, field = "file" }
    else
       local dir, base = path:match("^(.*)/(.+)$")
+      local note = vim.g.notes_cache[item.file]
+      local title = note and note.title
       if base and dir then
          if picker.opts.formatters.file.filename_first then
             ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
@@ -65,7 +67,7 @@ function M.zk_filename(item, picker)
             ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
          end
       else
-         ret[#ret + 1] = { path .. " yo", base_hl, field = "file" } -- DEBUG: ここで note.title を表示できる
+         ret[#ret + 1] = { title or path, base_hl, field = "file" } -- DEBUG: ここで note.title を表示できる
       end
    end
    if item.pos and item.pos[1] > 0 then
