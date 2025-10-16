@@ -20,6 +20,8 @@ M.meta = {
    needs_setup = true,
 }
 
+M.notes_cache = {}
+
 -- ╭───────────────────────────────────────────────────────────────╮
 -- │                   Merge into snacks M table                   │
 -- ╰───────────────────────────────────────────────────────────────╯
@@ -110,7 +112,7 @@ function M.open(opts)
       if err then
          vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
-      vim.g.notes_cache = index_notes_by_path(notes)
+      M.notes_cache = index_notes_by_path(notes)
       return Snacks.picker.zk(opts)
    end)
 end
