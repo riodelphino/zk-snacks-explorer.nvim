@@ -1,9 +1,10 @@
 # snacks-zk.nvim
 
 
-Snacks source for zk.
+Snacks source for zk, based on `Snacks.explorer`.
 
-Sorting does not work for now.
+
+Sorting and searching do not work for now.
 
 ## Install
 
@@ -49,5 +50,6 @@ require('snacks.zk').reveal() -- NOT WORKS for now
 
 ## TODO
 
-- [ ] Sorting does not work.
+- [ ] Enable sorting
+- [ ] Enable `/` searching by title
 

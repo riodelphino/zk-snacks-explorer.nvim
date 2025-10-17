@@ -36,6 +36,91 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 
 * これを finder = "explorer" のように指定するようだ。
 
+## ソート
+
+`lua/snacks/picker/sort.lua` が built-in の sorter `default` と `idx` の在り処。
+
+explorer は内部的に sorter を呼ばない設計になっている？のか、sort に何をセットしても実行されない。
+finder の時点ですでに順番が決定されているのでそこへ sort を仕掛ける必要がありそう？
+
+### ２種類の取りうる値
+
+
+```lua
+-- 基本のソート
+local source = {
+   sort = { fields = { 'sort' } }
+}
+```
+```lua
+-- デフォルト値
+sort = { 
+   fields = { 
+      { name = "score", desc = true },  -- スコア降順
+      "idx"                             -- 追加順
+   }
+}
+```
+
+#### 関数を直接セット
+```lua
+---@alias snacks.picker.sort fun(a:snacks.picker.Item, b:snacks.picker.Item):boolean
+```
+とあるので、
+```lua
+sort = function(a, b) ... end
+```
+と直接指定も可能。
+
+#### built-in の sorter を指定
+
+
+```lua
+-- item.sort フィールドで昇順ソート
+sort = { fields = { 'sort' } }
+
+-- item.sort フィールドで昇順ソート (明示的)
+sort = { fields = { 'sort:asc' } }
+
+-- item.sort フィールドで降順ソート
+sort = { fields = { 'sort:desc' } }
+
+-- item の複数フィールドでソート
+sort = {
+   fields = {
+      "dir:desc",   -- item.dir で降順（ディレクトリが先）
+      "title",      -- item.title で昇順
+      "idx"         -- 同じなら item.idx（追加順）}
+   }
+}
+
+-- item.title フィールドの文字列の長さでソート
+sort = { 
+   fields = { 
+      "#title"
+   }
+}
+
+-- テーブルで指定
+sort = { 
+  fields = { 
+    { name = "score", desc = true },  -- スコアが高い順
+    "title"                           -- 同じスコアなら title 順
+  }
+}
+
+-- テーブルで詳細指定
+sort = { 
+   fields = {
+      name = "field_name", 
+      desc = true,   -- 降順
+      len = true     -- 長さでソート
+   }
+}
+```
+
+
+
 ## 方針
 
 なるべく、流用できるものは流用する。M をマージ出来るものはマージする。

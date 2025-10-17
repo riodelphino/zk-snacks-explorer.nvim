@@ -34,9 +34,9 @@ M.notes_cache = {}
 -- ╰───────────────────────────────────────────────────────────────╯
 
 -- Add zk source
-require("snacks.picker").sources.zk = zk_source -- DEBUG: 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示された
 -- require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
 -- Snacks["zk"] = function(opts) M.open(opts) end -- WORKS??? 存在しない、のエラー。open()後なら効く
+-- require("snacks.picker").sources.zk = zk_source -- DEBUG: WORKS / 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示された いったんオフ
 
 -- Add zk format functions
 Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
@@ -67,9 +67,12 @@ local is_setup_done = false
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
+   print("M.setup() is called")
    local zk_source = require("snacks.zk.source")
    local opts = Snacks.config.get("zk", defaults)
    require("snacks.picker").sources.zk = zk_source -- NOTE: Enable `Snacks.picker.zk()` ? NOT WORKS
+   require("snacks.picker").pick("zk", zk_source) -- DEBUG: こちらで新規追加できるか？
+   -- require("snacks.picker.core.picker").new(zk_source) -- DEBUG: いやこっちか？ なんかエラー続出 autocmd がどうとか。 -> picker.pick が内部で呼び出すやつだ。いらん
 
    if opts.replace_netrw then
       -- Disable netrw
@@ -125,10 +128,13 @@ function M.open(opts)
    if not is_setup_done then
       M.setup()
    end
+   is_setup_done = true
+   print("M.open() called")
 
    local zk_api = require("zk.api")
    local zk_opts = { select = { "absPath", "title", "filename" } }
    zk_api.list(nil, zk_opts, function(err, notes)
+      print("zk.api.list called")
       if err then
          vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end

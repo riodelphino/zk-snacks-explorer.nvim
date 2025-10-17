@@ -117,6 +117,45 @@ local M = {}
 --    end
 -- end
 
+-- -- item.sort でソートする設定？
+-- ---@param opts snacks.picker.explorer.Config
+-- ---@type snacks.picker.finder
+-- function M.zk_finder(opts, ctx)
+--    local notes_cache = require("snacks.zk").notes_cache
+--    local explorer = require("snacks.picker.source.explorer")
+--    local base_finder = explorer.explorer(opts, ctx)
+--
+--    return function(cb)
+--       base_finder(function(item)
+--          -- item.sort を書き換える
+--          if item.type == "directory" then
+--             item.sort = item.file
+--          elseif item.type == "file" then
+--             if item.file and item.file:match("%.md$") then
+--                local note = notes_cache[item.file]
+--                if note and note.title and note.title ~= "" then
+--                   -- sort の最後の部分（basename）を title に置き換え
+--                   -- 例: "!parent#basename " → "!parent#title "
+--                   -- local prefix = item.sort:match("^(.+[!#])")
+--                   -- if prefix then
+--                   --    item.sort = prefix .. note.title:lower() .. " "
+--                   -- end
+--                   item.sort = vim.fs.joinpath(vim.fn.fnamemodify(item.file, ":p:h"), note.title)
+--                else
+--                   item.sort = item.file
+--                end
+--             else
+--                item.sort = item.file
+--             end
+--          end
+--          print(vim.inspect(item))
+--
+--          cb(item)
+--       end)
+--    end
+-- end
+
+--
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
 function M.zk_finder(opts, ctx)
@@ -126,29 +165,18 @@ function M.zk_finder(opts, ctx)
 
    return function(cb)
       base_finder(function(item)
-         -- item.sort を書き換える
-         if item.type == "directory" then
-            item.sort = item.file
-         elseif item.type == "file" then
+         if item.type == "file" then
             if item.file and item.file:match("%.md$") then
                local note = notes_cache[item.file]
                if note and note.title and note.title ~= "" then
-                  -- sort の最後の部分（basename）を title に置き換え
-                  -- 例: "!parent#basename " → "!parent#title "
-                  -- local prefix = item.sort:match("^(.+[!#])")
-                  -- if prefix then
-                  --    item.sort = prefix .. note.title:lower() .. " "
-                  -- end
-                  item.sort = vim.fs.joinpath(vim.fn.fnamemodify(item.file, ":p:h"), note.title)
-               else
-                  item.sort = item.file
+                  -- vim.fs.joinpath(vim.fn.fnamemodify(item.file, ":p:h"), note.title)
+                  item.title = note.title
                end
-            else
-               item.sort = item.file
             end
          end
-         print(vim.inspect(item))
-
+         if not item.title then -- titleでソートするには全アイテムが title を保持しないといけないかも、の対策
+            item.title = item.file
+         end
          cb(item)
       end)
    end
@@ -482,7 +510,6 @@ local source = {
    --    return Snacks.picker.sources.explorer.zk_finder(opts, ctx)
    -- end,
    reveal = true,
-   sort = { fields = { "sort" } }, -- item.sort の文字列でソートする、の意
    supports_live = true,
    tree = false,
    watch = true,
@@ -504,6 +531,26 @@ local source = {
       return require("snacks.picker.format").zk_file(item, picker)
    end,
    matcher = { sort_empty = false, fuzzy = false },
+   -- sort = { fields = { "sort" } }, -- item.sort の文字列でソートする、の意
+   -- sort = { -- DEBUG: NOT WORKS
+   --    fields = {
+   --       -- "dir:desc", -- item.dir で降順（ディレクトリが先）
+   --       "title", -- item.title で昇順
+   --       -- "idx", -- 同じなら item.idx（追加順）}
+   --    },
+   -- },
+   -- sort = function(a, b)
+   --    print(a.file .. " dir: " .. tostring(a.dir)) -- DEBUG: 呼ばれてない
+   --    return a.title < b.title
+   -- end,
+   -- sort = { fields = { "sort" } }, -- DEBUG: 効かない ていうか、2回目の描画ではデフォルト設定が上書きされてる
+   -- sort = { fields = { "title" } }, -- DEBUG: 読み込まれる？が、効かない sort.lua の defaults も呼ばれるがその中の return の f(a,b) が呼ばれない
+   -- sort = function(a, b) -- DEBUG: 呼ばれん
+   --    print(vim.inspect(a))
+   --    return a.file < b.file
+   -- end,
+   sort = { fields = { "file" } }, -- DEBUG:
+
    config = function(opts)
       -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: explorer is enough
       return require("snacks.picker.source.explorer").setup(opts)
