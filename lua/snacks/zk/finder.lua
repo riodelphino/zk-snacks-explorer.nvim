@@ -175,6 +175,81 @@ end
 --    end
 -- end
 
+-- ---@param opts snacks.picker.explorer.Config
+-- ---@type snacks.picker.finder
+-- local finder = function(opts, ctx)
+--    local state = explorer.get_state(ctx.picker)
+--
+--    if state:setup(ctx) then
+--       return explorer.search(opts, ctx)
+--    end
+--
+--    if opts.git_status then
+--       require("snacks.explorer.git").update(ctx.filter.cwd, {
+--          untracked = opts.git_untracked,
+--          on_update = function()
+--             if ctx.picker.closed then
+--                return
+--             end
+--             ctx.picker.list:set_target()
+--             ctx.picker:find()
+--          end,
+--       })
+--    end
+--
+--    if opts.diagnostics then
+--       require("snacks.explorer.diagnostics").update(ctx.filter.cwd)
+--    end
+--
+--    return function(cb)
+--       local nodes = {} ---@type snacks.picker.explorer.Node[]
+--       local top = Tree:find(ctx.filter.cwd)
+--
+--       -- 全ノードを一旦 nodes に集める
+--       Tree:get_zk(ctx.filter.cwd, function(n)
+--          table.insert(nodes, n)
+--       end, {
+--          hidden = opts.hidden,
+--          ignored = opts.ignored,
+--          exclude = opts.exclude,
+--          include = opts.include,
+--       })
+--
+--       -- 非同期なのでスケジュールしてソート後に cb() に渡す
+--       vim.schedule(function()
+--          -- タイトルでソート
+--          table.sort(nodes, function(a, b)
+--             local ta = (zk.notes_cache[a.path] and zk.notes_cache[a.path].title) or vim.fs.basename(a.path)
+--             local tb = (zk.notes_cache[b.path] and zk.notes_cache[b.path].title) or vim.fs.basename(b.path)
+--             return ta:lower() < tb:lower()
+--          end)
+--
+--          -- idx を順番に書き換えて cb() に渡す
+--          for idx, n in ipairs(nodes) do
+--             local parent = n.parent
+--             local status = n.status or (parent and parent.dir_status)
+--             local item = {
+--                file = n.path,
+--                dir = n.dir,
+--                open = n.open,
+--                dir_status = n.dir_status or (parent and parent.dir_status),
+--                text = n.path,
+--                parent = parent,
+--                hidden = n.hidden,
+--                ignored = n.ignored,
+--                status = (not n.dir or not n.open or opts.git_status_open) and status or nil,
+--                last = true,
+--                type = n.type,
+--                severity = (not n.dir or not n.open or opts.diagnostics_open) and n.severity or nil,
+--                title = (zk.notes_cache[n.path] and zk.notes_cache[n.path].title) or vim.fs.basename(n.path),
+--                idx = idx, -- idx をソート順に更新
+--             }
+--             cb(item)
+--          end
+--       end)
+--    end
+-- end
+
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
 local finder = function(opts, ctx)
@@ -202,51 +277,19 @@ local finder = function(opts, ctx)
    end
 
    return function(cb)
-      local nodes = {} ---@type snacks.picker.explorer.Node[]
-      local top = Tree:find(ctx.filter.cwd)
+      local cwd = ctx.filter.cwd
 
-      -- 全ノードを一旦 nodes に集める
-      Tree:get_zk(ctx.filter.cwd, function(n)
-         table.insert(nodes, n)
+      -- get_zk で全 md ノートを配列として取得
+      Tree:get_zk(cwd, function(n)
+         -- cb 内で直接渡すので何もしなくてOK
+         cb(n)
       end, {
          hidden = opts.hidden,
          ignored = opts.ignored,
          exclude = opts.exclude,
          include = opts.include,
+         expand = false, -- 必要に応じて変更
       })
-
-      -- 非同期なのでスケジュールしてソート後に cb() に渡す
-      vim.schedule(function()
-         -- タイトルでソート
-         table.sort(nodes, function(a, b)
-            local ta = (zk.notes_cache[a.path] and zk.notes_cache[a.path].title) or vim.fs.basename(a.path)
-            local tb = (zk.notes_cache[b.path] and zk.notes_cache[b.path].title) or vim.fs.basename(b.path)
-            return ta:lower() < tb:lower()
-         end)
-
-         -- idx を順番に書き換えて cb() に渡す
-         for idx, n in ipairs(nodes) do
-            local parent = n.parent
-            local status = n.status or (parent and parent.dir_status)
-            local item = {
-               file = n.path,
-               dir = n.dir,
-               open = n.open,
-               dir_status = n.dir_status or (parent and parent.dir_status),
-               text = n.path,
-               parent = parent,
-               hidden = n.hidden,
-               ignored = n.ignored,
-               status = (not n.dir or not n.open or opts.git_status_open) and status or nil,
-               last = true,
-               type = n.type,
-               severity = (not n.dir or not n.open or opts.diagnostics_open) and n.severity or nil,
-               title = (zk.notes_cache[n.path] and zk.notes_cache[n.path].title) or vim.fs.basename(n.path),
-               idx = idx, -- idx をソート順に更新
-            }
-            cb(item)
-         end
-      end)
    end
 end
 
