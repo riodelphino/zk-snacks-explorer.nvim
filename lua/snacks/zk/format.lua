@@ -94,7 +94,6 @@ function M.zk_filename(item, picker)
 end
 
 function M.zk_file(item, picker)
-   print("zk_file called")
    ---@type snacks.picker.Highlight[]
    local ret = {}
 

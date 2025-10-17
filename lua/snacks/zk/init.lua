@@ -4,8 +4,15 @@
 -- local format = require("snacks.picker.format")
 -- local config = require("snacks.picker.config")
 -- local zk_format = require("snacks.zk.format")
-local zk_source = require("snacks.zk.source")
-local M = {}
+-- local M = {}
+
+---@class snacks.zk
+---@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
+local M = setmetatable({}, {
+   __call = function(M, ...)
+      return M.open(...)
+   end,
+})
 
 -- ---@class snacks.explorer
 -- ---@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
@@ -28,6 +35,9 @@ M.notes_cache = {}
 
 -- Add zk source
 require("snacks.picker").sources.zk = zk_source -- DEBUG: 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示された
+-- require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
+-- Snacks["zk"] = function(opts) M.open(opts) end -- WORKS??? 存在しない、のエラー。open()後なら効く
+
 -- Add zk format functions
 Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
 Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
@@ -52,10 +62,14 @@ local function index_notes_by_path(notes)
    return tbl
 end
 
+local is_setup_done = false
+
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
+   local zk_source = require("snacks.zk.source")
    local opts = Snacks.config.get("zk", defaults)
+   require("snacks.picker").sources.zk = zk_source -- NOTE: Enable `Snacks.picker.zk()` ? NOT WORKS
 
    if opts.replace_netrw then
       -- Disable netrw
@@ -95,6 +109,8 @@ function M.setup(event)
          handle(event)
       end
 
+      is_setup_done = true
+
       -- Open the explorer when opening a directory
       vim.api.nvim_create_autocmd("BufEnter", {
          group = group,
@@ -106,6 +122,10 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
+   if not is_setup_done then
+      M.setup()
+   end
+
    local zk_api = require("zk.api")
    local zk_opts = { select = { "absPath", "title", "filename" } }
    zk_api.list(nil, zk_opts, function(err, notes)
