@@ -3,7 +3,7 @@ local format = require("snacks.picker.format")
 local M = {}
 
 ---@param item snacks.picker.Item
-function M.zk_filename(item, picker)
+M.zk_filename = function(item, picker)
    ---@type snacks.picker.Highlight[]
    local ret = {}
    if not item.file then
@@ -93,7 +93,7 @@ function M.zk_filename(item, picker)
    return ret
 end
 
-function M.zk_file(item, picker)
+M.zk_file = function(item, picker)
    ---@type snacks.picker.Highlight[]
    local ret = {}
 
