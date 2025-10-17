@@ -70,9 +70,8 @@ function M.setup(event)
    print("M.setup() is called")
    local zk_source = require("snacks.zk.source")
    local opts = Snacks.config.get("zk", defaults)
-   require("snacks.picker").sources.zk = zk_source -- NOTE: Enable `Snacks.picker.zk()` ? NOT WORKS
-   require("snacks.picker").pick("zk", zk_source) -- DEBUG: こちらで新規追加できるか？
-   -- require("snacks.picker.core.picker").new(zk_source) -- DEBUG: いやこっちか？ なんかエラー続出 autocmd がどうとか。 -> picker.pick が内部で呼び出すやつだ。いらん
+   require("snacks.picker").sources.zk = zk_source -- NOTE: Enable `Snacks.picker.zk()` これも必要
+   require("snacks.picker").pick("zk", zk_source) -- NOTE: これで pickers に新規追加できた
 
    if opts.replace_netrw then
       -- Disable netrw

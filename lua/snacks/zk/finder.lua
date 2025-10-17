@@ -16,20 +16,15 @@ function Tree:get_zk(cwd, cb, opts)
    local nodes = {}
 
    self:walk(node, function(n)
-      if n ~= node and n.dir == false and not n.path:match("%.md$") then
-         return false
-      end
+      -- if n ~= node and n.dir == false and not n.path:match("%.md$") then
+      --    return false
+      -- end
       table.insert(nodes, n)
    end)
 
-   -- vim.schedule(function()
-   -- table.sort(nodes, function(a, b)
-   --    local ta = (zk.notes_cache[a.path] and zk.notes_cache[a.path].title) or vim.fs.basename(a.path)
-   --    local tb = (zk.notes_cache[b.path] and zk.notes_cache[b.path].title) or vim.fs.basename(b.path)
-   --    return ta:lower() < tb:lower()
-   -- end)
+   print("nodes: " .. vim.inspect(nodes)) -- DEBUG: うーんよくわからん。
+
    table.sort(nodes, function(a, b)
-      -- print("a: " .. vim.inspect(a))
       -- 0. ルート優先
       if a.dir and a.path == cwd then
          return true
