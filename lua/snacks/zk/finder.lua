@@ -8,6 +8,7 @@ end
 
 function Tree:get_zk(cwd, cb, opts)
    opts = opts or {}
+   opts.expand = true -- DEBUG: いったん全部のフォルダを取得？できず
    assert_dir(cwd)
    local node = self:find(cwd)
    node.open = true
@@ -21,26 +22,70 @@ function Tree:get_zk(cwd, cb, opts)
       table.insert(nodes, n)
    end)
 
-   vim.schedule(function()
-      table.sort(nodes, function(a, b)
-         local ta = (require("snacks.zk").notes_cache[a.path] and require("snacks.zk").notes_cache[a.path].title)
-            or vim.fs.basename(a.path)
-         local tb = (require("snacks.zk").notes_cache[b.path] and require("snacks.zk").notes_cache[b.path].title)
-            or vim.fs.basename(b.path)
-         return ta:lower() < tb:lower()
-      end)
-
-      for idx, n in ipairs(nodes) do
-         cb({
-            file = n.path,
-            dir = n.dir,
-            title = (require("snacks.zk").notes_cache[n.path] and require("snacks.zk").notes_cache[n.path].title)
-               or vim.fs.basename(n.path),
-            idx = idx,
-            type = n.type,
-         })
+   -- vim.schedule(function()
+   -- table.sort(nodes, function(a, b)
+   --    local ta = (zk.notes_cache[a.path] and zk.notes_cache[a.path].title) or vim.fs.basename(a.path)
+   --    local tb = (zk.notes_cache[b.path] and zk.notes_cache[b.path].title) or vim.fs.basename(b.path)
+   --    return ta:lower() < tb:lower()
+   -- end)
+   table.sort(nodes, function(a, b)
+      -- print("a: " .. vim.inspect(a))
+      -- 0. ルート優先
+      if a.dir and a.path == cwd then
+         return true
       end
+      if b.dir and b.path == cwd then
+         return false
+      end
+
+      -- 1. ディレクトリ優先
+      if a.dir and not b.dir then
+         return true
+      end
+      if b.dir and not a.dir then
+         return false
+      end
+
+      local ta = (zk.notes_cache[a.path] and zk.notes_cache[a.path].title)
+      local tb = (zk.notes_cache[b.path] and zk.notes_cache[b.path].title)
+
+      local na = vim.fs.basename(a.path)
+      local nb = vim.fs.basename(b.path)
+
+      -- 2. タイトルの有無で優先
+      if ta and not tb then
+         return true
+      end
+      if tb and not ta then
+         return false
+      end
+
+      -- 3. ドットファイルは後方
+      local a_dot = na:match("^%.") or false
+      local b_dot = nb:match("^%.") or false
+      if a_dot and not b_dot then
+         return false
+      end
+      if b_dot and not a_dot then
+         return true
+      end
+
+      -- 4. タイトルがあればタイトルで比較、なければファイル名で比較
+      local sa = ta or na
+      local sb = tb or nb
+      return sa:lower() < sb:lower()
    end)
+
+   for idx, n in ipairs(nodes) do
+      cb({
+         file = n.path,
+         dir = n.dir,
+         title = (zk.notes_cache[n.path] and zk.notes_cache[n.path].title) or vim.fs.basename(n.path),
+         idx = idx,
+         type = n.type,
+      })
+   end
+   -- end)
 end
 
 -- ---@param opts snacks.picker.explorer.Config

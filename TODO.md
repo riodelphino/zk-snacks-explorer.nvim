@@ -1,10 +1,16 @@
 # TODO
 
-- [ ] Snacks.zk として使えるようにしたい
-- [ ] 最初から pickers リストに表示されるように
-- [ ] zk
-   - [ ] setup か open で notes_cache を取得。
-   - [ ] format で title を表示してみる
+- [x] Snacks.zk として使えるようにしたい
+- [x] 最初から pickers リストに表示されるように
+- [-] zk
+   - [x] setup か open で notes_cache を取得。
+   - [x] format で title を表示してみる
+   - [x] dir -> title -> filename / normal -> dotfile でソート
+   - [ ] 全ファイルを表示する (なぜか欠けてるのがある) (-> snacks.explorer を表示後は全ファイル表示される。なぜ？)
+   - [ ] ツリーのノードアイコンが表示されない
+   - [ ] 'l' キーでフォルダを開く
+      - [ ] explorer で展開済みじゃないとひらかない
+      - [ ] 開いた子要素が dir/file.md のようになってしまう
 
 ## ファイルの役割とディレクトリ構造
 
