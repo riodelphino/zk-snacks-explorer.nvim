@@ -25,7 +25,7 @@ local source = {
     file = {
       filename_only = true, -- NOTE: In the explorer `setup()`, `filename_only` is overridden by `opts.tree`, and that somehow affects this zk picker.
       filename_first = false,
-      markdown_only = true, -- find only markdown files
+      markdown_only = false, -- find only markdown files
     },
     severity = { pos = "right" },
   },
