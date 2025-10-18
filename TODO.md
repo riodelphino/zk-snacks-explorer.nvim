@@ -61,8 +61,19 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 
 ## picker 登録
 
-require('snacks.picker').pick(source_name, source_opts) で登録。
-内部的に require("snacks.picker.core.picker").new() を呼び出している
+WORKS:
+```lua
+-- Register picker
+require('snacks.picker').pick(source_name, source_opts)
+-- The `pick()` calls `require("snacks.picker.core.picker").new()` inside.
+```
+NOT WORKS or PARTIALLY WORKS:
+```lua
+require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
+Snacks["zk"] = function(opts) M.open(opts) end -- WORKS??? 存在しない、のエラー。open()後なら効く
+require("snacks.picker").sources.zk = zk_source -- WORKS / 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示される
+
+```
 
 ## ソート
 
@@ -268,6 +279,13 @@ local items = {
   ...
 }
 
+```
+
+
+## setup 時に設定済みのオプション値の取得
+
+```lua
+require("snacks.picker").sources.zk
 ```
 
 ## その他
