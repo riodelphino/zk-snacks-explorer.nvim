@@ -12,6 +12,17 @@
       - [ ] explorer で展開済みじゃないとひらかない
       - [ ] 開いた子要素が dir/file.md のようになってしまう
 
+
+## lua/snacks/zk/tree.lua
+
+Customized version of `lua/snacks/explorer/tree.lua` from snacks
+
+### walk_zk と get_zk
+
+get_zk が逐次ファイルを walk_zk で取得して処理していくが、
+walk_zk が処理している時点で、処理対象リストがすでに意図した sort になっている必要がある。
+
+
 ## ファイルの役割とディレクトリ構造
 
 ### lua/snacks/zk/init.lua
@@ -41,6 +52,11 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 - explorer 関数 = ツリー構造でファイルを表示
 
 * これを finder = "explorer" のように指定するようだ。
+
+## picker 登録
+
+require('snacks.picker').pick(source_name, source_opts) で登録。
+内部的に require("snacks.picker.core.picker").new() を呼び出している
 
 ## ソート
 
