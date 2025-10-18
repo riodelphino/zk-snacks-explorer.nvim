@@ -1,18 +1,23 @@
 # TODO
 
-- [x] Snacks.zk として使えるようにしたい
-- [x] 最初から pickers リストに表示されるように
+- [ ] init/setup
+   - [x] Snacks.zk として使えるようにしたい
+   - [x] 最初から pickers リストに表示されるように
+   - [ ] 一回目の keymap での実行時、すぐCloseされてしまう
+   - [ ] state など、explorer を流用し過ぎてる？ 問題が発生するかも？
 - [-] zk
    - [x] setup か open で notes_cache を取得。
    - [x] format で title を表示してみる
    - [x] dir -> title -> filename / normal -> dotfile でソート
-   - [ ] 一回目の keymap での実行時、すぐCloseされてしまう
-   - [ ] 全ファイルを表示する (なぜか欠けてるのがある) (-> snacks.explorer を表示後は全ファイル表示される。なぜ？)
-   - [ ] ツリーのノードアイコンが表示されない
-   - [ ] 'l' キーでフォルダを開く
-      - [ ] explorer で展開済みじゃないとひらかない
+   - [x] 全ファイルを表示する (なぜか欠けてるのがある) (-> snacks.explorer を表示後は全ファイル表示される。なぜ？)
+   - [x] ツリーのノードアイコンが表示されない
+   - [-] 'l' キーでフォルダを開く
+      - [x] explorer で展開済みじゃないとひらかない
       - [ ] 開いた子要素が dir/file.md のようになってしまう
 
+- [ ] Snacks.picker.util.truncpath() とは？pathを変換するだと？表示名の変換に使えるのか？
+- [ ] explorer の setup() は、なぜ config/sources.lua にある explorer の source 設定を再度上書きする必要があるのだろう？
+   - [ ] filename_only が tree で上書きされてる。この影響が zk にも出る。
 
 ## lua/snacks/zk/tree.lua
 

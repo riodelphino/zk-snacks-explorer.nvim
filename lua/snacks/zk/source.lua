@@ -5,7 +5,7 @@ local source = {
   finder = zk_finder,
   reveal = true,
   supports_live = true,
-  tree = false,
+  tree = true,
   watch = true,
   diagnostics = true,
   diagnostics_open = false,
@@ -18,7 +18,10 @@ local source = {
   jump = { close = false },
   layout = { preset = "sidebar", preview = false },
   formatters = {
-    zk_file = { filename_only = true }, -- DEBUG: file に戻さなくて大丈夫？
+    file = {
+      filename_only = true, -- NOTE: explorer の setup では `filename_only = opts.tree,` のように filename_only を左右し上書きしている。影響がなぜかある
+      filename_first = false,
+    },
     severity = { pos = "right" },
   },
   format = zk_format.zk_file,

@@ -50,24 +50,25 @@ M.zk_filename = function(item, picker)
   end
   local dir_hl = "SnacksPickerDir"
 
-  if picker.opts.formatters.file.filename_only then
-    path = vim.fn.fnamemodify(item.file, ":t") .. " da" -- DEBUG: ここは何だ？
-    ret[#ret + 1] = { path, base_hl, field = "file" }
+  local note = require("snacks.zk").notes_cache[item.file] or nil
+  local title = note and note.title
+
+  if picker.opts.formatters.file.filename_only then -- NOTE: `filename` only (or title)
+    path = vim.fn.fnamemodify(item.file, ":t")
+    ret[#ret + 1] = { title or path, base_hl, field = "file" }
   else
     local dir, base = path:match("^(.*)/(.+)$")
-    local note = require("snacks.zk").notes_cache[item.file]
-    local title = note and note.title
     if base and dir then
-      if picker.opts.formatters.file.filename_first then
-        ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
+      if picker.opts.formatters.file.filename_first then -- NOTE: `filename dir` style
+        ret[#ret + 1] = { base, base_hl, field = "file" }
         ret[#ret + 1] = { " " }
         ret[#ret + 1] = { dir, dir_hl, field = "file" }
       else
-        ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" }
-        ret[#ret + 1] = { base, base_hl, field = "file" } -- ここも？
+        ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" } -- NOTE: `dir/filename` style
+        ret[#ret + 1] = { title or base, base_hl, field = "file" }
       end
     else
-      ret[#ret + 1] = { title or path, base_hl, field = "file" } -- DEBUG: ここで note.title を表示できる
+      ret[#ret + 1] = { title or base or path, base_hl, field = "file" } -- NOTE: only `filename` or `dirname` (without `/`)
     end
   end
   if item.pos and item.pos[1] > 0 then
