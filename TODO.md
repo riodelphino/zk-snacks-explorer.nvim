@@ -18,6 +18,8 @@
    - [ ] Search が title も追うように
    - [ ] actions 追加？
    - [ ] queries 的なのを追加？
+- [ ] test
+   - [ ] テスト用のフォルダ＆ファイルを作成
 
 - [ ] Snacks.picker.util.truncpath() とは？pathを変換するだと？表示名の変換に使えるのか？
 - [ ] explorer の setup() は、なぜ config/sources.lua にある explorer の source 設定を再度上書きする必要があるのだろう？
