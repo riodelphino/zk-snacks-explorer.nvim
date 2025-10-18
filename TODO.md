@@ -62,8 +62,11 @@ require('snacks.picker').pick(source_name, source_opts) で登録。
 
 `lua/snacks/picker/sort.lua` が built-in の sorter `default` と `idx` の在り処。
 
-explorer は内部的に sorter を呼ばない設計になっている？のか、sort に何をセットしても実行されない。
-finder の時点ですでに順番が決定されているのでそこへ sort を仕掛ける必要がありそう？
+> [!Caution]
+> 残念ながら、explorer ではこれら全部まったく使えない。
+> Tree:get() つまりその内部の Tree.walk() が読み込んだ順番そのままで表示される。
+> sort オプションは一切考慮されない。
+
 
 ### ２種類の取りうる値
 
@@ -140,8 +143,6 @@ sort = {
    }
 }
 ```
-explore ではこれ全部まったく使えない。
-
 
 ## 方針
 
