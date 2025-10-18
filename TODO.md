@@ -6,6 +6,7 @@
    - [x] setup か open で notes_cache を取得。
    - [x] format で title を表示してみる
    - [x] dir -> title -> filename / normal -> dotfile でソート
+   - [ ] 一回目の keymap での実行時、すぐCloseされてしまう
    - [ ] 全ファイルを表示する (なぜか欠けてるのがある) (-> snacks.explorer を表示後は全ファイル表示される。なぜ？)
    - [ ] ツリーのノードアイコンが表示されない
    - [ ] 'l' キーでフォルダを開く
@@ -151,6 +152,111 @@ sort = {
 - finder は "explorer" を流用
 - format を追加して変更すれば、表示項目名をカスタムできる
 - sort はどうする？
+
+## node
+
+内部的に保持している、ファイルやディレクトリの階層構造。parent, children, 展開状態(open) などを含めて管理。
+
+Used by:
+   - snacks/zk/sort.lua
+
+Class: Node
+```lua
+---@class snacks.picker.explorer.Node
+---@field path string
+---@field name string
+---@field hidden? boolean
+---@field status? string merged git status
+---@field dir_status? string git status of the directory
+---@field ignored? boolean
+---@field type "file"|"directory"|"link"|"fifo"|"socket"|"char"|"block"|"unknown"
+---@field dir? boolean
+---@field open? boolean wether the node should be expanded (only for directories)
+---@field expanded? boolean wether the node is expanded (only for directories)
+---@field parent? snacks.picker.explorer.Node
+---@field last? boolean child of the parent
+---@field utime? number
+---@field children table<string, snacks.picker.explorer.Node>
+---@field severity? number
+```
+Sample (table): 辞書型
+```lua
+---@type table<string, snacks.picker.explorer.Node>
+nodes = {
+  -- directory (empty)
+  ["notes"] = {
+    children = {},
+    dir = true,
+    dir_status = "??",
+    hidden = false,
+    last = false,
+    name = "notes",
+    parent = { ["/path/to/parent"] = { ... } },
+    path = "/Users/rio/Projects/terminal/test/notes",
+    status = "??",
+    type = "directory"
+  },
+  -- file
+  ["zkeu83.md"] = {
+    children = {},
+    dir = false,
+    hidden = false,
+    last = true,
+    name = "zkeu83.md",
+    parent = { ["/path/to/parent"] = { ... } },
+    path = "/Users/rio/Projects/terminal/test/zkeu83.md",
+    severity = 1,
+    status = " M",
+    type = "file"
+  },
+  ...
+}
+```
+
+## Item
+
+explorer が表示するフラット化されたリスト。並べ替え, ハイライト, アイコン表示 などを含む、UIに表示するためのデータ。
+
+Used by:
+   - finder
+
+nodes とは異なり、path ではなく file がフルパス。
+
+Class: Item
+```lua
+---@class snacks.picker.explorer.Item: snacks.picker.finder.Item
+---@field file string
+---@field dir? boolean
+---@field parent? snacks.picker.explorer.Item
+---@field open? boolean
+---@field last? boolean
+---@field sort? string
+---@field internal? boolean internal parent directories not part of fd output
+---@field status? string
+```
+Sample (table): 辞書型
+```lua
+---@type table<string, snacks.picker.explorer.Item>
+local items = {
+  ["/path/to/file"] = {
+    file = "/path/to/file",
+    dir = true|false,
+    open = true|false,
+    dir_status = ???,
+    text = "displayed text",
+    parent = {},
+    hidden = true|false,
+    ignored = true|false,
+    status = (not node.dir or not node.open or opts.git_status_open) and status or nil,
+    last = true|false,,
+    type = "directory"|"file",
+    severity = ???, -- ノードの重要度？
+    -- なぜか internal, sort, が無い
+  },
+  ...
+}
+
+```
 
 ## その他
 

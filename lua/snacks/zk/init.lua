@@ -138,7 +138,10 @@ function M.open(opts)
       vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
     end
     M.notes_cache = index_notes_by_path(notes)
-    return Snacks.picker.zk(opts)
+    -- print("M.open(): #notes=" .. #notes .. " #notes_cache=" .. #M.notes_cache) -- DEBUG:
+    -- print(vim.inspect(M.notes_cache)) -- DEBUG:
+    -- return Snacks.zk(opts) -- 無限ループっぽい
+    return Snacks.picker.zk(opts) -- DEBUG: 未定義の警告になる
   end)
 end
 
