@@ -17,16 +17,22 @@ local source = {
   auto_close = false,
   jump = { close = false },
   layout = { preset = "sidebar", preview = false },
+  include = {}, -- WORKS
+  exclude = {}, -- WORKS : "*.md" style
+  ignored = false, -- WORKS
+  hidden = false, -- WORKS
   formatters = {
     file = {
       filename_only = true, -- NOTE: explorer の setup では `filename_only = opts.tree,` のように filename_only を左右し上書きしている。影響がなぜかある
       filename_first = false,
+      markdown_only = true,
     },
     severity = { pos = "right" },
   },
   format = zk_format.zk_file,
   matcher = { sort_empty = false, fuzzy = false },
-  sort = { fields = { "sort" } }, -- DEBUG: explorer Tree:get() が内部で逐次ファイルを読み込みながらノードを生成表示するので、意味なし
+  sort = { fields = { "sort" } }, -- NOTE: NOT WORKS: explorer skips this opt.
+  --`Tree:get()` generate a node and add it into UI one by one. Sorting should be completed inside of the `walk_zk()`
 
   config = function(opts)
     -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: explorer is enough (Really??)

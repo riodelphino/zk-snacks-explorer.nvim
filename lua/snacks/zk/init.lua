@@ -33,14 +33,10 @@ M.notes_cache = {}
 -- │                   Merge into snacks M table                   │
 -- ╰───────────────────────────────────────────────────────────────╯
 
--- Add zk source
--- require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
--- Snacks["zk"] = function(opts) M.open(opts) end -- WORKS??? 存在しない、のエラー。open()後なら効く
--- require("snacks.picker").sources.zk = zk_source -- DEBUG: WORKS / 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示された いったんオフ
-
 -- Add zk format functions
 Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
 Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
+-- TODO: なぜマージしないの？
 
 -- ╭───────────────────────────────────────────────────────────────╮
 -- │                  Copied from explorer's init                  │
@@ -138,10 +134,8 @@ function M.open(opts)
       vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
     end
     M.notes_cache = index_notes_by_path(notes)
-    -- print("M.open(): #notes=" .. #notes .. " #notes_cache=" .. #M.notes_cache) -- DEBUG:
-    -- print(vim.inspect(M.notes_cache)) -- DEBUG:
-    -- return Snacks.zk(opts) -- 無限ループっぽい
-    return Snacks.picker.zk(opts) -- DEBUG: 未定義の警告になる
+    -- return Snacks.zk(opts) -- Cause infinit loop
+    return Snacks.picker.zk(opts)
   end)
 end
 
