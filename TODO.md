@@ -158,7 +158,11 @@ sort = {
 内部的に保持している、ファイルやディレクトリの階層構造。parent, children, 展開状態(open) などを含めて管理。
 
 Used by:
-   - snacks/zk/sort.lua
+   - tree.lua
+   - finder.lua
+   - search.lua
+   - sort.lua
+(in `lua/snacks/zk` dir)
 
 Class: Node
 ```lua
@@ -216,11 +220,14 @@ nodes = {
 ## Item
 
 explorer が表示するフラット化されたリスト。並べ替え, ハイライト, アイコン表示 などを含む、UIに表示するためのデータ。
+nodes とは異なり、＜path ではなく file がフルパス＞ などの違いがある。
 
 Used by:
-   - finder
+   - tree.lua
+   - finder.lua
+   - format.lua (snacks.picker.Item の方かも？)
+(in `lua/snacks/zk` dir)
 
-nodes とは異なり、path ではなく file がフルパス。
 
 Class: Item
 ```lua

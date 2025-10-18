@@ -2,7 +2,7 @@ local format = require("snacks.picker.format")
 
 local M = {}
 
----@param item snacks.picker.Item
+---@param item snacks.picker.Item -- DEBUG: snacks.picker.explorer.Item ではなくてOK？
 M.zk_filename = function(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
