@@ -119,19 +119,19 @@ function M.reveal(opts)
   local Tree = require("snacks.explorer.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
-  local explorer = Snacks.picker.get({ source = "explorer" })[1] or M.open()
-  local cwd = explorer:cwd()
+  local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open() -- FIX: zk_explorer(self?) is not loaded.
+  local cwd = zk_explorer:cwd()
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
       if Tree:in_cwd(parent, cwd) then
-        explorer:set_cwd(parent)
+        zk_explorer:set_cwd(parent)
         break
       end
     end
   end
   Tree:open(file)
-  Actions.update(explorer, { target = file, refresh = true })
-  return explorer
+  Actions.update(zk_explorer, { target = file, refresh = true })
+  return zk_explorer
 end
 
 return M

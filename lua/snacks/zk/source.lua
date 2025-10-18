@@ -5,7 +5,7 @@ local source = {
   finder = zk_finder,
   reveal = true,
   supports_live = true,
-  tree = true,
+  tree = true, -- keep true on this picker
   watch = true,
   diagnostics = true,
   diagnostics_open = false,
@@ -17,25 +17,26 @@ local source = {
   auto_close = false,
   jump = { close = false },
   layout = { preset = "sidebar", preview = false },
-  include = {}, -- WORKS
-  exclude = {}, -- WORKS : "*.md" style
-  ignored = false, -- WORKS
-  hidden = false, -- WORKS
+  include = {}, -- (e.g. "*.jpg")
+  exclude = {}, -- (e.g. "*.md")
+  ignored = false,
+  hidden = false,
   formatters = {
     file = {
-      filename_only = true, -- NOTE: explorer の setup では `filename_only = opts.tree,` のように filename_only を左右し上書きしている。影響がなぜかある
+      filename_only = true, -- NOTE: In the explorer `setup()`, `filename_only` is overridden by `opts.tree`, and that somehow affects this zk picker.
       filename_first = false,
-      markdown_only = true,
+      markdown_only = true, -- find only markdown files
     },
     severity = { pos = "right" },
   },
   format = zk_format.zk_file,
   matcher = { sort_empty = false, fuzzy = false },
-  sort = { fields = { "sort" } }, -- NOTE: NOT WORKS: explorer skips this opt.
-  --`Tree:get()` generate a node and add it into UI one by one. Sorting should be completed inside of the `walk_zk()`
-
+  -- sort:
+  --  NOT WORKS in `explorer`. It skips this option.
+  --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk_zk()`
+  sort = { fields = { "sort" } },
   config = function(opts)
-    -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: explorer is enough (Really??)
+    -- return require("snacks.picker.source.zk").setup(opts) -- Error: not found. why?
     return require("snacks.picker.source.explorer").setup(opts)
   end,
   win = {
