@@ -1,11 +1,3 @@
--- local sources = require("snacks.picker.config.sources")
--- local sources = require("snacks.picker.sources") -- NG
--- local explorer = require("snacks.explorer")
--- local format = require("snacks.picker.format")
--- local config = require("snacks.picker.config")
--- local zk_format = require("snacks.zk.format")
--- local M = {}
-
 ---@class snacks.zk
 ---@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
 local M = setmetatable({}, {
@@ -14,14 +6,6 @@ local M = setmetatable({}, {
   end,
 })
 
--- ---@class snacks.explorer
--- ---@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
--- local M = setmetatable({}, {
---    __call = function(M, ...)
---       return M.open(...)
---    end,
--- })
-
 M.meta = {
   desc = "A zk file explorer (picker in disguise)",
   needs_setup = true,
@@ -29,19 +13,10 @@ M.meta = {
 
 M.notes_cache = {}
 
--- ╭───────────────────────────────────────────────────────────────╮
--- │                   Merge into snacks M table                   │
--- ╰───────────────────────────────────────────────────────────────╯
-
--- Add zk format functions
+-- Merge zk formater into `Snacks.picker.format`
 Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
 Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
--- TODO: なぜマージしないの？
-
--- ╭───────────────────────────────────────────────────────────────╮
--- │                  Copied from explorer's init                  │
--- ╰───────────────────────────────────────────────────────────────╯
--- Copied from `lua/snacks/explorer/init.lua` (Then modified for zk)
+-- vim.tbl_deepextend('keep', Snacks.picker.format, require("snacks.zk.format")) -- Simple but NOT WORKS
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
@@ -50,6 +25,7 @@ local defaults = {
   replace_netrw = true, -- Replace netrw with the snacks explorer
 }
 
+---@param notes table
 local function index_notes_by_path(notes)
   local tbl = {}
   for _, note in ipairs(notes) do
@@ -63,11 +39,10 @@ local is_setup_done = false
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
-  print("M.setup() is called")
   local zk_source = require("snacks.zk.source")
   local opts = Snacks.config.get("zk", defaults)
-  require("snacks.picker").sources.zk = zk_source -- NOTE: Enable `Snacks.picker.zk()` これも必要
-  require("snacks.picker").pick("zk", zk_source) -- NOTE: これで pickers に新規追加できた
+  require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()`
+  require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
 
   if opts.replace_netrw then
     -- Disable netrw
@@ -124,17 +99,15 @@ function M.open(opts)
     M.setup()
   end
   is_setup_done = true
-  print("M.open() called")
 
   local zk_api = require("zk.api")
   local zk_opts = { select = { "absPath", "title", "filename" } }
   zk_api.list(nil, zk_opts, function(err, notes)
-    print("zk.api.list called")
     if err then
       vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
     end
     M.notes_cache = index_notes_by_path(notes)
-    -- return Snacks.zk(opts) -- Cause infinit loop
+    -- return Snacks.zk(opts) -- This cause infinit loop
     return Snacks.picker.zk(opts)
   end)
 end

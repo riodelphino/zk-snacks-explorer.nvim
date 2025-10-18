@@ -1,5 +1,5 @@
-local Tree = require("snacks.explorer.tree")
-local zk_sorter = require("snacks.zk.sort") -- TODO: sort should be included in opts??
+local Tree = require("snacks.explorer.tree") ---@type snacks.picker.explorer.Tree
+local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: sort should be included in opts??
 
 local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)

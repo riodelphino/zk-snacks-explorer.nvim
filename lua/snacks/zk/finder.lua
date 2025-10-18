@@ -1,4 +1,4 @@
-local Tree = require("snacks.zk.tree")
+local Tree = require("snacks.zk.tree") ---@type snacks.picker.explorer.Tree
 local explorer = require("snacks.picker.source.explorer")
 local zk = require("snacks.zk")
 

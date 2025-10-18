@@ -1,5 +1,5 @@
-local zk_finder = require("snacks.zk.finder")
-local zk_format = require("snacks.zk.format")
+local zk_finder = require("snacks.zk.finder") ---@type function
+local zk_format = require("snacks.zk.format") ---@type table
 
 local source = {
   finder = zk_finder,

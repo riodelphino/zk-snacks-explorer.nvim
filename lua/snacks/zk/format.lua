@@ -53,22 +53,22 @@ M.zk_filename = function(item, picker)
   local note = require("snacks.zk").notes_cache[item.file] or nil
   local title = note and note.title
 
-  if picker.opts.formatters.file.filename_only then -- NOTE: `filename` only (or title)
+  if picker.opts.formatters.file.filename_only then -- `filename` only (or title)
     path = vim.fn.fnamemodify(item.file, ":t")
     ret[#ret + 1] = { title or path, base_hl, field = "file" }
   else
     local dir, base = path:match("^(.*)/(.+)$")
     if base and dir then
-      if picker.opts.formatters.file.filename_first then -- NOTE: `filename dir` style
+      if picker.opts.formatters.file.filename_first then -- `filename dir` style
         ret[#ret + 1] = { base, base_hl, field = "file" }
         ret[#ret + 1] = { " " }
         ret[#ret + 1] = { dir, dir_hl, field = "file" }
       else
-        ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" } -- NOTE: `dir/filename` style
+        ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" } -- `dir/filename` style
         ret[#ret + 1] = { title or base, base_hl, field = "file" }
       end
     else
-      ret[#ret + 1] = { title or base or path, base_hl, field = "file" } -- NOTE: only `filename` or `dirname` (without `/`)
+      ret[#ret + 1] = { title or base or path, base_hl, field = "file" } -- only `filename` or `dirname` (`/` was not included)
     end
   end
   if item.pos and item.pos[1] > 0 then
