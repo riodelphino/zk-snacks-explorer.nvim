@@ -20,7 +20,7 @@ Snacks source for zk, based on `Snacks.explorer`.
 - It does not provide any `queries` or `actions` like [neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim) does.
 
 
-## Requires
+## Dependencies
 
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
 - [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
@@ -39,6 +39,8 @@ return {
   }
 }
 ```
+* Automatically snacks calls `M.setup()` function in `lua/snacks/picker/source/zk.lua` on loading this picker.
+
 
 ## Config
 
