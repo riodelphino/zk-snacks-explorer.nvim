@@ -214,24 +214,6 @@ local zk_opts = require("snacks.zk.source") -- It's not current config but zk's 
 local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is opened. It returns `{}` if the picker not opened.
 ```
 
-## Merge custom functions
-
-Merge zk formater into `Snacks.picker.format`.
-(Added below code at `M.setup()` in `lua/snacks/picker/source/zk.lua`)
-
-```lua
--- WORKS:
-Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
-Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
-
--- NOT WORKS:
-Snacks.picker.format = vim.tbl_deep_extend("keep", Snacks.picker.format, require("snacks.zk.format"))
-
--- NOT WORKS:
-local merged_format = vim.tbl_deep_extend("keep", Snacks.picker.format, require("snacks.zk.format"))
-package.loaded["snacks.picker.format"] = merged_format
-```
-
 ## ソート
 
 `lua/snacks/picker/sort.lua` が built-in の sorter `default` と `idx` の在り処。

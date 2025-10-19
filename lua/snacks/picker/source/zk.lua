@@ -139,10 +139,6 @@ function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
 
-  -- Merge zk formater into `Snacks.picker.format`
-  Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
-  Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
-
   return Snacks.config.merge(opts, {
     actions = {
       confirm = Actions.actions.confirm,
