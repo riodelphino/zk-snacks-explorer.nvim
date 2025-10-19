@@ -34,8 +34,6 @@ local is_setup_done = false
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
-  print("M.setup is called")
-  local zk_source = require("snacks.zk.source")
   local opts = Snacks.config.get("zk", defaults)
 
   if opts.replace_netrw then
