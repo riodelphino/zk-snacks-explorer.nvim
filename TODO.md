@@ -25,31 +25,30 @@
 - [ ] explorer の setup() は、なぜ config/sources.lua にある explorer の source 設定を再度上書きする必要があるのだろう？
    - [ ] filename_only が tree で上書きされてる。この影響が zk にも出る。
 
-## lua/snacks/zk/tree.lua
-
-Customized version of `lua/snacks/explorer/tree.lua` from snacks
-
-### walk_zk と get_zk
-
-get_zk が逐次ファイルを walk_zk で取得して処理していくが、
-walk_zk が処理している時点で、処理対象リストがすでに意図した sort になっている必要がある。
-
 
 ## ファイルの役割とディレクトリ構造
 
-### lua/snacks/zk/init.lua
+### init (zk)
+
+lua/snacks/zk/init.lua
 
 zk のエントリーポイント。
+setup, open, reveal といった関数があり、ユーザー利用のインターフェースを提供
 下の explorer/init.lua の M をマージ。その同階層の action.lua などを流用している。はず。
 
 
-### lua/snacks/explorer/init.lua
+### init (explorer)
 
-explorer のエントリーポイント。ユーザー利用のインターフェースを提供
+lua/snacks/explorer/init.lua
+
+explorer のエントリーポイント。
+setup, open, reveal といった関数があり、ユーザー利用のインターフェースを提供
 action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 
 
-### lua/snacks/picker/source/explorer.lua
+### explorer
+
+lua/snacks/picker/source/explorer.lua
 
 - ツリー型ファイル探索
    - ファイルシステムをツリー構造で表示・操作
@@ -64,6 +63,35 @@ action.lua / diagnositics.lua / git.lua / tree.lua / watch.lua
 - explorer 関数 = ツリー構造でファイルを表示
 
 * これを finder = "explorer" のように指定するようだ。
+
+### Config
+
+lua/snacks/picker/config/
+
+以下のデフォルト設定を格納。
+
+#### Defaults
+lua/snacks/picker/config/defaults.lua
+
+source 全体の共通な、デフォルトの config が網羅されている。
+
+#### Highlight
+
+lua/snacks/picker/config/highlights.lua
+
+ハイライトを参照するショートカット名のリスト
+
+#### Layout
+
+lua/snacks/picker/config/layouts.lua
+
+`:lua Snacks.picker.picker_layouts()` でリストアップ可能な、built-in レイアウトのデフォルト設定
+
+#### Source
+
+lua/snacks/picker/config/sources.lua
+
+built-in Source のデフォルト設定。explorer もここに。
 
 ## picker 登録
 
@@ -293,6 +321,16 @@ local items = {
 ```lua
 require("snacks.picker").sources.zk
 ```
+
+## Tips
+
+### get_zk, walk_zk functions
+
+`get_zk` が逐次ファイルを `walk_zk` で取得して処理していくが、
+`walk_zk` が処理している時点で、処理対象リストがすでに意図したソート順になっている必要がある。
+
+-> 実現できた。`walk_zk` 内でソートした。
+
 
 ## その他
 
