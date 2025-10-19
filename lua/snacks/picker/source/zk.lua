@@ -136,7 +136,6 @@ end
 
 ---@param opts snacks.picker.explorer.Config
 function M.setup(opts)
-  print("M.setup is called (zk.lua)") -- DEBUG:
   local searching = false
   local ref ---@type snacks.Picker.ref
   -- FIX: ここで、get_zk や walk_zk を Tree クラスに追加できるか？
@@ -148,10 +147,6 @@ function M.setup(opts)
   -- package.loaded["snacks.explorer.tree"] = merged_tree
   -- -- FIX: うーんダメなような... explore の watch.lua 内で Tree:find が not found になる
   -- -- -> zk の tree.lua 自身の中でマージしてみる
-
-  -- local zk_source = require("snacks.zk.source")
-  -- require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()` -- DEBUG: zk/init.lua から移設したがどうだ？
-  -- require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
 
   return Snacks.config.merge(opts, {
     actions = {

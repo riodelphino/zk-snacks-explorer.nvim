@@ -13,6 +13,7 @@ M.meta = {
 
 M.notes_cache = {}
 
+-- TODO: Should this be moved to M.setup() in `lua/snacks/picker/source/zk.lua`) ???
 -- Merge zk formater into `Snacks.picker.format`
 Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
 Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
@@ -51,7 +52,6 @@ function M.setup(event)
 
     local function handle(ev)
       if ev.file ~= "" and vim.fn.isdirectory(ev.file) == 1 then
-        print("init.lua setup() inside of handle(ev)") -- DEBUG:
         local picker = M.open({ cwd = ev.file })
         if picker and vim.v.vim_did_enter == 0 then
           -- clear bufname so we don't try loading this one again
@@ -95,12 +95,6 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-  print("M.open is called.") -- DEBUG:
-  -- if not is_setup_done then -- FIX: これもいらないよね
-  --   M.setup()
-  -- end
-  -- is_setup_done = true
-  --
   local zk_api = require("zk.api")
   local zk_opts = { select = { "absPath", "title", "filename" } }
   zk_api.list(nil, zk_opts, function(err, notes)
@@ -108,15 +102,9 @@ function M.open(opts)
       vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
     end
     M.notes_cache = index_notes_by_path(notes)
-    -- return Snacks.zk(opts) -- This cause infinit loop
-    -- return Snacks.picker.zk(opts) -- FIX: not found / snacks/source/zk.init の setup が呼ばれてないだろうからね。
-    -- return Snacks.zk(opts) -- FIX: 無限コールになってないか？
-    -- return Snacks.picker.zk(opts) -- FIX: 初回はOKだが、２回目以降に not found になる。
 
-    -- Snacks 呼び出しを次のイベントループで実行（非同期衝突回避）
     vim.schedule(function()
       if not Snacks.picker.sources.zk then
-        print("まだ登録されとらんかった")
         Snacks.picker.sources.zk = require("snacks.zk.source")
       end
       Snacks.picker.zk(opts)
@@ -127,12 +115,11 @@ end
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
-  print("M.reveal is called") -- DEBUG:
   local Actions = require("snacks.explorer.actions")
   local Tree = require("snacks.explorer.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
-  local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open() -- FIX: zk_explorer(self?) is not loaded.
+  local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open()
   local cwd = zk_explorer:cwd()
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
