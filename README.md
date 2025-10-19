@@ -16,9 +16,11 @@ Snacks source for zk, based on `Snacks.explorer`.
 
 ## Screen shots
 
-![:lua Snacks.zk()](assets/images/screenshot_01.png)
+:lua Snacks.zk()
+![assets/images/screenshot_01.png](assets/images/screenshot_01.png)
 
-![Searching 'a'](assets/images/screenshot_02.png)
+Search 'a'
+![assets/images/screenshot_02.png](assets/images/screenshot_02.png)
 
 ## Issues
 
