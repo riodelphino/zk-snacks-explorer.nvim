@@ -11,7 +11,8 @@ Snacks source for zk, based on `Snacks.explorer`.
 ## Features
 
 - Tree style like `Snacks.explorer`
-- Display the title instead of the filename
+- Displays the title instead of the filename
+- Shows Git and Diagnostics sign icons
 - Search by the title
 
 ## Screen shots
