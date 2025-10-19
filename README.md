@@ -16,7 +16,6 @@ Snacks source for zk, based on `Snacks.explorer`.
 
 ## Known issues
 
-- When zk picker is opened at the first time, it is automatically closed.
 - `Searching by title` does not work.
 - It does not provide any `queries` or `actions` like [neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim) does.
 
@@ -28,9 +27,6 @@ for lazy.nvim:
 return {
   'riodelphino/snacks-zk.nvim',
   dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
-  config = function()
-    require('snacks.zk').setup()
-  end,
   keys = {
     { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
   }
@@ -47,7 +43,7 @@ It has no options yet.
 Open:
 ```lua
 ---@type (snacks.picker.explorer.Config | {})?
-local opts = {}
+local opts = {} -- Set your custom config here / default is in `lua/snacks/zk/source.lua`
 Snacks.zk(opts)
 Snacks.picker.zk(opts)
 require('snacks.zk').open(opts)
@@ -55,8 +51,6 @@ require('snacks.zk').open(opts)
 
 ## TODO
 
-- [x] Enable sorting
-- [ ] Not to close at the first loading
 - [ ] Enable searching by title
 - [ ] Provide options for users
 - [ ] Provide actions ?

@@ -39,9 +39,12 @@ local is_setup_done = false
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
+  print("M.setup is called")
   local zk_source = require("snacks.zk.source")
   local opts = Snacks.config.get("zk", defaults)
   -- require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()` -- DEBUG: この2行は setup が完成するまでオプトアウト
+  -- require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
+  -- require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()` -- DEBUG: not found になるので、ふたたび。手動追加しかなさげ
   -- require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
 
   if opts.replace_netrw then
@@ -52,6 +55,7 @@ function M.setup(event)
 
     local function handle(ev)
       if ev.file ~= "" and vim.fn.isdirectory(ev.file) == 1 then
+        print("init.lua setup() inside of handle(ev)") -- DEBUG:
         local picker = M.open({ cwd = ev.file })
         if picker and vim.v.vim_did_enter == 0 then
           -- clear bufname so we don't try loading this one again
@@ -95,11 +99,12 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-  if not is_setup_done then
-    M.setup()
-  end
-  is_setup_done = true
-
+  print("M.open is called.") -- DEBUG:
+  -- if not is_setup_done then -- FIX: これもいらないよね
+  --   M.setup()
+  -- end
+  -- is_setup_done = true
+  --
   local zk_api = require("zk.api")
   local zk_opts = { select = { "absPath", "title", "filename" } }
   zk_api.list(nil, zk_opts, function(err, notes)
@@ -108,13 +113,25 @@ function M.open(opts)
     end
     M.notes_cache = index_notes_by_path(notes)
     -- return Snacks.zk(opts) -- This cause infinit loop
-    return Snacks.picker.zk(opts)
+    -- return Snacks.picker.zk(opts) -- FIX: not found / snacks/source/zk.init の setup が呼ばれてないだろうからね。
+    -- return Snacks.zk(opts) -- FIX: 無限コールになってないか？
+    -- return Snacks.picker.zk(opts) -- FIX: 初回はOKだが、２回目以降に not found になる。
+
+    -- Snacks 呼び出しを次のイベントループで実行（非同期衝突回避）
+    vim.schedule(function()
+      if not Snacks.picker.sources.zk then
+        print("まだ登録されとらんかった")
+        Snacks.picker.sources.zk = require("snacks.zk.source")
+      end
+      Snacks.picker.zk(opts)
+    end)
   end)
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
+  print("M.reveal is called") -- DEBUG:
   local Actions = require("snacks.explorer.actions")
   local Tree = require("snacks.explorer.tree")
   opts = opts or {}

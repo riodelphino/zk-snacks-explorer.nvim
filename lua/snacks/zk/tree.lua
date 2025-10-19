@@ -44,7 +44,8 @@ function Tree:get_zk(cwd, cb, opts)
   local filter = self:filter(opts)
 
   ---@type snacks.picker.Config
-  local zk_opts = require("snacks.picker").sources.zk
+  -- local zk_opts = require("snacks.picker").sources.zk -- FIX: nil になった
+  local zk_opts = require("snacks.zk.source") -- TODO: 本当は現在の最新の値ではなくあらかじめセットされた値しか取得しないが。
   -- local zk_opts = Snacks.picker.get({ source = "zk" }) -- NOT WORKS. since zk picker is not loaded yet here.
 
   self:walk_zk(node, function(n)

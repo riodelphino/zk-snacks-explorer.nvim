@@ -179,19 +179,26 @@ lua/snacks/picker/config/sources.lua
 
 built-in Source のデフォルト設定。explorer もここに。
 
-## picker 登録
+## Register a picker
 
-WORKS:
+WORKS (Just add a source):
 ```lua
--- Register picker
-require('snacks.picker').pick(source_name, source_opts)
--- The `pick()` calls `require("snacks.picker.core.picker").new()` inside.
+Snacks.picker.sources.zk = require("snacks.zk.source") -- Used at M.open() in `lua/snacks/zk/init.lua`
+require('snacks.picker').source.zk = require('snacks.zk.source') -- This also works.
 ```
 NOT WORKS or PARTIALLY WORKS:
 ```lua
 require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
-Snacks["zk"] = function(opts) M.open(opts) end -- WORKS??? 存在しない、のエラー。open()後なら効く
-require("snacks.picker").sources.zk = zk_source -- WORKS / 登録はできるが、Snacks.zk で呼び出せない / pikers list には表示される
+Snacks["zk"] = function(opts) M.open(opts) end -- ERROR: not found
+require("snacks.picker").sources.zk = zk_source -- Registering OK and displayed in pikers list / But cannot call by `Snacks.zk`
+```
+OTHERS:
+```lua
+require("snacks.picker.core.picker").new() -- NOT for registration
+require('snacks.picker').pick("zk", zk_source) -- NOT for registration. Creates and opens a new picker.
+-- *** WIERD BEHAVIOUR ***
+-- It opens the picker imediately, which triggers M.open() in the zk module.
+-- This causes unexpected behaviour where the picker opens and imediately closes.
 
 ```
 

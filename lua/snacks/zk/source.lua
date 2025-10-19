@@ -2,7 +2,8 @@ local zk_finder = require("snacks.zk.finder") ---@type function
 local zk_format = require("snacks.zk.format") ---@type table
 
 local source = {
-  finder = zk_finder,
+  -- finder = zk_finder,
+  finder = "zk", -- calls the `zk` function from `require('snacks.picker.source.zk')`.
   reveal = true,
   supports_live = true,
   tree = true, -- keep true on this picker
