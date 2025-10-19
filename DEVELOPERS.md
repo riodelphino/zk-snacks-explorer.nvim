@@ -181,26 +181,39 @@ built-in Source のデフォルト設定。explorer もここに。
 
 ## Register a picker
 
-WORKS (Just add a source):
 ```lua
+-- WORKS (Just add a source):
 Snacks.picker.sources.zk = require("snacks.zk.source") -- Used at M.open() in `lua/snacks/zk/init.lua`
 require('snacks.picker').source.zk = require('snacks.zk.source') -- This also works.
-```
-NOT WORKS or PARTIALLY WORKS:
-```lua
+
+-- NOT WORKS:
 require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
 Snacks["zk"] = function(opts) M.open(opts) end -- ERROR: not found
+
+-- PARTIALLY WORKS:
 require("snacks.picker").sources.zk = zk_source -- Registering OK and displayed in pikers list / But cannot call by `Snacks.zk`
-```
-OTHERS:
-```lua
+
+-- Others:
 require("snacks.picker.core.picker").new() -- NOT for registration
 require('snacks.picker').pick("zk", zk_source) -- NOT for registration. Creates and opens a new picker.
 -- *** WIERD BEHAVIOUR ***
 -- It opens the picker imediately, which triggers M.open() in the zk module.
 -- This causes unexpected behaviour where the picker opens and imediately closes.
-
 ```
+
+## Get picker config
+
+```lua
+-- WORKS:
+local zk_opts = require("snacks.picker").sources.zk -- The current config
+
+-- PARTIALLY WORKS:
+local zk_opts = require("snacks.zk.source") -- It's not current config but zk's default config
+
+-- NOT WORKS
+local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is opened. It returns `{}` if the picker not opened.
+```
+
 
 ## ソート
 
@@ -415,11 +428,6 @@ local items = {
 ```
 
 
-## setup 時に設定済みのオプション値の取得
-
-```lua
-local zk_opts = require("snacks.picker").sources.zk
-```
 
 ## Tips
 

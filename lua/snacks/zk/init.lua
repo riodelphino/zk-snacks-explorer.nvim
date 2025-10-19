@@ -42,10 +42,6 @@ function M.setup(event)
   print("M.setup is called")
   local zk_source = require("snacks.zk.source")
   local opts = Snacks.config.get("zk", defaults)
-  -- require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()` -- DEBUG: この2行は setup が完成するまでオプトアウト
-  -- require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
-  -- require("snacks.picker").sources.zk = zk_source -- This enables `:lua Snacks.picker.zk()` -- DEBUG: not found になるので、ふたたび。手動追加しかなさげ
-  -- require("snacks.picker").pick("zk", zk_source) -- Register zk as new picker
 
   if opts.replace_netrw then
     -- Disable netrw
