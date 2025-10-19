@@ -20,7 +20,7 @@ Merges `M` in `lua/snacks/explorer/init.lua`, then reuses Actions (maybe).
 
 - lua/snacks/source/explorer.lua
 
-What's this?
+What's this setup function?
 
 
 #### Entry Point 2
@@ -213,79 +213,78 @@ require("snacks.picker").sources.zk = zk_source -- WORKS / 登録はできるが
 
 -> 実現できた。`walk_zk` 内でソートした。
 
-### ２種類の取りうる値
+### Sort
+
+Basic
 
 ```lua
--- 基本のソート
+-- Basic sort
 local source = {
-   sort = { fields = { 'sort' } }
+   sort = { fields = { 'sort' } } -- Asc by item.sort
 }
 ```
-```lua
--- デフォルト値
-sort = { 
-   fields = { 
-      { name = "score", desc = true },  -- スコア降順
-      "idx"                             -- 追加順
-   }
-}
-```
+#### 2 ways for sorting
 
-#### 関数を直接セット
-```lua
----@alias snacks.picker.sort fun(a:snacks.picker.Item, b:snacks.picker.Item):boolean
-```
-とあるので、
-```lua
-sort = function(a, b) ... end
-```
-と直接指定も可能。
-
-#### built-in の sorter を指定
-
+##### Use built-in sorter
 
 ```lua
--- item.sort フィールドで昇順ソート
+-- by item.sort field (Asc)
 sort = { fields = { 'sort' } }
 
--- item.sort フィールドで昇順ソート (明示的)
+-- by item.sort field (Asc explicitly)
 sort = { fields = { 'sort:asc' } }
 
--- item.sort フィールドで降順ソート
+-- by item.sort field (Desc)
 sort = { fields = { 'sort:desc' } }
 
--- item の複数フィールドでソート
+-- by mutliple fields in item
 sort = {
    fields = {
-      "dir:desc",   -- item.dir で降順（ディレクトリが先）
-      "title",      -- item.title で昇順
-      "idx"         -- 同じなら item.idx（追加順）}
+      "dir:desc",   -- by item.dir (Asc, dir first)
+      "title",      -- by item.title (Asc)
+      "idx"         -- by item.idx (Asc) = insertion order
    }
 }
 
--- item.title フィールドの文字列の長さでソート
+-- by the length of item.title string
 sort = { 
    fields = { 
       "#title"
    }
 }
 
--- テーブルで指定
+-- by detailed table
+sort = { 
+   fields = {
+      name = "title", -- by item.title field
+      desc = true,    -- Descending
+      len = true      -- Use length for sort (default: false)
+   }
+}
+
+-- by combined list (detailed table and field name)
 sort = { 
   fields = { 
-    { name = "score", desc = true },  -- スコアが高い順
-    "title"                           -- 同じスコアなら title 順
+    { name = "score", desc = true },  -- by item.score (Desc)
+    "title"                           -- by item.title (Asc)
   }
 }
 
--- テーブルで詳細指定
+-- Default sort
 sort = { 
-   fields = {
-      name = "field_name", 
-      desc = true,   -- 降順
-      len = true     -- 長さでソート
+   fields = { 
+      { name = "score", desc = true },  -- by score (Desc)
+      "idx"                             -- by Insertion order (Asc)
    }
 }
+```
+##### Use a sorter function
+
+e.g.
+```lua
+sort = function(a, b)
+   return a.name < b.name
+end,
 ```
 
 ## 方針

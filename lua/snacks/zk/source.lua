@@ -32,12 +32,12 @@ local source = {
   format = zk_format.zk_file,
   matcher = { sort_empty = false, fuzzy = false },
   -- sort:
-  --  NOT WORKS in `explorer`. It skips this option.
+  --  NOT WORKS in `explorer`. This option is skipped.
   --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk_zk()`
   sort = { fields = { "sort" } },
   config = function(opts)
     -- return require("snacks.picker.source.zk").setup(opts) -- Error: not found. why?
-    return require("snacks.picker.source.explorer").setup(opts)
+    return require("snacks.picker.source.explorer").setup(opts) -- DEBUG: IT WORKS, but calling explorer's setup is OK ???
   end,
   win = {
     list = {

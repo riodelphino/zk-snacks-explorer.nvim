@@ -5,7 +5,7 @@ local zk = require("snacks.zk")
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
 local finder = function(opts, ctx)
-  local state = explorer.get_state(ctx.picker) -- TODO: explorer の state 取得で良いのか？ zk の get_state じゃなくて？
+  local state = explorer.get_state(ctx.picker) -- TODO: Should get zk's state instead of explorer's one?
 
   if state:setup(ctx) then
     return explorer.search(opts, ctx)

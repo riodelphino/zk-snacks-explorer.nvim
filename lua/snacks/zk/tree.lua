@@ -1,5 +1,6 @@
-local Tree = require("snacks.explorer.tree") ---@type snacks.picker.explorer.Tree
-local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: sort should be included in opts??
+---@class snacks.picker.explorer.Tree snacks.picker.explorer.Tree
+local Tree = require("snacks.explorer.tree")
+local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: Should the sorter function be included in opts?
 
 local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)
@@ -31,26 +32,27 @@ function Tree:walk_zk(node, fn, opts)
   return false
 end
 
+---@param cwd string
+---@param cb fun(node: snacks.picker.explorer.Node)
+---@param opts? {expand?: boolean}|snacks.picker.explorer.Filter
 function Tree:get_zk(cwd, cb, opts)
+  -- opts.hidden|ignored|exclude[]|include[] are automatically considered somehow.
   opts = opts or {}
   assert_dir(cwd)
   local node = self:find(cwd)
   node.open = true
   local filter = self:filter(opts)
 
-  self:walk_zk(node, function(n)
-    -- NOTE: Automatically consider opts.hidden|ignored|exclude[]|include[] somehow.
+  ---@type snacks.picker.Config
+  local zk_opts = require("snacks.picker").sources.zk
+  -- local zk_opts = Snacks.picker.get({ source = "zk" }) -- NOT WORKS. since zk picker is not loaded yet here.
 
-    local zk_opts = require("snacks.picker").sources.zk
+  self:walk_zk(node, function(n)
     if zk_opts.formatters.file.markdown_only then
-      if n ~= node and n.dir == false and not n.path:match("%.md$") then
+      if n ~= node and n.dir == false and not n.path:match("%.md$") then -- Restrict glob to markdown files
         return false
       end
     end
-
-    -- table.insert(nodes, n) -- DEBUG: node が nil になるのでいったん消した
-
-    -- NOTE: Copeid from explorer `Tree:get()`
     if n ~= node then
       if not filter(n) then
         return false

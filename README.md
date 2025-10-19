@@ -44,21 +44,14 @@ It has no options yet.
 
 ## Usage
 
-Open zk picker:
+Open:
 ```lua
-local opts = {} ---@type snacks.picker.explorer.Config|{}
+---@type (snacks.picker.explorer.Config | {})?
+local opts = {}
 Snacks.zk(opts)
 Snacks.picker.zk(opts)
 require('snacks.zk').open(opts)
 ```
-Open zk picker with revealing:
-```lua
-local opts ---@type {file?:string, buf?:number}
-opts = { buf = 0 } -- or
-opts = { file = "path/to/file" }
-require('snacks.zk').reveal(opts) -- NOT WORKS for now, but above codes reveal current file somehow.
-```
-
 
 ## TODO
 
@@ -67,7 +60,7 @@ require('snacks.zk').reveal(opts) -- NOT WORKS for now, but above codes reveal c
 - [ ] Enable searching by title
 - [ ] Provide options for users
 - [ ] Provide actions ?
-- [ ] Provide queries ?
+- [ ] Provide queries(filters) ?
 
 
 ## Related
