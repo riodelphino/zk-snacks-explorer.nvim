@@ -138,15 +138,10 @@ end
 function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
-  -- FIX: ここで、get_zk や walk_zk を Tree クラスに追加できるか？
-  -- Tree["get_zk"] =
-  -- require('snacks.explorer.tree') = vim.tbl_deep_extend('keep', require('snacks.explorer.tree'), require('snacks.zk.tree')) -- こうじゃないみたい
 
-  -- -- Merge tree
-  -- local merged_tree = vim.tbl_deep_extend("keep", require("snacks.explorer.tree"), require("snacks.zk.tree"))
-  -- package.loaded["snacks.explorer.tree"] = merged_tree
-  -- -- FIX: うーんダメなような... explore の watch.lua 内で Tree:find が not found になる
-  -- -- -> zk の tree.lua 自身の中でマージしてみる
+  -- Merge zk formater into `Snacks.picker.format`
+  Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
+  Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
 
   return Snacks.config.merge(opts, {
     actions = {

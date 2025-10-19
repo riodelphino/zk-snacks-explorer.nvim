@@ -13,12 +13,6 @@ M.meta = {
 
 M.notes_cache = {}
 
--- TODO: Should this be moved to M.setup() in `lua/snacks/picker/source/zk.lua`) ???
--- Merge zk formater into `Snacks.picker.format`
-Snacks.picker.format["zk_file"] = require("snacks.zk.format").zk_file
-Snacks.picker.format["zk_filename"] = require("snacks.zk.format").zk_filename
--- vim.tbl_deepextend('keep', Snacks.picker.format, require("snacks.zk.format")) -- Simple but NOT WORKS
-
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
 ---@class snacks.explorer.Config

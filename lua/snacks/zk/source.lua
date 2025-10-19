@@ -23,7 +23,7 @@ local source = {
   hidden = false,
   formatters = {
     file = {
-      filename_only = true, -- NOTE: In the explorer `setup()`, `filename_only` is overridden by `opts.tree`, and that somehow affects this zk picker.
+      filename_only = true, -- In the zk `setup()`, `filename_only` is overridden by `opts.tree`.
       filename_first = false,
       markdown_only = false, -- find only markdown files
     },
