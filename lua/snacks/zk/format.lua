@@ -1,7 +1,9 @@
+---@class snacks.picker.formatters
+---@field [string] snacks.picker.format
+local M = {}
+
 local uv = vim.uv or vim.loop
 local format = require("snacks.picker.format")
-
-local M = {}
 
 ---@param item snacks.picker.explorer.Item
 M.zk_filename = function(item, picker)
