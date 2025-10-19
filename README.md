@@ -10,14 +10,21 @@ Snacks source for zk, based on `Snacks.explorer`.
 
 ## Features
 
-- Snacks.explorer style
+- Tree style like `Snacks.explorer`
 - Display the title instead of the filename
 
 
-## Known issues
+## Issues
 
-- `Searching by title` does not work.
+- `Searching by title` is not implemented yet.
 - It does not provide any `queries` or `actions` like [neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim) does.
+
+
+## Requires
+
+- [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
+- [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
+- [zk-org/zk](https://github.com/zk-org/zk)
 
 
 ## Install
@@ -59,6 +66,7 @@ require('snacks.zk').open(opts)
 
 ## Related
 
+- [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
 - [zk-org/neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim)
 - [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
 - [zk-org/zk](https://github.com/zk-org/zk)
