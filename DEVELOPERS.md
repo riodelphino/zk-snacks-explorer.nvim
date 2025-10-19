@@ -20,7 +20,7 @@ Merges `M` in `lua/snacks/explorer/init.lua`, then reuses Actions (maybe).
 
 - lua/snacks/source/explorer.lua
 
-What's this setup function?
+Snacks calls `M.setup()` function once automatically, when the source is loaded.
 
 
 #### Entry Point 2
@@ -418,7 +418,7 @@ local items = {
 ## setup 時に設定済みのオプション値の取得
 
 ```lua
-require("snacks.picker").sources.zk
+local zk_opts = require("snacks.picker").sources.zk
 ```
 
 ## Tips

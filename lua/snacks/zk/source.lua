@@ -37,8 +37,7 @@ local source = {
   --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk_zk()`
   sort = { fields = { "sort" } },
   config = function(opts)
-    return require("snacks.picker.source.zk").setup(opts) -- Error: not found. why?
-    -- return require("snacks.picker.source.explorer").setup(opts) -- DEBUG: IT WORKS, but calling explorer's setup is OK ???
+    return require("snacks.picker.source.zk").setup(opts)
   end,
   win = {
     list = {

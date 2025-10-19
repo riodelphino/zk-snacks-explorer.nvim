@@ -14,6 +14,7 @@
    - [x] 'l' キーでフォルダを開く
       - [x] explorer で展開済みじゃないとひらかない
       - [x] 開いた子要素が dir/file.md のようになってしまう
+   - [ ] zk_opts, zk_source の表記ゆれを統一
    - [ ] ユーザー向けの config を追加
    - [ ] Search が title も追うように
    - [ ] actions 追加？
