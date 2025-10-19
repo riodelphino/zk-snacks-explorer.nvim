@@ -8,6 +8,11 @@ Snacks source for zk, based on `Snacks.explorer`.
 > Be careful to use it.
 > Any PR is apprecieated.
 
+## Features
+
+- Snacks.explorer style
+- Display the title instead of the filename
+
 
 ## Known issues
 
@@ -26,6 +31,9 @@ return {
   config = function()
     require('snacks.zk').setup()
   end,
+  keys = {
+    { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
+  }
 }
 ```
 
@@ -34,40 +42,20 @@ return {
 It has no options yet.
 
 
-## Keymaps
-
-`snacks-zk.nvim` keymaps should be set by `snacks.nvim`
-
-for lazy.nvim:
-```lua
-return {
-  'folke/snacks.nvim',
-  ...
-  keys = {
-    ...
-    { '<leader>w', function() Snacks.zk() end, desc = 'Snacks.zk()' },
-  },
-}
-```
-
 ## Usage
 
 Open zk picker:
 ```lua
-
----@type snacks.picker.explorer.Config|{}
-local opts = {} -- set your options
-
+local opts = {} ---@type snacks.picker.explorer.Config|{}
 Snacks.zk(opts)
 Snacks.picker.zk(opts)
 require('snacks.zk').open(opts)
 ```
-
 Open zk picker with revealing:
 ```lua
----@type {file?:string, buf?:number}
-local opts = { buf = 0 } -- or
-local opts = { file = "path/to/file" }
+local opts ---@type {file?:string, buf?:number}
+opts = { buf = 0 } -- or
+opts = { file = "path/to/file" }
 require('snacks.zk').reveal(opts) -- NOT WORKS for now, but above codes reveal current file somehow.
 ```
 
