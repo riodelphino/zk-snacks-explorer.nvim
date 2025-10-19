@@ -14,6 +14,11 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Display the title instead of the filename
 - Search by the title
 
+## Screen shots
+
+![:lua Snacks.zk()](assets/images/screenshot_01.png)
+
+![Searching 'a'](assets/images/screenshot_02.png)
 
 ## Issues
 
