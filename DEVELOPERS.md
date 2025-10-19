@@ -126,7 +126,7 @@ end
 - config  : `matcher = { sort_empty = false, fuzzy = false },`
 - setup() : `matcher = { on_match = function(matcher, item) ... end, on_done = function() ... end }` こちらになっているはず
 
-わかりにくいが、Search 機能でのマッチングがこれだと思う。
+Search 機能でのマッチングでこの設定が使われる。
 
 #### filter
 

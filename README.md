@@ -12,11 +12,11 @@ Snacks source for zk, based on `Snacks.explorer`.
 
 - Tree style like `Snacks.explorer`
 - Display the title instead of the filename
+- Search by the title
 
 
 ## Issues
 
-- `Searching by title` is not implemented yet.
 - It does not provide any `queries` or `actions` like [neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim) does.
 
 
@@ -60,7 +60,6 @@ require('snacks.zk').open(opts)
 
 ## TODO
 
-- [ ] Enable searching by title
 - [ ] Provide options for users
 - [ ] Provide actions ?
 - [ ] Provide queries(filters) ?

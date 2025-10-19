@@ -30,7 +30,7 @@ local source = {
     severity = { pos = "right" },
   },
   format = zk_format.zk_file,
-  matcher = { sort_empty = false, fuzzy = false },
+  matcher = { sort_empty = false, fuzzy = true },
   -- sort:
   --  NOT WORKS in `explorer`. This option is skipped.
   --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk_zk()`

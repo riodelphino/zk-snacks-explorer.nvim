@@ -298,6 +298,7 @@ end
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
 function M.search(opts, ctx)
+  local notes_cache = require("snacks.zk").notes_cache
   opts = Snacks.picker.util.shallow_copy(opts)
   opts.cmd = "fd"
   opts.cwd = ctx.filter.cwd
@@ -335,14 +336,22 @@ function M.search(opts, ctx)
       local dirname, basename = item.file:match("(.*)/(.*)")
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
-      basename = item.title and ("#" .. item.title) or basename
+      -- basename = item.title and ("#" .. item.title) or basename
       -- ! -> # -> %
 
-      -- hierarchical sorting
-      if item.dir then
-        item.sort = parent.sort .. "!" .. basename .. " "
+      -- Set title as search text
+      if item.title then
+        item.text = item.title:lower()
       else
-        item.sort = parent.sort .. "%" .. basename .. " "
+        item.text = basename
+      end
+
+      -- hierarchical sorting
+      local label = item.title or basename
+      if item.dir then
+        item.sort = parent.sort .. "!" .. label .. " "
+      else
+        item.sort = parent.sort .. "%" .. label .. " "
       end
       item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
@@ -398,6 +407,14 @@ function M.search(opts, ctx)
             internal = true,
           }
           add(dirs[dir])
+        end
+      end
+
+      -- Add title
+      local note = notes_cache[item.file]
+      if note then
+        if note.title and note.title ~= "" then
+          item.title = note.title
         end
       end
 

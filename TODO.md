@@ -14,9 +14,11 @@
    - [x] 'l' キーでフォルダを開く
       - [x] explorer で展開済みじゃないとひらかない
       - [x] 開いた子要素が dir/file.md のようになってしまう
+   - [x] Search
+      - [x] title も追うように
+      - [x] fuzzy 検索のモードがおかしい。 'd a' と入れると、'ad' にヒットする
    - [ ] zk_opts, zk_source の表記ゆれを統一
    - [ ] ユーザー向けの config を追加
-   - [ ] Search が title も追うように
    - [ ] actions 追加？
    - [ ] queries 的なのを追加？
    - [ ] picker 名称
