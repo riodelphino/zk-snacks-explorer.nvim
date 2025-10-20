@@ -49,7 +49,7 @@ function State.new(picker)
   if opts.watch then
     local on_close = picker.opts.on_close
     picker.opts.on_close = function(p)
-      require("snacks.explorer.watch").abort() -- FIX: snacks.zk.watch じゃないの？
+      require("snacks.zk.watch").abort() -- FIX: snacks.zk.watch じゃないの？
       if on_close then
         on_close(p)
       end
@@ -129,7 +129,7 @@ end
 function State:setup(ctx)
   local opts = ctx.picker.opts --[[@as snacks.picker.explorer.Config]]
   if opts.watch then
-    require("snacks.explorer.watch").watch(ctx.filter.cwd) -- FIX: zk にしないの？
+    require("snacks.zk.watch").watch(ctx.filter.cwd)
   end
   return not ctx.filter:is_empty()
 end

@@ -29,6 +29,24 @@ local function index_notes_by_path(notes)
   return tbl
 end
 
+---Fetch and store zk info as M.notes_cache
+---@param cb function?
+function M.fetch_zk(cb)
+  local zk_api = require("zk.api")
+  local zk_opts = { select = { "absPath", "title", "filename" } }
+  zk_api.index(nil, zk_opts, function()
+    zk_api.list(nil, zk_opts, function(err, notes)
+      if err then
+        vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
+      end
+      M.notes_cache = index_notes_by_path(notes)
+      if cb and type(cb) == "function" then
+        vim.schedule(cb)
+      end
+    end)
+  end)
+end
+
 local is_setup_done = false
 
 ---@private
@@ -87,20 +105,11 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-  local zk_api = require("zk.api")
-  local zk_opts = { select = { "absPath", "title", "filename" } }
-  zk_api.list(nil, zk_opts, function(err, notes)
-    if err then
-      vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
+  M.fetch_zk(function()
+    if not Snacks.picker.sources.zk then
+      Snacks.picker.sources.zk = require("snacks.zk.source")
     end
-    M.notes_cache = index_notes_by_path(notes)
-
-    vim.schedule(function()
-      if not Snacks.picker.sources.zk then
-        Snacks.picker.sources.zk = require("snacks.zk.source")
-      end
-      Snacks.picker.zk(opts)
-    end)
+    Snacks.picker.zk(opts)
   end)
 end
 
@@ -113,6 +122,7 @@ function M.reveal(opts)
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
   local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open()
   local cwd = zk_explorer:cwd()
+
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
       if Tree:in_cwd(parent, cwd) then
