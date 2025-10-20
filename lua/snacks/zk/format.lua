@@ -2,10 +2,9 @@
 ---@field [string] snacks.picker.format
 local M = {}
 
-M = require("snacks.picker.format") -- Merge functions from `lua/snacks/picker/format.lua`
+M = require("snacks.picker.format") -- Extend the existing format module with custom functions below.
 
 local uv = vim.uv or vim.loop
--- local format = require("snacks.picker.format")
 
 ---@param item snacks.picker.explorer.Item
 M.zk_filename = function(item, picker)

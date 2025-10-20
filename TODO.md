@@ -27,6 +27,19 @@
     - [ ] `zk` だと、zk-nvim integrate の snacks_picker のと混同しそう。`zk_explorer` が良いかな？
     - [ ] そうすると 関数名も `zk_explorer` or `explorer_zk` か？
   - [ ] ユーザー向けの config を追加
+    - [ ] setup 時にマージできるのか？ snacks が source.zk を自動読み込みしてるんだよ？
+    - [ ] てか、sort とか format って config から読み込んでないやん？
+      - [ ] config に値があればそちらを読み、なければ sort.lua や format.lua からロードする、とか？
+    - [ ] sort:
+      - [ ] `tree.lua` -> `zk_sorter = require("snacks.zk.sort")` -> `table.sort(children, zk_sorter)`
+      - [ ] explorer の作法から外れるが、sort = に指定した関数を walk_zk 内で適用する、もし関数ではなくテーブルなら、その順番でソートする、とかにできるかなぁ？
+      - [ ] しかも、 { fields = { "sort:asc", { name = "idx", order = "asc" } } } とかの場合も考慮するの？大変じゃね？
+    - [ ] format:
+      - [ ] `format = zk_format.zk_file`
+      - [ ] ここでなんとかできるかなぁ
+    - [ ] matcher: `matcher = { sort_empty = false, fuzzy = true }`
+       - [ ] これは普通にそのまま適用されるからOK
+
   - [ ] actions 追加？
   - [ ] queries 的なのを追加？
   - [ ] フィルターって query みたいなもの？
