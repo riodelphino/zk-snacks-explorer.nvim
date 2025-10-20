@@ -14,6 +14,7 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Displays the title instead of the filename
 - Shows Git and Diagnostics sign icons
 - Search by the title
+- Watch for files and directories (add/modify/rename/delete) 
 
 ## Screen shots
 
