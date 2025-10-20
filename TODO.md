@@ -5,6 +5,10 @@
   - [x] 最初から pickers リストに表示されるように
   - [x] 一回目の keymap での実行時、すぐCloseされてしまう
   - [x] state など、explorer を流用し過ぎてる？ 問題が発生するかも？ -> state も zk 用で行く
+  - [x] setup() が２つあって混乱。
+    - [x] `snacks/picker/source/explorer.lua` の setup() (configを上書きしてる)
+    - [x] `snacks/explorer/init.lua` の setup() 何やってるこれ？
+    - [x] たぶんうまく動作している。が、正直よくわからない。
 - [-] zk
   - [x] setup か open で notes_cache を取得。
   - [x] format で title を表示してみる
@@ -19,19 +23,15 @@
     - [x] fuzzy 検索のモードがおかしい。 'd a' と入れると、'ad' にヒットする
   - [x] ファイル・フォルダの新規作成・削除・リネーム・移動時に、最新情報に更新されない -> zk.api.index() で解決
   - [ ] zk_opts, zk_source の表記ゆれを統一
-  - [ ] ユーザー向けの config を追加
-  - [ ] actions 追加？
-  - [ ] queries 的なのを追加？
   - [ ] picker 名称
     - [ ] `zk` だと、zk-nvim integrate の snacks_picker のと混同しそう。`zk_explorer` が良いかな？
     - [ ] そうすると 関数名も `zk_explorer` or `explorer_zk` か？
-  - [x] setup() が２つあって混乱。
-    - [x] `snacks/picker/source/explorer.lua` の setup() (configを上書きしてる)
-    - [x] `snacks/explorer/init.lua` の setup() 何やってるこれ？
-    - [x] たぶんうまく動作している。が、正直よくわからない。
+  - [ ] ユーザー向けの config を追加
+  - [ ] actions 追加？
+  - [ ] queries 的なのを追加？
   - [ ] フィルターって query みたいなもの？
-- [ ] test
-  - [ ] テスト用のフォルダ＆ファイルを作成
+- [x] test
+  - [x] テスト用のフォルダ＆ファイルを作成
 - [ ] OTHERS
   - [ ] Snacks.picker.util.truncpath() とは？pathを変換するだと？表示名の変換に使えるのか？
   - [ ] explorer の setup() は、なぜ config/sources.lua にある explorer の source 設定を再度上書きする必要があるのだろう？

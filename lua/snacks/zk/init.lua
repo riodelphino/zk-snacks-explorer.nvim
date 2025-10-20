@@ -47,8 +47,6 @@ function M.fetch_zk(cb)
   end)
 end
 
-local is_setup_done = false
-
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
@@ -91,8 +89,6 @@ function M.setup(event)
     if event then
       handle(event)
     end
-
-    is_setup_done = true
 
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {
