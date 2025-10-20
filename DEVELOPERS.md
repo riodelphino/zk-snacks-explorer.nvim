@@ -6,6 +6,17 @@ Some notes for developers to help understanding `pickers` in `snacks.nvim` and `
 
 ### zk (this repo)
 
+The flow of calling picker:
+| id  | function                       | role                                                 | via            | file                                       |
+| --- | ------------------------------ | ---------------------------------------------------- | -------------- | ------------------------------------------ |
+| 1   | Snacks.zk()                    | A shortcut entry point for the picker                | zk()           | (Snacks instanse)                          |
+| 2   | Snacks.picker.zk(opts)         | The main entry point for the picker                  | zk(opts)       | (Snacks instanse) & lua/snacks/zk/init.lua |
+| 3   | setmetatable                   | Returns `M.pick("zk", opts)` (Lazy load)             | setmetatable() | lua/snacks/picker/init.lua                 |
+| 4   | Snacks.picker.pick("zk", opts) | Initialize and runs the picker                       | M.pick()       | lua/snacks/picker/init.lua                 |
+| 5*  | Snacks.picker.sources.zk(opts) | Executes the actual `zk` picker logic (Tree, e.t.c.) | M.zk()         | lua/snacks/source/zk.lua                   |
+`*` is the actual function excuted by `Snacks.zk(opts)`
+
+
 #### Entry Point
 
 - lua/snacks/zk/init.lua
