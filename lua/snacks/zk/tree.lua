@@ -1,6 +1,6 @@
 ---@class snacks.picker.explorer.Tree snacks.picker.explorer.Tree
 local Tree = require("snacks.explorer.tree") -- Extend the Tree class with custom functions below.
--- TODO: 直接拡張は危険。
+-- FIX: Avoid direct merge! Use inheritance instead!
 local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: Should the sorter function be included in opts?
 
 local function assert_dir(path)
@@ -47,7 +47,6 @@ function Tree:get_zk(cwd, cb, opts)
   local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
   local query_enabled = (zk.query.desc ~= "All")
-  -- print("zk.query.desc: '" .. zk.query.desc .. "' /  query_enabled: " .. tostring(query_enabled)) -- DEBUG:
 
   ---@type snacks.picker.Config
   local zk_opts = require("snacks.picker").sources.zk
@@ -61,17 +60,9 @@ function Tree:get_zk(cwd, cb, opts)
 
     -- Skip if not listed in notes_cache with query enabled
     local zk_note = notes_cache[n.path] or nil
-    -- print("         n.path: " .. n.path) -- DEBUG:
-    -- if zk_note then
-    --   print("zk_note.absPath: " .. zk_note.absPath)
-    -- end
-
-    -- if n.path ~= cwd then -- ルートを除外しないと?  -> あれ、その必要なくなった？ -- DEBUG:
     if query_enabled and not zk_note then
-      -- print(n.path .. " : " .. (zk_note ~= nil and zk_note.title or "nil")) -- DEBUG:
       return false
     end
-    -- end
 
     if n ~= node then
       if not filter(n) then
@@ -84,10 +75,5 @@ function Tree:get_zk(cwd, cb, opts)
     cb(n)
   end)
 end
-
--- -- DEBUG:
--- if not query_enabled or (query_enabled and zk_note) then
---   cb(item)
--- end
 
 return Tree

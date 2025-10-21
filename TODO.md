@@ -45,6 +45,7 @@
       - [x] notebook_path の保存をしてないなぁ。今は自動で resolve させてる。query で使うかも？
       - [ ] 現在適用中の query.desc を表示する
       - [ ] query list の順番を アルファベット順に
+      - [ ] default_query を opts に移設。後に変更可能とする。=~ "All" の判定も default_query との比較に？
     - [ ] tree.lua
       - [ ] 直接拡張をせず、新しいクラスとして拡張すべき。
       - [ ] また、walk_zk -> walk, get_zk -> get に戻してよい

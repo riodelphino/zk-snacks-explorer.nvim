@@ -1,7 +1,7 @@
 local Tree = require("snacks.zk.tree")
 local zk = require("snacks.zk")
 
-local M = require("snacks.explorer.actions") -- Merged with explorer's action.  TODO: Need to create and get new table?
+local M = require("snacks.explorer.actions") -- Merged with explorer's action.  -- FIX: Avoid direct merge! Use inheritance instead!
 
 local function format_item(item)
   return item.desc
@@ -26,10 +26,6 @@ M.actions.zk_change_query = function()
     end
     item.input(zk.notebook_path, id, function(res)
       zk.query = res
-      -- refresh() -- TODO: Refresh snacks tree ! `snacks.zk.query` must be merged into zk opts.
-      -- require('snacks.zk').fetch_zk(function()
-      --   require('snacks.zk').
-      -- end)
       require("snacks.zk.watch").refresh()
     end)
   end)

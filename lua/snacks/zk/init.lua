@@ -36,14 +36,10 @@ local function index_notes_by_path(notes)
   return tbl
 end
 
----@param cwd string
 ---@param notes table
-local function add_dir_to_notes(cwd, notes)
-  for path, note in pairs(notes) do
+local function add_dir_to_notes(notes)
+  for path in vim.tbl_keys(notes) do
     for dir in vim.fs.parents(path) do
-      -- if dir == cwd then
-      --   break
-      -- end
       if not notes[dir] then
         notes[dir] = { absPath = dir, is_dir = true }
       end
@@ -56,15 +52,14 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local select = { select = { "absPath", "title", "filename" } }
-  local zk_opts = vim.tbl_deep_extend("keep", select, M.query.query or {}) -- DEBUG: merged query
-  -- print("zk_opts: " .. vim.inspect(zk_opts)) -- DEBUG:
+  local zk_opts = vim.tbl_deep_extend("keep", select, M.query.query or {})
   zk_api.index(nil, zk_opts, function()
     zk_api.list(nil, zk_opts, function(err, notes)
       if err then
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
       M.notes_cache = index_notes_by_path(notes)
-      add_dir_to_notes(M.notebook_path, M.notes_cache) -- DEBUG: Should get correct root?
+      add_dir_to_notes(M.notes_cache)
       if cb and type(cb) == "function" then
         vim.schedule(cb)
       end
@@ -115,7 +110,7 @@ function M.setup(event)
       handle(event)
     end
 
-    -- DEBUG: これでいいの？場所もここ？ open とかじゃなく？
+    -- TODO: Is this correct place to set notebook_path?
     zk_util = require("zk.util")
     M.notebook_path = zk_util.notebook_root(zk_util.resolve_notebook_path() or vim.fn.getcwd())
 

@@ -15,7 +15,7 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Shows Git and Diagnostics sign icons
 - Search by the title
 - Watch for files and directories (add/modify/rename/delete) 
-- Queries (...Need displaying current query)
+- Queries (Works fine, but need displaying current query)
 
 ## Screen shots
 
@@ -81,14 +81,24 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 -- 'telescope' breaks the order for 'reverse = true' config.
 ```
 
+
 > [!Note]
 > `Tree` view is fixed for zk picker, since it is the purpose for this repo. So `{ tree = false }` not works.
 
 
 ## Queries
 
-In file tree, `z` key shows a list of queries.
-In file tree, `Q` key reset the current query(=All).
+Keymaps (in the file tree):
+   - `z` key shows a list of queries.
+   - `Q` key reset the current query(=All).
+
+Queries in lua:
+```lua
+-- Change query
+require('snacks.zk.actions').actions.zk_change_query()
+-- Reset query
+require('snacks.zk.actions').actions.zk_reset_query()
+```
 
 Available queries:
   - All (default)
@@ -115,7 +125,6 @@ Available queries:
 
 ## TODO
 
-- [ ] Provide queries (work in progress...)
 - [ ] Provide options for users
 - [ ] Provide custom actions for zk?
 - [ ] Provide custom queries
