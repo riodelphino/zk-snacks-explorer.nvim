@@ -60,18 +60,25 @@ It has no options yet.
 
 Open:
 ```lua
+Snacks.zk() -- Shortcut for Snacks.picker.zk()
+Snacks.picker.zk()
+require('snacks.zk').open() -- Call open() function directry
+```
+Open with custom config:
+```lua
 ---@type (snacks.picker.explorer.Config | {})?
-local opts = {} -- Set your custom config here / default is in `lua/snacks/zk/source.lua`
+local opts = {} -- Set your custom config here / See defaults at `lua/snacks/zk/source.lua`
 Snacks.zk(opts)
 Snacks.picker.zk(opts)
 require('snacks.zk').open(opts)
 ```
-Change layout:
+
+Open in another layout:
 ```lua
-Snacks.zk({ layout = "default" }) -- 'default'
-Snacks.zk({ layout = "select" }) -- 'select'
+Snacks.zk({ layout = "default" }) -- bottom|default|dropdown|ivy|ivy_split|left|right|select|sidebar|telescope|top|vertical|vscode
 Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 ```
+
 `Tree` view is fixed for zk picker, since it is the purpose for this repo. So `{ tree = false }` not works.
 
 ## TODO
