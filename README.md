@@ -25,10 +25,6 @@ Snacks source for zk, based on `Snacks.explorer`.
 Search 'a'
 ![assets/images/screenshot_02.png](assets/images/screenshot_02.png)
 
-## Issues
-
-- `query` does not show current query desc on the top.
-
 
 ## Dependencies
 
@@ -121,6 +117,11 @@ Available queries:
   - Created after
   - Tag
   - Match (regular expression)
+
+
+## Issues
+
+- `query` does not show current query desc on the top.
 
 
 ## TODO

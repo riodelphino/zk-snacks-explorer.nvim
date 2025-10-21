@@ -22,10 +22,11 @@
     - [x] title も追うように
     - [x] fuzzy 検索のモードがおかしい。 'd a' と入れると、'ad' にヒットする
   - [x] ファイル・フォルダの新規作成・削除・リネーム・移動時に、最新情報に更新されない -> zk.api.index() で解決
-  - [ ] source 名を zk -> zk_explorer に変更！
+  - [x] repo 名を snacks-zk-explorer.nvim に変更
   - [ ] zk_opts, zk_source の表記ゆれを統一
   - [ ] picker 名称
     - [ ] `zk` だと、zk-nvim integrate の snacks_picker のと混同しそう。`zk_explorer` が良いかな？
+    - [ ] source 名を zk -> zk_explorer に変更！
     - [ ] そうすると 関数名も `zk_explorer` or `explorer_zk` か？
   - [-] ユーザー向けの config を追加
     - [ ] setup 時にマージできるのか？ snacks が source.zk を自動読み込みしてるんだよ？
@@ -60,6 +61,7 @@
     - [ ] filename_only が tree で上書きされてる。この影響が zk にも出る。
 
 
+tree.lua:
 直接拡張をせず、新しいクラスとして拡張すべき。また、walk_zk -> walk, get_zk -> get に戻してよい
 ```lua
 ---@class snacks.zk.Tree : snacks.picker.explorer.Tree
