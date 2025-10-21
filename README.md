@@ -84,8 +84,9 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 ## TODO
 
 - [ ] Provide options for users
-- [ ] Provide actions ?
-- [ ] Provide queries(filters) ?
+- [ ] Provide custom actions for zk?
+- [ ] Provide queries(filters)?
+- [ ] Provide custom queries
 
 
 ## Related

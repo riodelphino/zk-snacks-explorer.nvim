@@ -39,9 +39,10 @@
       - [ ] ここでなんとかできるかなぁ
     - [ ] matcher: `matcher = { sort_empty = false, fuzzy = true }`
        - [ ] これは普通にそのまま適用されるからOK
+    - [ ] queries
+      - [ ] 保存先: lua/snacks/zk/init.lua の local M.query
 
   - [ ] actions 追加？
-  - [ ] queries 的なのを追加？
   - [ ] フィルターって query みたいなもの？
 - [x] test
   - [x] テスト用のフォルダ＆ファイルを作成
