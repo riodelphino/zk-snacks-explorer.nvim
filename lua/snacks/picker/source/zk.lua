@@ -209,6 +209,9 @@ end
 ---@type snacks.picker.finder
 function M.zk(opts, ctx) -- DEBUG: 下の zk との兼ね合いを考えるとやはり zk_explorer にしたい
   local zk = require("snacks.zk")
+  local notes_cache = zk.notes_cache
+  local query_enabled = (zk.query.desc ~= "All")
+
   local state = M.get_state(ctx.picker)
 
   if state:setup(ctx) then
@@ -252,7 +255,7 @@ function M.zk(opts, ctx) -- DEBUG: 下の zk との兼ね合いを考えると�
           status = parent.dir_status
         end
 
-        local zk_note = zk.notes_cache and zk.notes_cache[node.path] or nil
+        local zk_note = notes_cache[node.path] or nil
         local title = zk_note and zk_note.title
 
         ---@type snacks.picker.explorer.Item
@@ -279,7 +282,15 @@ function M.zk(opts, ctx) -- DEBUG: 下の zk との兼ね合いを考えると�
           item.hidden = false
           item.ignored = false
         end
-        items[node.path] = item
+
+        if query_enabled then
+          if zk_note then -- Check if exists in notes_cache (only when query is enabled)
+            items[node.path] = item
+          end
+        else
+          items[node.path] = item
+        end
+
         cb(item)
       end,
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
