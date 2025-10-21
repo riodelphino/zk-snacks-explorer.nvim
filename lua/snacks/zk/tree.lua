@@ -1,5 +1,6 @@
 ---@class snacks.picker.explorer.Tree snacks.picker.explorer.Tree
 local Tree = require("snacks.explorer.tree") -- Extend the Tree class with custom functions below.
+-- TODO: 直接拡張は危険。
 local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: Should the sorter function be included in opts?
 
 local function assert_dir(path)

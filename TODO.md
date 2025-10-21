@@ -53,3 +53,29 @@
     - [ ] filename_only が tree で上書きされてる。この影響が zk にも出る。
 
 
+直接拡張をせず、新しいクラスとして拡張すべき。また、walk_zk -> walk, get_zk -> get に戻してよい
+```lua
+---@class snacks.zk.Tree : snacks.picker.explorer.Tree
+local Tree = {}
+local ExplorerTree = require("snacks.explorer.tree")
+
+-- メタテーブルで継承
+setmetatable(Tree, { __index = ExplorerTree })
+
+-- コンストラクタをオーバーライド
+function Tree.new(...)
+  local self = ExplorerTree.new(...)
+  return setmetatable(self, { __index = Tree })
+end
+
+-- ZK専用メソッドを追加
+function Tree:walk_zk(node, fn, opts)
+  -- 実装
+end
+
+function Tree:get_zk(cwd, cb, opts)
+  -- 実装
+end
+
+return Tree
+```
