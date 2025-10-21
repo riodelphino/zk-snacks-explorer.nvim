@@ -30,6 +30,10 @@ M.actions.zk_change_query = function()
       require("snacks.zk").query = res
       print("need refresh")
       -- refresh() -- TODO: Refresh snacks tree ! `snacks.zk.query` must be merged into zk opts.
+      -- require('snacks.zk').fetch_zk(function()
+      --   require('snacks.zk').
+      -- end)
+      require("snacks.zk.watch").refresh()
     end)
   end)
 end

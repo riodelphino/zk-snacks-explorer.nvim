@@ -36,7 +36,8 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local select = { select = { "absPath", "title", "filename" } }
-  local zk_opts = vim.tbl_deep_extend("keep", select, M.query) -- DEBUG: merged query
+  local zk_opts = vim.tbl_deep_extend("keep", select, M.query.query or {}) -- DEBUG: merged query
+  print("zk_opts: " .. vim.inspect(zk_opts))
   zk_api.index(nil, zk_opts, function()
     zk_api.list(nil, zk_opts, function(err, notes)
       if err then
