@@ -1,4 +1,4 @@
-# snacks-zk.nvim
+# snacks-zk-explorer.nvim
 
 
 Snacks source for zk, based on `Snacks.explorer`.
