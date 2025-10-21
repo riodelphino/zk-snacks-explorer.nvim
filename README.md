@@ -68,9 +68,9 @@ require('snacks.zk').open(opts)
 ```
 Change layout:
 ```lua
-Snacks.zk({ layout = "left" }) -- 'left' (Tree) snacks-zk.nvim's default
-Snacks.zk({ layout = "default" }) -- 'default' (Tree)
-Snacks.zk({ layout = "select" }) -- 'select' (Tree)
+Snacks.zk({ layout = "default" }) -- 'default'
+Snacks.zk({ layout = "select" }) -- 'select'
+Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 ```
 `Tree` view is fixed for zk picker, since it is the purpose for this repo. So `{ tree = false }` not works.
 
