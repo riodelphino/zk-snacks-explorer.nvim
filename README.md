@@ -27,7 +27,7 @@ Search 'a'
 
 ## Issues
 
-- It does not provide any `queries` or `actions` like [neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim) does.
+- `query` does not show current query desc on the top.
 
 
 ## Dependencies
@@ -126,8 +126,9 @@ Available queries:
 ## TODO
 
 - [ ] Provide options for users
-- [ ] Provide custom actions for zk?
-- [ ] Provide custom queries
+- [ ] Add action for zk.api.new()
+- [ ] Supports custom actions for zk?
+- [ ] Supports custom queries
 
 
 ## Related
