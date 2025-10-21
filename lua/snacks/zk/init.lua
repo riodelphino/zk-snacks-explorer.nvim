@@ -12,6 +12,8 @@ M.meta = {
 }
 
 M.notes_cache = {}
+M.query = {}
+M.notebook_path = nil
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
@@ -112,8 +114,8 @@ end
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
-  local Actions = require("snacks.explorer.actions")
-  local Tree = require("snacks.explorer.tree")
+  local Actions = require("snacks.zk.actions")
+  local Tree = require("snacks.zk.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
   local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open()

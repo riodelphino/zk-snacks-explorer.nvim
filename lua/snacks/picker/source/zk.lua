@@ -1,5 +1,7 @@
 ---@diagnostic disable: await-in-sync
-local Actions = require("snacks.explorer.actions")
+---@class snacks.picker.explorer.Item: snacks.picker.finder.Item
+
+local Actions = require("snacks.zk.actions")
 local Tree = require("snacks.zk.tree")
 
 local M = {}
@@ -7,16 +9,6 @@ local M = {}
 ---@type table<snacks.Picker, snacks.picker.explorer.State>
 M._state = setmetatable({}, { __mode = "k" })
 local uv = vim.uv or vim.loop
-
----@class snacks.picker.explorer.Item: snacks.picker.finder.Item
----@field file string
----@field dir? boolean
----@field parent? snacks.picker.explorer.Item
----@field open? boolean
----@field last? boolean
----@field sort? string
----@field internal? boolean internal parent directories not part of fd output
----@field status? string
 
 local function norm(path)
   return svim.fs.normalize(path)
@@ -49,7 +41,7 @@ function State.new(picker)
   if opts.watch then
     local on_close = picker.opts.on_close
     picker.opts.on_close = function(p)
-      require("snacks.zk.watch").abort() -- FIX: snacks.zk.watch じゃないの？
+      require("snacks.zk.watch").abort()
       if on_close then
         on_close(p)
       end

@@ -69,6 +69,8 @@ local source = {
         ["[w"] = "explorer_warn_prev",
         ["]e"] = "explorer_error_next",
         ["[e"] = "explorer_error_prev",
+        -- zk
+        ["z"] = "zk_change_query",
       },
     },
   },

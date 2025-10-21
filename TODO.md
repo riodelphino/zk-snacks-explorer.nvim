@@ -41,6 +41,7 @@
        - [ ] これは普通にそのまま適用されるからOK
     - [ ] queries
       - [ ] 保存先: lua/snacks/zk/init.lua の local M.query
+    - [ ] notebook_path の保存をしてないなぁ。今は自動で resolve させてる。query で使うかも？
 
   - [ ] actions 追加？
   - [ ] フィルターって query みたいなもの？
