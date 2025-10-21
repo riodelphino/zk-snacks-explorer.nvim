@@ -1,8 +1,6 @@
 local Tree = require("snacks.zk.tree")
 local zk = require("snacks.zk")
 
-local uv = vim.uv or vim.loop
-
 local M = require("snacks.explorer.actions") -- Merged with explorer's action.  TODO: Need to create and get new table?
 
 local function format_item(item)
@@ -27,8 +25,7 @@ M.actions.zk_change_query = function()
       return
     end
     item.input(zk.notebook_path, id, function(res)
-      require("snacks.zk").query = res
-      print("need refresh")
+      zk.query = res
       -- refresh() -- TODO: Refresh snacks tree ! `snacks.zk.query` must be merged into zk opts.
       -- require('snacks.zk').fetch_zk(function()
       --   require('snacks.zk').
@@ -36,6 +33,11 @@ M.actions.zk_change_query = function()
       require("snacks.zk.watch").refresh()
     end)
   end)
+end
+
+M.actions.zk_reset_query = function()
+  zk.query = zk.default_query
+  require("snacks.zk.watch").refresh()
 end
 
 return M

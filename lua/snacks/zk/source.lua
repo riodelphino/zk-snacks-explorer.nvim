@@ -71,6 +71,7 @@ local source = {
         ["[e"] = "explorer_error_prev",
         -- zk
         ["z"] = "zk_change_query",
+        ["Q"] = "zk_reset_query",
       },
     },
   },

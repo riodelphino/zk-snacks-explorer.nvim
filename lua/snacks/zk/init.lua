@@ -13,10 +13,12 @@ M.meta = {
 
 M.notes_cache = {}
 M.notebook_path = nil
-M.query = {
+
+M.default_query = {
   desc = "All",
   query = {},
 }
+M.query = M.default_query
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
@@ -34,19 +36,35 @@ local function index_notes_by_path(notes)
   return tbl
 end
 
+---@param cwd string
+---@param notes table
+local function add_dir_to_notes(cwd, notes)
+  for path, note in pairs(notes) do
+    for dir in vim.fs.parents(path) do
+      -- if dir == cwd then
+      --   break
+      -- end
+      if not notes[dir] then
+        notes[dir] = { absPath = dir, is_dir = true }
+      end
+    end
+  end
+end
+
 ---Fetch and store zk info as M.notes_cache
 ---@param cb function?
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local select = { select = { "absPath", "title", "filename" } }
   local zk_opts = vim.tbl_deep_extend("keep", select, M.query.query or {}) -- DEBUG: merged query
-  print("zk_opts: " .. vim.inspect(zk_opts))
+  -- print("zk_opts: " .. vim.inspect(zk_opts)) -- DEBUG:
   zk_api.index(nil, zk_opts, function()
     zk_api.list(nil, zk_opts, function(err, notes)
       if err then
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
       M.notes_cache = index_notes_by_path(notes)
+      add_dir_to_notes(M.notebook_path, M.notes_cache) -- DEBUG: Should get correct root?
       if cb and type(cb) == "function" then
         vim.schedule(cb)
       end
@@ -96,6 +114,10 @@ function M.setup(event)
     if event then
       handle(event)
     end
+
+    -- DEBUG: これでいいの？場所もここ？ open とかじゃなく？
+    zk_util = require("zk.util")
+    M.notebook_path = zk_util.notebook_root(zk_util.resolve_notebook_path() or vim.fn.getcwd())
 
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {

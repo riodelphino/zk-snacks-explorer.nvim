@@ -22,11 +22,12 @@
     - [x] title も追うように
     - [x] fuzzy 検索のモードがおかしい。 'd a' と入れると、'ad' にヒットする
   - [x] ファイル・フォルダの新規作成・削除・リネーム・移動時に、最新情報に更新されない -> zk.api.index() で解決
+  - [ ] source 名を zk -> zk_explorer に変更！
   - [ ] zk_opts, zk_source の表記ゆれを統一
   - [ ] picker 名称
     - [ ] `zk` だと、zk-nvim integrate の snacks_picker のと混同しそう。`zk_explorer` が良いかな？
     - [ ] そうすると 関数名も `zk_explorer` or `explorer_zk` か？
-  - [ ] ユーザー向けの config を追加
+  - [-] ユーザー向けの config を追加
     - [ ] setup 時にマージできるのか？ snacks が source.zk を自動読み込みしてるんだよ？
     - [ ] てか、sort とか format って config から読み込んでないやん？
       - [ ] config に値があればそちらを読み、なければ sort.lua や format.lua からロードする、とか？
@@ -39,9 +40,14 @@
       - [ ] ここでなんとかできるかなぁ
     - [ ] matcher: `matcher = { sort_empty = false, fuzzy = true }`
        - [ ] これは普通にそのまま適用されるからOK
-    - [ ] queries
-      - [ ] 保存先: lua/snacks/zk/init.lua の local M.query
-    - [ ] notebook_path の保存をしてないなぁ。今は自動で resolve させてる。query で使うかも？
+    - [x] queries
+      - [x] 保存先: lua/snacks/zk/init.lua の local M.query
+      - [x] notebook_path の保存をしてないなぁ。今は自動で resolve させてる。query で使うかも？
+      - [ ] 現在適用中の query.desc を表示する
+      - [ ] query list の順番を アルファベット順に
+    - [ ] tree.lua
+      - [ ] 直接拡張をせず、新しいクラスとして拡張すべき。
+      - [ ] また、walk_zk -> walk, get_zk -> get に戻してよい
 
   - [ ] actions 追加？
   - [ ] フィルターって query みたいなもの？
