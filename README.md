@@ -122,6 +122,7 @@ Available queries:
 ## Issues
 
 - `query` does not show current query desc on the top.
+- Error when opening zk_explorer: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
 
 
 ## TODO
@@ -135,6 +136,7 @@ Available queries:
 ## Related
 
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
+
 - [zk-org/neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim)
 - [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
 - [zk-org/zk](https://github.com/zk-org/zk)
