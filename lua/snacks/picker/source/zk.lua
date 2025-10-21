@@ -210,8 +210,6 @@ end
 function M.zk(opts, ctx) -- DEBUG: 下の zk との兼ね合いを考えるとやはり zk_explorer にしたい
   local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
-  local query_enabled = (zk.query.desc ~= "All")
-  print("zk.query.desc: " .. zk.query.desc .. " query_enabled:" .. tostring(query_enabled))
 
   local state = M.get_state(ctx.picker)
 
@@ -283,12 +281,6 @@ function M.zk(opts, ctx) -- DEBUG: 下の zk との兼ね合いを考えると�
           item.hidden = false
           item.ignored = false
         end
-
-        -- print(item.file .. " : " .. (zk_note ~= nil and zk_note.title or "nil"))
-        -- -- DEBUG:
-        -- if not query_enabled or (query_enabled and zk_note) then
-        --   cb(item)
-        -- end
         cb(item)
         items[node.path] = item
       end,
