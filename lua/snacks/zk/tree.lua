@@ -47,7 +47,7 @@ function Tree:get_zk(cwd, cb, opts)
   local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
   local query_enabled = (zk.query.desc ~= "All")
-  print("zk.query.desc: " .. zk.query.desc .. " query_enabled:" .. tostring(query_enabled))
+  print("zk.query.desc: '" .. zk.query.desc .. "' /  query_enabled: " .. tostring(query_enabled))
 
   ---@type snacks.picker.Config
   local zk_opts = require("snacks.picker").sources.zk
@@ -58,7 +58,15 @@ function Tree:get_zk(cwd, cb, opts)
         return false
       end
     end
+
+    -- Skip if not listed in notes_cache with query enabled
     local zk_note = notes_cache[node.path] or nil
+    if node.path ~= cwd then -- ルートを除外しないとwww
+      if query_enabled and not zk_note then
+        print(node.path .. " : " .. (zk_note ~= nil and zk_note.title or "nil"))
+        return false
+      end
+    end
 
     if n ~= node then
       if not filter(n) then
@@ -72,7 +80,6 @@ function Tree:get_zk(cwd, cb, opts)
   end)
 end
 
--- print(item.file .. " : " .. (zk_note ~= nil and zk_note.title or "nil"))
 -- -- DEBUG:
 -- if not query_enabled or (query_enabled and zk_note) then
 --   cb(item)
