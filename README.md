@@ -77,6 +77,7 @@ Open in another layout:
 ```lua
 Snacks.zk({ layout = "default" }) -- bottom|default|dropdown|ivy|ivy_split|left|right|select|sidebar|telescope|top|vertical|vscode
 Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
+-- 'telescope' breaks the order for 'reverse = true' config.
 ```
 
 `Tree` view is fixed for zk picker, since it is the purpose for this repo. So `{ tree = false }` not works.
