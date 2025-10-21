@@ -15,6 +15,7 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Shows Git and Diagnostics sign icons
 - Search by the title
 - Watch for files and directories (add/modify/rename/delete) 
+- Queries (Comming soon. work in progress...)
 
 ## Screen shots
 
@@ -84,9 +85,9 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 
 ## TODO
 
+- [ ] Provide queries (work in progress...)
 - [ ] Provide options for users
 - [ ] Provide custom actions for zk?
-- [ ] Provide queries(filters)?
 - [ ] Provide custom queries
 
 

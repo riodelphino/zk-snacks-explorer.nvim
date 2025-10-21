@@ -12,8 +12,11 @@ M.meta = {
 }
 
 M.notes_cache = {}
-M.query = {}
 M.notebook_path = nil
+M.query = {
+  desc = "All",
+  query = {},
+}
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
