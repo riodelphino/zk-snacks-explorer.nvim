@@ -1,4 +1,3 @@
-local Tree = require("snacks.zk.tree")
 local zk = require("snacks.zk")
 
 local M = require("snacks.explorer.actions") -- Merged with explorer's action.  -- FIX: Avoid direct merge! Use inheritance instead!
@@ -32,6 +31,7 @@ M.actions.zk_change_query = function()
   end)
 end
 
+---Reset query
 M.actions.zk_reset_query = function()
   zk.query = zk.default_query
   zk.update_picker_title()

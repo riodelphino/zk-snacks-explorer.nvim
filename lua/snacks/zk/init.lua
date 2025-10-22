@@ -131,7 +131,7 @@ function M.open(opts)
     end
     ---@type snacks.Picker
     local picker = Snacks.picker.zk(opts)
-    M.update_picker_title(picker) -- Avoid 'picker is nil' error by passing 'picker' as an argument.
+    M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   end)
 end
 
