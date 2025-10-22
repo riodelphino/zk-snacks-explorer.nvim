@@ -72,6 +72,11 @@ local source = {
         -- zk
         ["z"] = "zk_change_query",
         ["Q"] = "zk_reset_query",
+        -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
+        ["zb"] = false, -- "list_scroll_bottom",
+        ["zt"] = false, -- "list_scroll_top",
+        ["zz"] = false, -- "list_scroll_center",
+        -- See lua/snacks/picker/config/defaults.lua
       },
     },
   },

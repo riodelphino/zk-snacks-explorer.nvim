@@ -121,8 +121,8 @@ Available queries:
 
 ## Issues
 
-- `query` does not show current query desc on the top.
-- Error when opening zk_explorer: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
+- Warning when opening zk_explorer: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
+- The focus is lost when query select.ui is canceled.
 
 
 ## TODO
