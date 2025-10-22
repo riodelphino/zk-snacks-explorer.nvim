@@ -26,7 +26,7 @@ M.actions.zk_change_query = function()
     end
     item.input(zk.notebook_path, id, function(res)
       zk.query = res
-      zk.update_picker_title(res)
+      zk.update_picker_title()
       require("snacks.zk.watch").refresh()
     end)
   end)

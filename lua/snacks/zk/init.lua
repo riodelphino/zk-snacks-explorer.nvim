@@ -131,7 +131,7 @@ function M.open(opts)
     end
     ---@type snacks.Picker
     local picker = Snacks.picker.zk(opts)
-    M.update_picker_title(M.query, picker)
+    M.update_picker_title(picker) -- Avoid 'picker is nil' error by passing 'picker' as an argument.
   end)
 end
 
@@ -159,9 +159,8 @@ function M.reveal(opts)
 end
 
 ---Add current query description to picker title
----@param query table?
 ---@param picker snacks.Picker?
-function M.update_picker_title(query, picker)
+function M.update_picker_title(picker)
   if not picker then
     picker = Snacks.picker.get({ source = "zk" })[1]
   end
@@ -169,10 +168,10 @@ function M.update_picker_title(query, picker)
     return
   end
   local title
-  if not query or (query and query.desc == "All") then
+  if M.query.desc == "All" then
     title = "Zk"
   else
-    title = string.format("Zk: %s", query.desc)
+    title = string.format("Zk: %s", M.query.desc)
   end
   picker.title = title
   picker:update_titles()
