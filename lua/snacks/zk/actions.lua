@@ -7,18 +7,6 @@ local function format_item(item)
   return item.desc
 end
 
----Add query description to picker title
-local function set_picker_title(query_desc)
-  local picker = Snacks.picker.get({ source = "zk" })[1]
-  local suffix = ""
-  if query_desc then
-    suffix = ": " .. query_desc
-  end
-  picker.title = "Zk" .. suffix
-  -- local title = { {"Zk", "FloatTitle"}, { " " .. res.desc .. " ", "SnacksPickerToggle" } } -- TODO: If possible, set title with hl
-  -- picker.title = title
-end
-
 ---Change the query dynamically
 M.actions.zk_change_query = function()
   local id
@@ -38,7 +26,7 @@ M.actions.zk_change_query = function()
     end
     item.input(zk.notebook_path, id, function(res)
       zk.query = res
-      set_picker_title(res.desc)
+      zk.set_picker_title(": " .. res.desc)
       require("snacks.zk.watch").refresh()
     end)
   end)
@@ -46,7 +34,7 @@ end
 
 M.actions.zk_reset_query = function()
   zk.query = zk.default_query
-  set_picker_title()
+  zk.set_picker_title("")
   require("snacks.zk.watch").refresh()
 end
 

@@ -156,4 +156,13 @@ function M.reveal(opts)
   return zk_explorer
 end
 
+---Add query description to picker title
+---@param suffix string?
+function M.set_picker_title(suffix)
+  local picker = Snacks.picker.get({ source = "zk" })[1]
+  picker.title = "Zk" .. (suffix or "")
+  -- local title = { {"Zk", "FloatTitle"}, { " " .. res.desc .. " ", "SnacksPickerToggle" } } -- TODO: If possible, set title with hl
+  -- picker.title = title
+end
+
 return M
