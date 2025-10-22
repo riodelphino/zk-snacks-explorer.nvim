@@ -15,7 +15,7 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Shows Git and Diagnostics sign icons
 - Search by the title
 - Watch for files and directories (add/modify/rename/delete) 
-- Queries (Works fine, but need displaying current query)
+- Queries
 
 ## Screen shots
 
