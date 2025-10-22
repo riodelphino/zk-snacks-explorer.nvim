@@ -129,6 +129,7 @@ function M.open(opts)
     if not Snacks.picker.sources.zk then
       Snacks.picker.sources.zk = require("snacks.zk.source")
     end
+    ---@type snacks.Picker
     local picker = Snacks.picker.zk(opts)
     M.update_picker_title(M.query, picker)
   end)
@@ -157,8 +158,9 @@ function M.reveal(opts)
   return zk_explorer
 end
 
----Add query description to picker title
+---Add current query description to picker title
 ---@param query table?
+---@param picker snacks.Picker?
 function M.update_picker_title(query, picker)
   if not picker then
     picker = Snacks.picker.get({ source = "zk" })[1]
