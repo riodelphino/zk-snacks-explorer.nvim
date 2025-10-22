@@ -40,7 +40,7 @@ Snacks calls `M.setup()` function once automatically, when the source is loaded.
 
 Provides UI functions: `setup()`, `open()`, `reveal()`
 
-config を以下のようにマージ・上書きしてるのが気になる。
+The reason is not clear why config is merged and overwritten here.
 ```lua
 ---@param opts snacks.picker.explorer.Config
 function M.setup(opts)
@@ -126,24 +126,25 @@ end
 
 - lua/snacks/picker/source/explorer.lua -> M.explorer
 
-- search   : `M.search()`    `/`
-- findcher : `M.explorer()`  Globs the cwd recursively as Nodes (also diagnostics, git, e.t.c.), then display them in picker as Items
+- search : `M.search()`    `/`
+- finder : `M.explorer()`  Globs the cwd recursively as Nodes (also diagnostics, git, e.t.c.), then display them in picker as Items
 
-* これを finder = "explorer" のように指定するようだ。
+* The finder is specified like `{ finder = "explorer" }`.
 
 #### matcher
 
-いったん config でセットされているが、explorer.lua の setup() で上書きされている？
+The config is set here, but setup() in `explorer.lua` overwrites?
 - config  : `matcher = { sort_empty = false, fuzzy = false },`
 - setup() : `matcher = { on_match = function(matcher, item) ... end, on_done = function() ... end }` こちらになっているはず
 
-Search 機能でのマッチングでこの設定が使われる。
+This setting is used for matching in the Search function.
 
 #### filter
 
 - config  : Nothing is set
 - setup() : `transform = function(picker, filter) ... end`)
-⭐️ ここでフィルター
+
+filter here
 
 #### searcher
 
@@ -156,39 +157,19 @@ And above `matcher` is the function for searching.
 
 - config: `watch = true` this enables watcher.
 
-でも、watch したあと ファイル更新を検知して zk.api.init や zk.api.list を呼んでくれるんだろうか？
+Detect files & folders modification.
 
 
 
 ### Config
 
-- lua/snacks/picker/config/
+└── lua/snacks/picker/
+    └── config/            : Includes below default config.
+        ├── defaults.lua   : The common default config for all sources.
+        ├── highlights.lua : The shortcut name list for snacks Highlights.
+        ├── layouts.lua    : The default config for built-in layouts.
+        └── sources.lua    : The default config for built-in sources, including `explorer`.
 
-以下のデフォルト設定を格納。
-
-#### Defaults
-
-lua/snacks/picker/config/defaults.lua
-
-source 全体の共通な、デフォルトの config が網羅されている。
-
-#### Highlight
-
-lua/snacks/picker/config/highlights.lua
-
-ハイライトを参照するショートカット名のリスト
-
-#### Layout
-
-lua/snacks/picker/config/layouts.lua
-
-`:lua Snacks.picker.picker_layouts()` でリストアップ可能な、built-in レイアウトのデフォルト設定
-
-#### Source
-
-lua/snacks/picker/config/sources.lua
-
-built-in Source のデフォルト設定。explorer もここに。
 
 ## Register a picker
 
