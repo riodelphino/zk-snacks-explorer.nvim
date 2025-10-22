@@ -1,6 +1,7 @@
 local zk_format = require("snacks.zk.format") ---@type table
 
 local source = {
+  title = "Zk",
   -- finder = zk_finder,
   finder = "zk", -- calls the `zk` function from `require('snacks.picker.source.zk')`.
   reveal = true,

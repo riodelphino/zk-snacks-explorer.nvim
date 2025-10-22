@@ -207,7 +207,7 @@ end
 
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
-function M.zk(opts, ctx) -- FIX: 下の zk との兼ね合いを考えるとやはり zk_explorer にしたい
+function M.zk(opts, ctx) -- FIX: Should change 'zk' to 'zk_explorer' ?
   local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
 

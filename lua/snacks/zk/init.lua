@@ -129,7 +129,8 @@ function M.open(opts)
     if not Snacks.picker.sources.zk then
       Snacks.picker.sources.zk = require("snacks.zk.source")
     end
-    Snacks.picker.zk(opts)
+    local picker = Snacks.picker.zk(opts)
+    M.update_picker_title(M.query, picker)
   end)
 end
 
@@ -157,12 +158,22 @@ function M.reveal(opts)
 end
 
 ---Add query description to picker title
----@param suffix string?
-function M.set_picker_title(suffix)
-  local picker = Snacks.picker.get({ source = "zk" })[1]
-  picker.title = "Zk" .. (suffix or "")
-  -- local title = { {"Zk", "FloatTitle"}, { " " .. res.desc .. " ", "SnacksPickerToggle" } } -- TODO: If possible, set title with hl
-  -- picker.title = title
+---@param query table?
+function M.update_picker_title(query, picker)
+  if not picker then
+    picker = Snacks.picker.get({ source = "zk" })[1]
+  end
+  if not picker then
+    return
+  end
+  local title
+  if not query or (query and query.desc == "All") then
+    title = "Zk"
+  else
+    title = string.format("Zk: %s", query.desc)
+  end
+  picker.title = title
+  picker:update_titles()
 end
 
 return M
