@@ -121,7 +121,7 @@ Available queries:
 
 ## Issues
 
-- Warning when opening zk_explorer: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
+- Warning when opening zk picker: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
 - The focus is lost when query select.ui is canceled.
 
 

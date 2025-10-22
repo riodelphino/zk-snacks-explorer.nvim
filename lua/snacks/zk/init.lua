@@ -142,20 +142,20 @@ function M.reveal(opts)
   local Tree = require("snacks.zk.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
-  local zk_explorer = Snacks.picker.get({ source = "zk" })[1] or M.open()
-  local cwd = zk_explorer:cwd()
+  local picker = Snacks.picker.get({ source = "zk" })[1] or M.open()
+  local cwd = picker:cwd()
 
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
       if Tree:in_cwd(parent, cwd) then
-        zk_explorer:set_cwd(parent)
+        picker:set_cwd(parent)
         break
       end
     end
   end
   Tree:open(file)
-  Actions.update(zk_explorer, { target = file, refresh = true })
-  return zk_explorer
+  Actions.update(picker, { target = file, refresh = true })
+  return picker
 end
 
 ---Add current query description to picker title
