@@ -217,12 +217,12 @@ local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is 
 
 ### Customize sorting in explorer
 
-`Tree:get_zk()`, `Tree:walk_zk()`
+`Tree:get()`, `Tree:walk()`
 
-`get_zk` が逐次ファイルを `walk_zk` で取得して処理していく。
-`walk_zk` が処理している時点で、処理対象リストがすでに意図したソート順になっている必要がある。
+`get` が逐次ファイルを `walk` で取得して処理していく。
+`walk` が処理している時点で、処理対象リストがすでに意図したソート順になっている必要がある。
 
--> 実現できた。`walk_zk` 内でソートした。
+-> 実現できた。`walk` 内でソートした。
 
 ### Sort
 

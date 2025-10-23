@@ -244,8 +244,8 @@ function M.zk(opts, ctx) -- FIX: Should change 'zk' to 'zk_explorer' ?
     local top = Tree:find(ctx.filter.cwd)
     local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item>
 
-    -- get_zk で各 node を取得 (各 node 取得時の処理は cb が行う。node を nodes ? に追加するなど)
-    Tree:get_zk(
+    -- get で各 node を取得 (各 node 取得時の処理は cb が行う。node を nodes ? に追加するなど)
+    Tree:get(
       ctx.filter.cwd,
       function(node)
         local parent = node.parent and items[node.parent.path] or nil

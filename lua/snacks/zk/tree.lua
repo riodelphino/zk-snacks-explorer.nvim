@@ -15,7 +15,7 @@ end
 ---@param node snacks.picker.explorer.Node
 ---@param fn fun(node: snacks.picker.explorer.Node):boolean? return `false` to not process children, `true` to abort
 ---@param opts? {all?: boolean}
-function Tree:walk_zk(node, fn, opts)
+function Tree:walk(node, fn, opts)
   local abort = false ---@type boolean?
   abort = fn(node)
   if abort ~= nil then
@@ -27,7 +27,7 @@ function Tree:walk_zk(node, fn, opts)
     child.last = c == #children
     abort = false
     if child.dir and (child.open or (opts and opts.all)) then
-      abort = self:walk_zk(child, fn, opts)
+      abort = self:walk(child, fn, opts)
     else
       abort = fn(child)
     end
@@ -41,7 +41,7 @@ end
 ---@param cwd string
 ---@param cb fun(node: snacks.picker.explorer.Node)
 ---@param opts? {expand?: boolean}|snacks.picker.explorer.Filter
-function Tree:get_zk(cwd, cb, opts)
+function Tree:get(cwd, cb, opts)
   -- opts.hidden|ignored|exclude[]|include[] are automatically considered somehow.
   opts = opts or {}
   assert_dir(cwd)
@@ -56,7 +56,7 @@ function Tree:get_zk(cwd, cb, opts)
   ---@type snacks.picker.Config
   local zk_opts = require("snacks.picker").sources.zk
 
-  self:walk_zk(node, function(n)
+  self:walk(node, function(n)
     if zk_opts.formatters.file.markdown_only then
       if n ~= node and n.dir == false and not n.path:match("%.md$") then -- Restrict glob to markdown files
         return false

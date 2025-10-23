@@ -90,7 +90,7 @@ function M.watch(cwd)
   end
 
   -- Watch open directories
-  Tree:walk_zk(Tree:find(cwd), function(node)
+  Tree:walk(Tree:find(cwd), function(node)
     if node.dir and node.open then
       used[node.path] = true
       M.start(node.path)

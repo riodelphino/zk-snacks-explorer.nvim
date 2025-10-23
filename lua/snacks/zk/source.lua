@@ -34,7 +34,7 @@ local source = {
   matcher = { sort_empty = false, fuzzy = true },
   -- sort:
   --  NOT WORKS in `explorer`. This option is skipped.
-  --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk_zk()`
+  --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk()`
   sort = { fields = { "sort" } },
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
