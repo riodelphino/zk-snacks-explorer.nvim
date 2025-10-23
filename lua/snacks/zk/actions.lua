@@ -1,6 +1,9 @@
+local explorer_actions = require("snacks.explorer.actions")
 local zk = require("snacks.zk")
 
-local M = require("snacks.explorer.actions") -- Merged with explorer's action.  -- FIX: Avoid direct merge! Use inheritance instead!
+local M = {}
+
+setmetatable(M, { __index = explorer_actions }) -- Inherit from snacks.explorer.actions
 
 local function format_item(item)
   return item.desc
