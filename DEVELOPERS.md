@@ -22,7 +22,7 @@ The flow of calling picker:
 - lua/snacks/zk/init.lua
 
 Provides UI functions: `setup()`, `open()`, `reveal()`
-Merges `M` in `lua/snacks/explorer/init.lua`, then reuses Actions (maybe).
+Merges `M` in `lua/snacks/explorer/init.lua`, then reuses actions (maybe).
 
 
 ### explorer (built-in)

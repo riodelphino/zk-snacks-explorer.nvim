@@ -1,6 +1,6 @@
 # TODO
 
-- [x] zk
+- [-] zk
   - [ ] zk_opts, zk_source の表記ゆれを統一
   - [ ] Action:
       - [ ] action.change_sort() を追加？
@@ -23,10 +23,10 @@
       - [ ] ここでなんとかできるかなぁ
     - [ ] matcher: `matcher = { sort_empty = false, fuzzy = true }`
        - [ ] これは普通にそのまま適用されるからOK
-    - [x] queries
+    - [-] queries
       - [x] 保存先: lua/snacks/zk/init.lua の local M.query
       - [x] notebook_path の保存をしてないなぁ。今は自動で resolve させてる。query で使うかも？
-      - [ ] 現在適用中の query.desc を表示する
+      - [x] 現在適用中の query.desc を表示する
       - [ ] query list の順番を アルファベット順に
       - [ ] default_query を opts に移設。後に変更可能とする。=~ "All" の判定も default_query との比較に？
     - [ ] tree.lua

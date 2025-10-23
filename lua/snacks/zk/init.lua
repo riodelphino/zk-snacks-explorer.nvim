@@ -138,7 +138,7 @@ end
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
-  local Actions = require("snacks.zk.actions")
+  local zk_actions = require("snacks.zk.actions")
   local Tree = require("snacks.zk.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
@@ -154,7 +154,7 @@ function M.reveal(opts)
     end
   end
   Tree:open(file)
-  Actions.update(picker, { target = file, refresh = true })
+  zk_actions.update(picker, { target = file, refresh = true })
   return picker
 end
 

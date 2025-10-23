@@ -1,8 +1,8 @@
 ---@diagnostic disable: await-in-sync
 ---@class snacks.picker.explorer.Item: snacks.picker.finder.Item
 
-local Actions = require("snacks.zk.actions")
 local Tree = require("snacks.zk.tree")
+local zk_actions = require("snacks.zk.actions")
 
 local M = {}
 
@@ -52,7 +52,7 @@ function State.new(picker)
     local p = ref()
     if p then
       Tree:refresh(ev.file)
-      Actions.update(p)
+      zk_actions.update(p)
     end
   end)
 
@@ -104,13 +104,13 @@ function State.new(picker)
         if item and item.file == norm(file) then
           return
         end
-        Actions.update(p, { target = file })
+        zk_actions.update(p, { target = file })
       end)
     end)
     self.on_find = function()
       local p = ref()
       if p and buf_file then
-        Actions.update(p, { target = buf_file })
+        zk_actions.update(p, { target = buf_file })
       end
     end
   end
@@ -133,7 +133,7 @@ function M.setup(opts)
 
   return Snacks.config.merge(opts, {
     actions = {
-      confirm = Actions.actions.confirm,
+      confirm = zk_actions.actions.confirm,
     },
     filter = {
       --- Trigger finder when pattern toggles between empty / non-empty
