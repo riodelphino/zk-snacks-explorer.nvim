@@ -137,7 +137,13 @@ function M.setup(opts)
   opts = Snacks.config.merge(opts, user_opts)
 
   -- Set default sorter
-  zk.sorter = opts.sorters.default
+  if not zk.sorter then
+    zk.sorter = opts.sorters.default
+  end
+  -- Set default query
+  if not zk.query then
+    zk.query = opts.queries.default
+  end
 
   opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {

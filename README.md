@@ -136,6 +136,12 @@ zk = {
       return a.name < b.name
     end,
   },
+  queries = {
+    default = {
+      desc = "All",
+      query = {},
+    },
+  },
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,

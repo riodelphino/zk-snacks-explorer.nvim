@@ -1,5 +1,6 @@
 ---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
 ---@field sorters table?
+---@field queries table?
 
 ---@type snacks.picker.zk.Config
 local source = {
@@ -69,6 +70,12 @@ local source = {
       end
       return a.name < b.name
     end,
+  },
+  queries = {
+    default = {
+      desc = "All",
+      query = {},
+    },
   },
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)

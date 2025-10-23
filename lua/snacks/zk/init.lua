@@ -16,11 +16,7 @@ M.opts = {}
 M.notes_cache = {}
 M.notebook_path = nil
 
-M.default_query = {
-  desc = "All",
-  query = {},
-}
-M.query = M.default_query
+M.query = nil
 
 M.sorter = nil
 
@@ -56,7 +52,7 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local select = { select = { "absPath", "title", "filename" } }
-  local zk_opts = vim.tbl_deep_extend("keep", select, M.query.query or {})
+  local zk_opts = vim.tbl_deep_extend("keep", select, M.query and M.query.query or {})
   zk_api.index(nil, zk_opts, function()
     zk_api.list(nil, zk_opts, function(err, notes)
       if err then
@@ -173,7 +169,7 @@ function M.update_picker_title(picker)
   end
   local default_title = M.opts.title or "Zk"
   local title
-  if M.query.desc == "All" then
+  if M.query.desc == M.opts.queries.default.desc then
     title = default_title
   else
     title = string.format("%s: %s", default_title, M.query.desc)
