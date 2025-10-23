@@ -426,7 +426,14 @@ local items = {
 ## その他
 
 ```lua
-M.explorer = {
-  finder = "explorer",
+M.source_name = {
+  finder = "source_name",
+}
 ```
-この finder は、lua/snacks/picker/source/*.lua の中で M.explorer のように設定されているものたち。
+この finder "source_name" は、
+
+lua/snacks/picker/source/source_name.lua: の中で、
+```lua
+function M.source_name(opts, ctx)
+```
+のように設定されている。
