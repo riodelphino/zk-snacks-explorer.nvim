@@ -131,6 +131,10 @@ function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
 
+  -- Get user-configured zk options merged with default config(=source.lua).
+  local user_opts = Snacks.config.get("zk", {}) or {}
+  opts = Snacks.config.merge(opts, user_opts)
+
   return Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
       confirm = zk_actions.actions.confirm,

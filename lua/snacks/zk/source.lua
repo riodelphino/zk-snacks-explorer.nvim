@@ -1,6 +1,5 @@
 local source = {
   title = "Zk",
-  -- finder = zk_finder,
   finder = "zk", -- calls `require('snacks.picker.source.zk').zk()` function.
   reveal = true,
   supports_live = true,

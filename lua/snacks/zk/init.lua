@@ -70,7 +70,7 @@ end
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
-  local opts = Snacks.config.get("zk", defaults)
+  local opts = Snacks.config.get("zk", defaults) -- Get user-configured zk options
 
   if opts.replace_netrw then
     -- Disable netrw
@@ -168,10 +168,11 @@ function M.update_picker_title(picker)
     return
   end
   local title
+  local default_title = picker.opts.title or "Zk"
   if M.query.desc == "All" then
-    title = "Zk"
+    title = default_title
   else
-    title = string.format("Zk: %s", M.query.desc)
+    title = string.format("%s: %s", default_title, M.query.desc)
   end
   picker.title = title
   picker:update_titles()
