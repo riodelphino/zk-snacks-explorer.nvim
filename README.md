@@ -110,6 +110,7 @@ zk = {
   win = {
     list = {
       keys = {
+        -- Supports explorer actions
         ["<BS>"] = "explorer_up",
         ["l"] = "confirm",
         ["h"] = "explorer_close", -- close directory
@@ -138,7 +139,7 @@ zk = {
         ["[w"] = "explorer_warn_prev",
         ["]e"] = "explorer_error_next",
         ["[e"] = "explorer_error_prev",
-        -- zk
+        -- zk actions
         ["z"] = "zk_change_query",
         ["Q"] = "zk_reset_query",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
