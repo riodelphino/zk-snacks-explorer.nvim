@@ -11,6 +11,8 @@ M.meta = {
   needs_setup = true,
 }
 
+M.opts = {}
+
 M.notes_cache = {}
 M.notebook_path = nil
 
@@ -169,8 +171,8 @@ function M.update_picker_title(picker)
   if not picker then
     return
   end
+  local default_title = M.opts.title or "Zk"
   local title
-  local default_title = picker.opts.title or "Zk"
   if M.query.desc == "All" then
     title = default_title
   else
@@ -182,17 +184,9 @@ end
 
 ---Change current sorter
 ---@param sorter string?
----@param picker snacks.Picker?
-function M.change_sorter(sorter, picker)
+function M.change_sorter(sorter)
   sorter = sorter or "default"
-  if not picker then
-    picker = Snacks.picker.get({ source = "zk" })[1]
-  end
-  if not picker then
-    return
-  end
-  local sorters = picker.opts.sorters ---@as snacks.picker.zk.Config -- TODO: how to fix warning?
-  local sorter_func = sorters[sorter]
+  local sorter_func = M.opts.sorters[sorter]
   M.sorter = sorter_func
   -- TODO: Add refresh here? (maybe NO)
 end
