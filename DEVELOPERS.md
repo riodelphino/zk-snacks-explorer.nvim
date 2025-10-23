@@ -137,7 +137,7 @@ end
 
 The config is set here, but setup() in `explorer.lua` overwrites?
 - config  : `matcher = { sort_empty = false, fuzzy = false },`
-- setup() : `matcher = { on_match = function(matcher, item) ... end, on_done = function() ... end }` こちらになっているはず
+- setup() : `matcher = { on_match = function(matcher, item) ... end, on_done = function() ... end }` (This may overwrites above.)
 
 This setting is used for matching in the Search function.
 
@@ -378,7 +378,7 @@ Used by:
 └── lua/snacks/zk/
     ├── tree.lua
     ├── finder.lua
-    └── format.lua  # snacks.picker.Item の方かも？)
+    └── format.lua  # or snacks.picker.Item?
 ```
 
 
@@ -410,30 +410,24 @@ local items = {
     status = (not node.dir or not node.open or opts.git_status_open) and status or nil,
     last = true|false,,
     type = "directory"|"file",
-    severity = ???, -- ノードの重要度？
-    -- なぜか internal, sort, が無い
+    severity = ???, -- ??? what's this?
+    -- Somewhy, `internal` and `sort` are not listed here.
   },
   ...
 }
-
 ```
-
-
 
 ## Tips
 
+### opts.finder
 
-## Others
-
+Q. What does the finder "source_name" mean?
 ```lua
 M.source_name = {
   finder = "source_name",
 }
 ```
-この finder "source_name" は、
-
-lua/snacks/picker/source/source_name.lua: の中で、
+A. It reffers to the function with same name defined in `lua/snacks/picker/source/source_name.lua`:
 ```lua
 function M.source_name(opts, ctx)
 ```
-のように設定されている。
