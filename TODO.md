@@ -5,11 +5,10 @@
   - [ ] Action:
       - [ ] action.change_sort() を追加？
       - [ ] select {} もcreatedとか加えないと？
-  - [ ] tree.lua Tree クラス
-      - [ ] 現状では snacks.explorer.tree に無理やり関数を追加してる
-      - [ ] 危険なので、きちんと継承させる
+  - [-] tree.lua Tree クラス
+      - [x] 現状では snacks.explorer.tree に無理やり関数を追加してる
+      - [x] 危険なので、きちんと継承させる
       - [ ] get_zk -> get / walk_zk -> walk に戻す
-      - [ ] [NOTES](#notes) を参考
   - [-] ユーザー向けの config を追加
     - [ ] setup 時にマージできるのか？ snacks が source.zk を自動読み込みしてるんだよ？
     - [ ] てか、sort とか format って config から読み込んでないやん？
@@ -50,30 +49,3 @@
 
 ## NOTES
 
-tree.lua:
-直接拡張をせず、新しいクラスとして拡張すべき。また、walk_zk -> walk, get_zk -> get に戻してよい
-```lua
----@class snacks.zk.Tree : snacks.picker.explorer.Tree
-local Tree = {}
-local ExplorerTree = require("snacks.explorer.tree")
-
--- メタテーブルで継承
-setmetatable(Tree, { __index = ExplorerTree })
-
--- コンストラクタをオーバーライド
-function Tree.new(...)
-  local self = ExplorerTree.new(...)
-  return setmetatable(self, { __index = Tree })
-end
-
--- ZK専用メソッドを追加
-function Tree:walk_zk(node, fn, opts)
-  -- 実装
-end
-
-function Tree:get_zk(cwd, cb, opts)
-  -- 実装
-end
-
-return Tree
-```
