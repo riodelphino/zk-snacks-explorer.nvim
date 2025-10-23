@@ -15,7 +15,6 @@ local function norm(path)
   return svim.fs.normalize(path)
 end
 
--- FIX: explorer のと同じ？
 ---@class snacks.picker.explorer.State
 ---@field on_find? fun()?
 local State = {}
@@ -209,7 +208,7 @@ end
 
 ---@param opts snacks.picker.explorer.Config
 ---@type snacks.picker.finder
-function M.zk(opts, ctx) -- FIX: Should change 'zk' to 'zk_explorer' ?
+function M.zk(opts, ctx)
   local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
 
