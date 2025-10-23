@@ -1,7 +1,12 @@
----@class snacks.picker.explorer.Tree snacks.picker.explorer.Tree
-local Tree = require("snacks.explorer.tree") -- Extend the Tree class with custom functions below.
--- FIX: Avoid direct merge! Use inheritance instead!
-local zk_sorter = require("snacks.zk.sort") ---@type function -- TODO: Should the sorter function be included in opts?
+---@type snacks.picker.explorer.Tree
+local ExplorerTree = require("snacks.explorer.tree")
+---@class snacks.picker.zk.Tree : snacks.picker.explorer.Tree
+local Tree = {}
+
+setmetatable(Tree, { __index = ExplorerTree }) -- Inherit from snacks.explorer.Tree class
+
+---@type function
+local zk_sorter = require("snacks.zk.sort") -- TODO: Should the sorter function be included in opts?
 
 local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)
