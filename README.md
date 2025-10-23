@@ -98,25 +98,25 @@ require('snacks.zk.actions').actions.zk_reset_query()
 
 Available queries:
   - All (default)
-  - Link to
-  - Linked by (recursive)
-  - Linked by
-  - Link to (recursive)
-  - Mentioned by
-  - Mention
-  - Match (exact)
   - Created
-  - Match (full-text)
-  - Filmsy
-  - Orphans
+  - Created after
   - Created before
-  - Related
+  - Modified
   - Modified after
   - Modified before
-  - Modified
-  - Created after
-  - Tag
+  - Match (exact)
+  - Match (full-text)
   - Match (regular expression)
+  - Mention
+  - Mentioned by
+  - Link to
+  - Link to (recursive)
+  - Linked by (recursive)
+  - Linked by
+  - Filmsy
+  - Orphans
+  - Related
+  - Tag
 
 
 ## Issues

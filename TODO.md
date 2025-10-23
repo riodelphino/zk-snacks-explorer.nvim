@@ -2,6 +2,9 @@
 
 - [x] zk
   - [ ] zk_opts, zk_source の表記ゆれを統一
+  - [ ] Action:
+      - [ ] action.change_sort() を追加？
+      - [ ] select {} もcreatedとか加えないと？
   - [ ] tree.lua Tree クラス
       - [ ] 現状では snacks.explorer.tree に無理やり関数を追加してる
       - [ ] 危険なので、きちんと継承させる
