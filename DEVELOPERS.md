@@ -44,7 +44,7 @@ Provides UI functions: `setup()`, `open()`, `reveal()`
 Though the config in `source.lua` is static, the one in `setup()` is dynamic. (e.g. Using existing `picker`)
 That is the reason why the config is merged and force overwritten here.
 ```lua
----@param opts snacks.picker.explorer.Config
+---@param opts snacks.picker.zk.Config
 function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref

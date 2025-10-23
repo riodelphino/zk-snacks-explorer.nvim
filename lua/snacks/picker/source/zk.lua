@@ -2,6 +2,7 @@
 ---@class snacks.picker.explorer.Item: snacks.picker.finder.Item
 
 local Tree = require("snacks.zk.tree")
+local zk = require("snacks.zk")
 local zk_actions = require("snacks.zk.actions")
 local zk_format = require("snacks.zk.format")
 
@@ -23,7 +24,7 @@ State.__index = State
 function State.new(picker)
   local self = setmetatable({}, State)
 
-  local opts = picker.opts --[[@as snacks.picker.explorer.Config]]
+  local opts = picker.opts --[[@as snacks.picker.zk.Config]]
   local r = picker:ref()
   local function ref()
     local v = r.value
@@ -119,14 +120,14 @@ end
 
 ---@param ctx snacks.picker.finder.ctx
 function State:setup(ctx)
-  local opts = ctx.picker.opts --[[@as snacks.picker.explorer.Config]]
+  local opts = ctx.picker.opts --[[@as snacks.picker.zk.Config]]
   if opts.watch then
     require("snacks.zk.watch").watch(ctx.filter.cwd)
   end
   return not ctx.filter:is_empty()
 end
 
----@param opts snacks.picker.explorer.Config
+---@param opts snacks.picker.zk.Config
 function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
@@ -134,6 +135,9 @@ function M.setup(opts)
   -- Get user-configured zk options merged with default config(=source.lua).
   local user_opts = Snacks.config.get("zk", {}) or {}
   opts = Snacks.config.merge(opts, user_opts)
+
+  -- Set default sorter
+  zk.sorter = opts.sorter.default
 
   return Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
@@ -210,10 +214,9 @@ function M.get_state(picker)
   return M._state[picker]
 end
 
----@param opts snacks.picker.explorer.Config
+---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.zk(opts, ctx)
-  local zk = require("snacks.zk")
   local notes_cache = zk.notes_cache
 
   local state = M.get_state(ctx.picker)
@@ -294,7 +297,7 @@ function M.zk(opts, ctx)
   end
 end
 
----@param opts snacks.picker.explorer.Config
+---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.search(opts, ctx)
   local notes_cache = require("snacks.zk").notes_cache

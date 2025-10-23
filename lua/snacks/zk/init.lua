@@ -1,5 +1,5 @@
 ---@class snacks.zk
----@overload fun(opts?: snacks.picker.explorer.Config): snacks.Picker
+---@overload fun(opts?: snacks.picker.zk.Config): snacks.Picker
 local M = setmetatable({}, {
   __call = function(M, ...)
     return M.open(...)
@@ -19,6 +19,8 @@ M.default_query = {
   query = {},
 }
 M.query = M.default_query
+
+M.sorter = nil
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`

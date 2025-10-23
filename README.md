@@ -103,7 +103,35 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sort = { fields = { "sort" } }, -- `sort` is skipped completely in `explorer` or `zk`
+  sorter = {
+    ---@param a snacks.picker.explorer.Node
+    ---@param b snacks.picker.explorer.Node
+    ---@return boolean
+    default = function(a, b) -- *2
+      local notes = require("snacks.zk").notes_cache
+      local an = notes[a.path] or nil
+      local bn = notes[b.path] or nil
+      local at = an and an.title
+      local bt = bn and bn.title
+      local a_has_title = (at ~= nil)
+      local b_has_title = (bt ~= nil)
+      local a_is_dot = (a.name:sub(1, 1) == ".")
+      local b_is_dot = (b.name:sub(1, 1) == ".")
+      if a.dir ~= b.dir then
+        return a.dir
+      end
+      if a_is_dot ~= b_is_dot then
+        return not a_is_dot
+      end
+      if a_has_title ~= b_has_title then
+        return a_has_title
+      end
+      if a_has_title and b_has_title then
+        return at < bt
+      end
+      return a.name < b.name
+    end,
+  },
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,
@@ -152,6 +180,7 @@ zk = {
   },
 }
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
+-- *2 : Setting a table in sort like `sort = { fields = { "sort" } }` is completely skipped by `explorer` and `zk`
 ```
 
 > [!Note]
@@ -168,7 +197,7 @@ require('snacks.zk').open() -- Call open() function directry
 ```
 Open with custom config:
 ```lua
----@type (snacks.picker.explorer.Config | {})?
+---@type (snacks.picker.zk.Config | {})?
 local opts = {} -- Set your custom config here / See #default-config
 Snacks.zk(opts)
 Snacks.picker.zk(opts)

@@ -5,8 +5,7 @@ local Tree = {}
 
 setmetatable(Tree, { __index = ExplorerTree }) -- Inherit from snacks.explorer.Tree class
 
----@type function
-local zk_sorter = require("snacks.zk.sort") -- TODO: Should the sorter function be included in opts?
+local zk = require("snacks.zk")
 
 local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)
@@ -22,7 +21,7 @@ function Tree:walk(node, fn, opts)
     return abort
   end
   local children = vim.tbl_values(node.children) ---@type snacks.picker.explorer.Node[]
-  table.sort(children, zk_sorter) -- Sort
+  table.sort(children, zk.sorter) -- Sort
   for c, child in ipairs(children) do
     child.last = c == #children
     abort = false

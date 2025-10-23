@@ -1,9 +1,13 @@
+---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
+---@field sorter table?
+
+---@type snacks.picker.zk.Config
 local source = {
   title = "Zk",
-  finder = "zk", -- calls `require('snacks.picker.source.zk').zk()` function.
+  finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
   reveal = true,
   supports_live = true,
-  tree = true, -- Always true on this picker (`false` not works)
+  tree = true, -- (fixed) Always true on this picker and `false` not works
   watch = true,
   diagnostics = true,
   diagnostics_open = false,
@@ -20,30 +24,59 @@ local source = {
   ignored = false,
   hidden = false,
   filter = {
-    transform = nil, -- Always overwritten by `setup()` in `zk.lua`
+    transform = nil, -- (fixed) *1
   },
   formatters = {
     file = {
-      filename_only = true, -- In the zk `setup()`, `filename_only` is overridden by `opts.tree`.
+      filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
     },
     severity = { pos = "right" },
   },
-  format = nil, -- Always overwritten by `setup()` in `zk.lua`
+  format = nil, -- (fixed) *1
   matcher = {
     sort_empty = false,
     fuzzy = true,
-    -- on_match = nil, -- Always overwritten by `setup()` in `zk.lua`
-    -- on_done = nil, -- Always overwritten by `setup()` in `zk.lua`
+    on_match = nil, -- (fixed) *1
+    on_done = nil, -- (fixed) *1
   },
-  sort = { fields = { "sort" } }, -- `sort` is skipped completely in `explorer` or `zk`
+  sorter = {
+    ---@param a snacks.picker.explorer.Node
+    ---@param b snacks.picker.explorer.Node
+    ---@return boolean
+    default = function(a, b) -- *2
+      local notes = require("snacks.zk").notes_cache
+      local an = notes[a.path] or nil
+      local bn = notes[b.path] or nil
+      local at = an and an.title
+      local bt = bn and bn.title
+      local a_has_title = (at ~= nil)
+      local b_has_title = (bt ~= nil)
+      local a_is_dot = (a.name:sub(1, 1) == ".")
+      local b_is_dot = (b.name:sub(1, 1) == ".")
+      if a.dir ~= b.dir then
+        return a.dir
+      end
+      if a_is_dot ~= b_is_dot then
+        return not a_is_dot
+      end
+      if a_has_title ~= b_has_title then
+        return a_has_title
+      end
+      if a_has_title and b_has_title then
+        return at < bt
+      end
+      return a.name < b.name
+    end,
+  },
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,
   win = {
     list = {
       keys = {
+        -- Supports explorer actions
         ["<BS>"] = "explorer_up",
         ["l"] = "confirm",
         ["h"] = "explorer_close", -- close directory
@@ -72,7 +105,7 @@ local source = {
         ["[w"] = "explorer_warn_prev",
         ["]e"] = "explorer_error_next",
         ["[e"] = "explorer_error_prev",
-        -- zk
+        -- zk actions
         ["z"] = "zk_change_query",
         ["Q"] = "zk_reset_query",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
@@ -84,5 +117,7 @@ local source = {
     },
   },
 }
+-- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
+-- *2 : Setting a table in sort like `sort = { fields = { "sort" } }` is completely skipped by `explorer` and `zk`
 
 return source
