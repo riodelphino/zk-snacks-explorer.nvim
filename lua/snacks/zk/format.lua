@@ -1,14 +1,14 @@
 ---@class snacks.picker.formatters
----@field [string] snacks.picker.format
 local M = {}
 
-M = require("snacks.picker.format") -- Extend the existing format module with custom functions below.
--- FIX: Use inherit correctly !!!
+setmetatable(M, { __index = require("snacks.picker.format") }) -- Inherit from `snacks.picker.format`
 
 local uv = vim.uv or vim.loop
 
 ---@param item snacks.picker.explorer.Item
-M.zk_filename = function(item, picker)
+---@param picker snacks.Picker
+rawset(M, "filename", function(item, picker)
+  -- M.filename = function(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
@@ -97,9 +97,9 @@ M.zk_filename = function(item, picker)
     end
   end
   return ret
-end
+end)
 
-M.zk_file = function(item, picker)
+rawset(M, "file", function(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
 
@@ -120,7 +120,7 @@ M.zk_file = function(item, picker)
     vim.list_extend(ret, M.severity(item, picker))
   end
 
-  vim.list_extend(ret, M.zk_filename(item, picker))
+  vim.list_extend(ret, M.filename(item, picker))
 
   if item.comment then
     table.insert(ret, { item.comment, "SnacksPickerComment" })
@@ -133,6 +133,6 @@ M.zk_file = function(item, picker)
   end
 
   return ret
-end
+end)
 
 return M

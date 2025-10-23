@@ -150,7 +150,7 @@ function M.setup(opts)
         end
       end,
     },
-    format = zk_format.zk_file,
+    format = zk_format.file,
     matcher = {
       --- Add parent dirs to matching items
       ---@param matcher snacks.picker.Matcher
