@@ -24,7 +24,6 @@ The flow of calling picker:
 - lua/snacks/zk/init.lua
 
 Provides UI functions: `setup()`, `open()`, `reveal()`
-Merges `M` in `lua/snacks/explorer/init.lua`, then reuses actions (maybe).
 
 
 ### explorer (built-in)
@@ -42,7 +41,8 @@ Snacks calls `M.setup()` function once automatically, when the source is loaded.
 
 Provides UI functions: `setup()`, `open()`, `reveal()`
 
-The reason is not clear why config is merged and overwritten here.
+Though the config in `source.lua` is static, the one in `setup()` is dynamic. (e.g. Using existing `picker`)
+That is the reason why the config is merged and force overwritten here.
 ```lua
 ---@param opts snacks.picker.explorer.Config
 function M.setup(opts)

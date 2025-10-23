@@ -22,6 +22,9 @@ M.actions.zk_change_query = function()
   for _, item in pairs(require("snacks.zk.queries")) do
     table.insert(items, item)
   end
+  table.sort(items, function(a, b)
+    return a.desc < b.desc
+  end)
   vim.ui.select(items, { prompt = "zk query", format_item = format_item }, function(item)
     if not item then
       return

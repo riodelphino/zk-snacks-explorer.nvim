@@ -3,6 +3,7 @@
 
 local Tree = require("snacks.zk.tree")
 local zk_actions = require("snacks.zk.actions")
+local zk_format = require("snacks.zk.format")
 
 local M = {}
 
@@ -131,7 +132,7 @@ function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
 
-  return Snacks.config.merge(opts, {
+  return Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
       confirm = zk_actions.actions.confirm,
     },
@@ -149,6 +150,7 @@ function M.setup(opts)
         end
       end,
     },
+    format = zk_format.zk_file,
     matcher = {
       --- Add parent dirs to matching items
       ---@param matcher snacks.picker.Matcher

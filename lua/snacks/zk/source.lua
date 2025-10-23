@@ -1,5 +1,3 @@
-local zk_format = require("snacks.zk.format") ---@type table
-
 local source = {
   title = "Zk",
   -- finder = zk_finder,
@@ -22,6 +20,9 @@ local source = {
   exclude = {}, -- (e.g. "*.md")
   ignored = false,
   hidden = false,
+  filter = {
+    transform = nil, -- Always overwritten by `setup()` in `zk.lua`
+  },
   formatters = {
     file = {
       filename_only = true, -- In the zk `setup()`, `filename_only` is overridden by `opts.tree`.
@@ -30,8 +31,13 @@ local source = {
     },
     severity = { pos = "right" },
   },
-  format = zk_format.zk_file,
-  matcher = { sort_empty = false, fuzzy = true },
+  format = nil, -- Always overwritten by `setup()` in `zk.lua`
+  matcher = {
+    sort_empty = false,
+    fuzzy = true,
+    -- on_match = nil, -- Always overwritten by `setup()` in `zk.lua`
+    -- on_done = nil, -- Always overwritten by `setup()` in `zk.lua`
+  },
   -- sort:
   --  NOT WORKS in `explorer`. This option is skipped.
   --  Since `Tree:get()` generate a node and add it into UI one by one, sorting should be completed inside of the `walk()`

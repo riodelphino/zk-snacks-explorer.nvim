@@ -3,6 +3,7 @@
 local M = {}
 
 M = require("snacks.picker.format") -- Extend the existing format module with custom functions below.
+-- FIX: Use inherit correctly !!!
 
 local uv = vim.uv or vim.loop
 
