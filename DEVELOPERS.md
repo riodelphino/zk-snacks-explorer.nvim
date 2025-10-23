@@ -1,6 +1,8 @@
 # DEVELOPERS
 
-Some notes for developers to help understanding `pickers` in `snacks.nvim` and `zk` picker in `snacks-zk.nvim`.
+Some notes for developers to help understanding:
+  - `picker` and `Snacks.explorer` from `snacks.nvim`
+  - `Snacks.zk` from `snacks-zk.nvim`.
 
 ## Structure
 
@@ -163,13 +165,15 @@ Detect files & folders modification.
 
 ### Config
 
+```bash
+.
 └── lua/snacks/picker/
-    └── config/            : Includes below default config.
-        ├── defaults.lua   : The common default config for all sources.
-        ├── highlights.lua : The shortcut name list for snacks Highlights.
-        ├── layouts.lua    : The default config for built-in layouts.
-        └── sources.lua    : The default config for built-in sources, including `explorer`.
-
+    └── config/             # Includes below default config.
+        ├── defaults.lua    # The common default config for all sources.
+        ├── highlights.lua  # The shortcut name list for snacks Highlights.
+        ├── layouts.lua     # The default config for built-in layouts.
+        └── sources.lua     # The default config for built-in sources, including `explorer`.
+```
 
 ## Register a picker
 
@@ -208,21 +212,18 @@ local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is 
 
 ## ソート
 
-`lua/snacks/picker/sort.lua` が built-in の sorter `default` と `idx` の在り処。
+`lua/snacks/picker/sort.lua`: Has built-in sorters `default` and `idx`
 
 > [!Caution]
-> 残念ながら、explorer ではこれら全部まったく使えない。
-> Tree:get() つまりその内部の Tree.walk() が読み込んだ順番そのままで表示される。
-> sort オプションは一切考慮されない。
+> Unfortunately, `Snacks.explorer` does not evaluate `sort` config.
 
-### Customize sorting in explorer
+### Customize sorting
 
 `Tree:get()`, `Tree:walk()`
+The items are already sorted as intended by walk.
 
-`get` が逐次ファイルを `walk` で取得して処理していく。
-`walk` が処理している時点で、処理対象リストがすでに意図したソート順になっている必要がある。
-
--> 実現できた。`walk` 内でソートした。
+`walk` recursively scans directries and find items, and `get` appends them into a table.
+Since `picker.opts.sort` does not evaluated in `explorer`, the items shoud be already sorted as intended inside of `walk`. -> (implemented!)
 
 ### Sort
 
@@ -298,24 +299,20 @@ sort = function(a, b)
 end,
 ```
 
-## 方針
-
-なるべく、流用できるものは流用する。M をマージ出来るものはマージする。
-
-- finder は "explorer" を流用
-- format を追加して変更すれば、表示項目名をカスタムできる
-- sort はどうする？
 
 ## node
 
-内部的に保持している、ファイルやディレクトリの階層構造。parent, children, 展開状態(open) などを含めて管理。
+An internally used hierarchical structure of files and directories by `Snacks.explorer` and `Snacks.zk`, including information such as parent/children/expand state.
 
 Used by:
-   - tree.lua
-   - finder.lua
-   - search.lua
-   - sort.lua
-(in `lua/snacks/zk` dir)
+```bash
+.
+└── lua/snacks/zk/
+    ├── tree.lua
+    ├── finder.lua
+    ├── search.lua
+    └── sort.lua
+```
 
 Class: Node
 ```lua
@@ -336,7 +333,7 @@ Class: Node
 ---@field children table<string, snacks.picker.explorer.Node>
 ---@field severity? number
 ```
-Sample (table): 辞書型
+Sample (dictionary-style table): 
 ```lua
 ---@type table<string, snacks.picker.explorer.Node>
 nodes = {
@@ -372,14 +369,17 @@ nodes = {
 
 ## Item
 
-picker が表示するフラット化されたリスト。並べ替え, ハイライト, アイコン表示 などを含む、UIに表示するためのデータ。
-nodes とは異なり、＜path ではなく file がフルパス＞ などの違いがある。
+A flattened list displayed by the picker. It includes sorting, highlighting, and icon display — data used for the UI.
+Unlike nodes, it differs in aspects such as using `item.file` instead of `node.path` for full paths.
 
 Used by:
-   - tree.lua
-   - finder.lua
-   - format.lua (snacks.picker.Item の方かも？)
-(in `lua/snacks/zk` dir)
+```bash
+.
+└── lua/snacks/zk/
+    ├── tree.lua
+    ├── finder.lua
+    └── format.lua  # snacks.picker.Item の方かも？)
+```
 
 
 Class: Item
@@ -394,7 +394,7 @@ Class: Item
 ---@field internal? boolean internal parent directories not part of fd output
 ---@field status? string
 ```
-Sample (table): 辞書型
+Sample (dictionary-style table):
 ```lua
 ---@type table<string, snacks.picker.explorer.Item>
 local items = {
@@ -423,7 +423,7 @@ local items = {
 ## Tips
 
 
-## その他
+## Others
 
 ```lua
 M.source_name = {
