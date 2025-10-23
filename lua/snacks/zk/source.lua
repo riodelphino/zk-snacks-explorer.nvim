@@ -1,5 +1,5 @@
 ---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
----@field sorter table?
+---@field sorters table?
 
 ---@type snacks.picker.zk.Config
 local source = {
@@ -41,7 +41,7 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sorter = {
+  sorters = {
     ---@param a snacks.picker.explorer.Node
     ---@param b snacks.picker.explorer.Node
     ---@return boolean

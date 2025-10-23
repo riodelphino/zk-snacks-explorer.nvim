@@ -18,6 +18,11 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Queries
 - User Config
 
+(in future)
+- Custom sorter
+- Custom queries
+- Custom actions
+
 ## Screen shots
 
 :lua Snacks.zk()
@@ -68,7 +73,6 @@ zk = {
   finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
   reveal = true,
   supports_live = true,
-
   tree = true, -- (fixed) Always true on this picker and `false` not works
   watch = true,
   diagnostics = true,
@@ -103,7 +107,7 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sorter = {
+  sorters = {
     ---@param a snacks.picker.explorer.Node
     ---@param b snacks.picker.explorer.Node
     ---@return boolean
@@ -263,6 +267,7 @@ Available queries:
 - [ ] Add action for zk.api.new()
 - [ ] Supports custom actions for zk?
 - [ ] Supports custom queries
+- [ ] Supports custom sorter (`M.change_sorter()` is already implemented in `init.lua`)
 
 
 ## Related

@@ -180,4 +180,21 @@ function M.update_picker_title(picker)
   picker:update_titles()
 end
 
+---Change current sorter
+---@param sorter string?
+---@param picker snacks.Picker?
+function M.change_sorter(sorter, picker)
+  sorter = sorter or "default"
+  if not picker then
+    picker = Snacks.picker.get({ source = "zk" })[1]
+  end
+  if not picker then
+    return
+  end
+  local sorters = picker.opts.sorters ---@as snacks.picker.zk.Config -- TODO: how to fix warning?
+  local sorter_func = sorters[sorter]
+  M.sorter = sorter_func
+  -- TODO: Add refresh here? (maybe NO)
+end
+
 return M

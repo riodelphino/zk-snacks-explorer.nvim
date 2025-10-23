@@ -21,7 +21,9 @@ function Tree:walk(node, fn, opts)
     return abort
   end
   local children = vim.tbl_values(node.children) ---@type snacks.picker.explorer.Node[]
-  table.sort(children, zk.sorter) -- Sort
+  table.sort(children, function(a, b)
+    return zk.sorter(a, b)
+  end) -- Sort
   for c, child in ipairs(children) do
     child.last = c == #children
     abort = false
