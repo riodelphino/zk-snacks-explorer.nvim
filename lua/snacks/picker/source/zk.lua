@@ -3,7 +3,7 @@
 
 local Tree = require("snacks.zk.tree")
 local zk = require("snacks.zk")
-local zk_actions = require("snacks.zk.actions")
+-- local zk_actions = require("snacks.zk.actions")
 local zk_format = require("snacks.zk.format")
 
 local M = {}
@@ -23,6 +23,7 @@ State.__index = State
 ---@param picker snacks.Picker
 function State.new(picker)
   local self = setmetatable({}, State)
+  local zk_actions = zk.opts.actions
 
   local opts = picker.opts --[[@as snacks.picker.zk.Config]]
   local r = picker:ref()
@@ -154,7 +155,7 @@ function M.setup(opts)
 
   opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
-      confirm = zk_actions.actions.confirm,
+      confirm = opts.actions.actions.confirm,
     },
     filter = {
       --- Trigger finder when pattern toggles between empty / non-empty

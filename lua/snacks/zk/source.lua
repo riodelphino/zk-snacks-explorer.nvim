@@ -1,4 +1,5 @@
 ---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
+---@field select table?
 ---@field default_sorter string?
 ---@field sorters table?
 ---@field default_query string?
@@ -9,7 +10,6 @@
 local source = {
   title = "Zk",
   finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
-  query_postfix = ": ",
   reveal = true,
   supports_live = true,
   tree = true, -- (fixed) Always true on this picker and `false` not works
@@ -31,6 +31,7 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
+  select = { "title", "path", "filename" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -46,16 +47,20 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
+  -- Sorters
   sorters = require("snacks.zk.sorters"),
   default_sorter = "title",
+  -- Queries
   queries = require("snacks.zk.queries"),
   default_query = "all",
-  actions = require("snacks.zk.actions"), -- DEBUG: NEED THIS ???
+  query_postfix = ": ",
+  -- Actions
+  actions = require("snacks.zk.actions"),
+
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,
   win = {
-
     list = {
       keys = {
         -- Supports explorer actions

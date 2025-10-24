@@ -114,12 +114,11 @@ local function format_item_note(note)
 end
 
 local function link(field, desc, extra)
+  local zk_api_opts = { select = require("snacks.zk").opts.select }
   return {
     desc = desc,
     input = function(notebookPath, _, cb)
-      require("zk.api").list(notebookPath, {
-        select = { "title", "path", "filename" },
-      }, function(err, tags)
+      require("zk.api").list(notebookPath, zk_api_opts, function(err, tags)
         if err then
           log("Error while querying tags: ", err)
           return

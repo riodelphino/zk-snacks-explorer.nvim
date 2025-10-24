@@ -92,6 +92,7 @@ zk = {
   filter = {
     transform = nil, -- (fixed) *1
   },
+  select = { "title", "path", "filename" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -107,41 +108,16 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sorters = {
-    ---@param a snacks.picker.explorer.Node
-    ---@param b snacks.picker.explorer.Node
-    ---@return boolean
-    default = function(a, b) -- *2
-      local notes = require("snacks.zk").notes_cache
-      local an = notes[a.path] or nil
-      local bn = notes[b.path] or nil
-      local at = an and an.title
-      local bt = bn and bn.title
-      local a_has_title = (at ~= nil)
-      local b_has_title = (bt ~= nil)
-      local a_is_dot = (a.name:sub(1, 1) == ".")
-      local b_is_dot = (b.name:sub(1, 1) == ".")
-      if a.dir ~= b.dir then
-        return a.dir
-      end
-      if a_is_dot ~= b_is_dot then
-        return not a_is_dot
-      end
-      if a_has_title ~= b_has_title then
-        return a_has_title
-      end
-      if a_has_title and b_has_title then
-        return at < bt
-      end
-      return a.name < b.name
-    end,
-  },
-  queries = {
-    default = {
-      desc = "All",
-      query = {},
-    },
-  },
+  -- Sorters
+  sorters = require("snacks.zk.sorters"),
+  default_sorter = "title",
+  -- Queries
+  queries = require("snacks.zk.queries"),
+  default_query = "all",
+  query_postfix = ": ",
+  -- Actions
+  actions = require("snacks.zk.actions"),
+
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,
@@ -223,6 +199,22 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 > [!Warning]
 > `layout = "telescope"` breaks the order for `reverse = true` config.
 
+
+## Sorters
+
+Add custom sorter `created`:
+```lua
+select = { "title", "path", "filename", "created"},
+sorters = {
+  created = function(a, b)
+    return a.metadata.created > b.metadata.created
+  end,
+}
+```
+Use custom sorter:
+```lua
+default_sorter = "created"
+```
 
 
 ## Queries
