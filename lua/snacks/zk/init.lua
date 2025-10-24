@@ -11,14 +11,13 @@ M.meta = {
   needs_setup = true,
 }
 
-M.opts = {}
+M.opts = {} ---@type snacks.picker.zk.Config
 
-M.notes_cache = {}
-M.notebook_path = nil
+M.notes_cache = {} ---@type table
+M.notebook_path = nil ---@type string?
 
-M.query = nil
-
-M.sorter = nil
+M.query = nil ---@type table?
+M.sorter = nil ---@type table?
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
@@ -169,10 +168,10 @@ function M.update_picker_title(picker)
   end
   local default_title = M.opts.title or "Zk"
   local title
-  if M.query.desc == M.opts.queries.default.desc then
+  if M.query and M.query.desc == M.opts.queries[M.opts.default_query].desc then
     title = default_title
   else
-    title = string.format("%s: %s", default_title, M.query.desc)
+    title = default_title .. ": " .. M.query.desc
   end
   picker.title = title
   picker:update_titles()
@@ -181,7 +180,7 @@ end
 ---Change current sorter
 ---@param sorter string?
 function M.change_sorter(sorter)
-  sorter = sorter or "default"
+  sorter = sorter or M.opts.default_sorter
   local sorter_func = M.opts.sorters[sorter]
   M.sorter = sorter_func
   -- TODO: Add refresh here? (maybe NO)

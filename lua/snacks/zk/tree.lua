@@ -51,7 +51,7 @@ function Tree:get(cwd, cb, opts)
   local filter = self:filter(opts)
 
   local notes_cache = zk.notes_cache
-  local query_enabled = (zk.query.desc ~= zk.opts.queries.default.desc)
+  local query_enabled = (zk.query.desc ~= zk.opts.queries[zk.opts.default_query].desc)
 
   ---@type snacks.picker.Config
   local zk_opts = require("snacks.picker").sources.zk

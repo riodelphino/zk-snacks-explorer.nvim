@@ -1,11 +1,15 @@
 ---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
+---@field default_sorter string?
 ---@field sorters table?
+---@field default_query string?
 ---@field queries table?
+---@field query_postfix string?
 
 ---@type snacks.picker.zk.Config
 local source = {
   title = "Zk",
   finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
+  query_postfix = ": ",
   reveal = true,
   supports_live = true,
   tree = true, -- (fixed) Always true on this picker and `false` not works
@@ -42,45 +46,16 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sorters = {
-    ---@param a snacks.picker.explorer.Node
-    ---@param b snacks.picker.explorer.Node
-    ---@return boolean
-    default = function(a, b) -- *2
-      local notes = require("snacks.zk").notes_cache
-      local an = notes[a.path] or nil
-      local bn = notes[b.path] or nil
-      local at = an and an.title
-      local bt = bn and bn.title
-      local a_has_title = (at ~= nil)
-      local b_has_title = (bt ~= nil)
-      local a_is_dot = (a.name:sub(1, 1) == ".")
-      local b_is_dot = (b.name:sub(1, 1) == ".")
-      if a.dir ~= b.dir then
-        return a.dir
-      end
-      if a_is_dot ~= b_is_dot then
-        return not a_is_dot
-      end
-      if a_has_title ~= b_has_title then
-        return a_has_title
-      end
-      if a_has_title and b_has_title then
-        return at < bt
-      end
-      return a.name < b.name
-    end,
-  },
-  queries = {
-    default = {
-      desc = "All",
-      query = {},
-    },
-  },
+  sorters = require("snacks.zk.sorters"),
+  default_sorter = "title",
+  queries = require("snacks.zk.queries"),
+  default_query = "all",
+  actions = require("snacks.zk.actions"), -- DEBUG: NEED THIS ???
   config = function(opts)
     return require("snacks.picker.source.zk").setup(opts)
   end,
   win = {
+
     list = {
       keys = {
         -- Supports explorer actions
@@ -126,5 +101,7 @@ local source = {
 }
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
 -- *2 : Setting a table in sort like `sort = { fields = { "sort" } }` is completely skipped by `explorer` and `zk`
+
+local merge_config = {}
 
 return source

@@ -138,11 +138,18 @@ function M.setup(opts)
 
   -- Set default sorter
   if not zk.sorter then
-    zk.sorter = opts.sorters.default
+    zk.sorter = opts.sorters[opts.default_sorter] or nil
+    if not zk.sorter then
+      error(string.format("'%s' is not a valid sorter name.", opts.default_sorter))
+    end
   end
+
   -- Set default query
   if not zk.query then
-    zk.query = opts.queries.default
+    zk.query = opts.queries[opts.default_query] or nil
+    if not zk.query then
+      error(string.format("'%s' is not a valid query name.", opts.default_query))
+    end
   end
 
   opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
@@ -210,7 +217,7 @@ function M.setup(opts)
       },
     },
   })
-  zk.opts = opts -- keep it for easy use.
+  zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
   return opts
 end
 

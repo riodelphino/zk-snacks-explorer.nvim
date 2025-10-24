@@ -39,7 +39,7 @@ end
 
 ---Reset query
 M.actions.zk_reset_query = function()
-  zk.query = zk.opts.queries.default
+  zk.query = zk.opts.queries[zk.opts.default_query]
   zk.update_picker_title()
   require("snacks.zk.watch").refresh()
 end
