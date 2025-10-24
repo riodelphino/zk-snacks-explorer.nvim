@@ -32,7 +32,12 @@ end
 ---@param b snacks.picker.explorer.Node
 ---@return boolean
 M.created = function(a, b)
-  return a.name < b.name
+  local notes = require("snacks.zk").notes_cache
+  local an = notes[a.path] or nil
+  local bn = notes[b.path] or nil
+  local ac = an and an.created
+  local bc = bn and bn.created
+  return ac < bc
 end
 
 ---@param a snacks.picker.explorer.Node

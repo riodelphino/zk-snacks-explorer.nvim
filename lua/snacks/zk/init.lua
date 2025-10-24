@@ -50,10 +50,19 @@ end
 ---@param cb function?
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
-  local select = { select = { "absPath", "title", "filename" } }
-  local zk_opts = vim.tbl_deep_extend("keep", select, M.query and M.query.query or {})
-  zk_api.index(nil, zk_opts, function()
-    zk_api.list(nil, zk_opts, function(err, notes)
+  -- local select = { select = { "absPath", "title", "filename" } } -- DEBUG:
+  -- if not opts then
+  --   opts = Snacks.config.get("zk", {}) -- DEBUG: なんでここでも呼ばなあかんねん？ zk.lua の setup() がやってくれんじゃないの？ しかも {} だ
+  -- end
+  -- print("opts: " .. vim.inspect(opts))
+  local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.query and M.query.query or {})
+  -- local zk_api_opts = { select = { "absPath", "filename", "title" } }
+  -- print("zk_api_opts: " .. vim.inspect(zk_api_opts)) -- DEBUG: ぜんぶ {}
+  -- print("M.opts.select: " .. vim.inspect(M.opts.select))
+  -- print("M.opts: " .. vim.inspect(M.opts))
+
+  zk_api.index(nil, zk_api_opts, function()
+    zk_api.list(nil, zk_api_opts, function(err, notes)
       if err then
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
@@ -70,6 +79,7 @@ end
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
   local opts = Snacks.config.get("zk", defaults) -- Get user-configured zk options
+  vim.notify("init.lua M.setup() called", vim.log.levels.INFO)
 
   if opts.replace_netrw then
     -- Disable netrw
@@ -113,6 +123,8 @@ function M.setup(event)
     zk_util = require("zk.util")
     M.notebook_path = zk_util.notebook_root(zk_util.resolve_notebook_path() or vim.fn.getcwd())
 
+    print("init.lua setup() called / can set opts here?") -- DEBUG:
+
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {
       group = group,
@@ -124,14 +136,26 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
+  print("open called") -- DEBUG:
+  M.set_opts(opts) -- DEBUG: しかたなくここでオプションをマージ＆セット いや、ここじゃなく、事前に行われていないとだなぁ。
   M.fetch_zk(function()
     if not Snacks.picker.sources.zk then
       Snacks.picker.sources.zk = require("snacks.zk.source")
     end
-    ---@type snacks.Picker
-    local picker = Snacks.picker.zk(opts)
+    ---@type snacks.Picker?
+    -- local picker = Snacks.picker.zk(opts)
+    local picker = Snacks.picker.pick("zk", opts)
+
     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   end)
+end
+
+function M.set_opts(opts)
+  if not M.opts then
+    local user_opts = Snacks.config.get("zk", {}) or {}
+    opts = Snacks.config.merge(opts, user_opts)
+    M.opts = opts -- DEBUG: dynamic なんとかはセットしてない簡易的なやつ
+  end
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer

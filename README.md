@@ -46,12 +46,15 @@ for lazy.nvim:
 return {
   'riodelphino/snacks-zk.nvim',
   dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
+  config = function()
+    require('snacks.picker.source.zk').setup({})
+  end,
   keys = {
     { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
   }
 }
 ```
-* Automatically snacks calls `M.setup()` function in `lua/snacks/picker/source/zk.lua` on loading this picker.
+~~* Automatically snacks calls `M.setup()` function in `lua/snacks/picker/source/zk.lua` on loading this picker.~~
 
 
 ## Config
@@ -92,7 +95,7 @@ zk = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  select = { "title", "path", "filename" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -253,6 +256,46 @@ Available queries:
   - Related
   - Tag
 
+### Add Custom Queries
+
+Add cusotm query `todo`:
+```lua
+queries = {
+  todo = {
+    desc = "todo",
+    input = function(__, __, cb)
+      cb({ desc = "Todo", query = { tags = { "todo" } } })
+    end,
+  },
+},
+```
+Use custom query `todo`:
+  `z` key in `zk-explorer`, then select `todo`.
+
+## Actions
+
+Not implemented yet...
+  
+### Add Custom Actions
+
+```lua
+actions = {
+  zk_add_new = function()
+    return true
+  end,
+},
+```
+
+Use Custom Actions:
+```lua
+win = {
+  list = {
+    keys = {
+      ["A"] = "zk_add_new",
+    },
+  },
+},
+```
 
 ## Issues
 

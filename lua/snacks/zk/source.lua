@@ -31,7 +31,8 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  select = { "title", "path", "filename" }, -- Fields fetched by `zk.api.list`
+  -- select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list` -- DEBUG: path? absPath? どっち？
+  select = { "path", "filename", "title" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -58,7 +59,9 @@ local source = {
   actions = require("snacks.zk.actions"),
 
   config = function(opts)
-    return require("snacks.picker.source.zk").setup(opts)
+    -- return require("snacks.picker.source.zk").setup(opts)
+    print("source.lua  config function is called.")
+    require("snacks.picker.source.zk").setup(opts) -- DEBUG: 直接実行？できる？
   end,
   win = {
     list = {

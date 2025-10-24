@@ -130,12 +130,14 @@ end
 
 ---@param opts snacks.picker.zk.Config
 function M.setup(opts)
+  print("setup() in zk.lua is called")
   local searching = false
   local ref ---@type snacks.Picker.ref
 
   -- Get user-configured zk options merged with default config(=source.lua).
   local user_opts = Snacks.config.get("zk", {}) or {}
-  opts = Snacks.config.merge(opts, user_opts)
+  user_opts = Snacks.config.merge(require("snacks.zk.source"), user_opts) -- Merge user_opts over source.lua
+  opts = Snacks.config.merge(user_opts, opts) -- Merge opts from arg over user_opts
 
   -- Set default sorter
   if not zk.sorter then
@@ -171,7 +173,7 @@ function M.setup(opts)
         end
       end,
     },
-    format = zk_format.file,
+    format = zk_format.file, -- DEBUG: これ直接書けばOKじゃ？
     matcher = {
       --- Add parent dirs to matching items
       ---@param matcher snacks.picker.Matcher
@@ -218,6 +220,7 @@ function M.setup(opts)
       },
     },
   })
+  -- print("opts (zk.lua setup()): " .. vim.inspect(opts)) -- DEBUG:
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
   return opts
 end
