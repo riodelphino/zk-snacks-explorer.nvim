@@ -50,19 +50,10 @@ end
 ---@param cb function?
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
-  -- local select = { select = { "absPath", "title", "filename" } } -- DEBUG:
-  -- if not opts then
-  --   opts = Snacks.config.get("zk", {}) -- DEBUG: なんでここでも呼ばなあかんねん？ zk.lua の setup() がやってくれんじゃないの？ しかも {} だ
-  -- end
-  -- print("opts: " .. vim.inspect(opts))
   local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.query and M.query.query or {})
-  -- local zk_api_opts = { select = { "absPath", "filename", "title" } }
-  -- print("zk_api_opts: " .. vim.inspect(zk_api_opts)) -- DEBUG: ぜんぶ {}
-  -- print("M.opts.select: " .. vim.inspect(M.opts.select))
-  -- print("M.opts: " .. vim.inspect(M.opts))
 
-  zk_api.index(nil, zk_api_opts, function()
-    zk_api.list(nil, zk_api_opts, function(err, notes)
+  zk_api.index(M.notebook_path, zk_api_opts, function()
+    zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
       if err then
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end

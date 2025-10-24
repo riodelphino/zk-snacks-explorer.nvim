@@ -31,8 +31,7 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  -- select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list` -- DEBUG: path? absPath? どっち？
-  select = { "path", "filename", "title" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
