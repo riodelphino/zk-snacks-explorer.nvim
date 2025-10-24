@@ -220,7 +220,6 @@ function M.setup(opts)
       },
     },
   })
-  -- print("opts (zk.lua setup()): " .. vim.inspect(opts)) -- DEBUG:
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
   return opts
 end

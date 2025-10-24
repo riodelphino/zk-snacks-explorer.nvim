@@ -114,8 +114,6 @@ function M.setup(event)
     zk_util = require("zk.util")
     M.notebook_path = zk_util.notebook_root(zk_util.resolve_notebook_path() or vim.fn.getcwd())
 
-    print("init.lua setup() called / can set opts here?") -- DEBUG:
-
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {
       group = group,
@@ -127,8 +125,6 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-  print("open called") -- DEBUG:
-  M.set_opts(opts) -- DEBUG: しかたなくここでオプションをマージ＆セット いや、ここじゃなく、事前に行われていないとだなぁ。
   M.fetch_zk(function()
     if not Snacks.picker.sources.zk then
       Snacks.picker.sources.zk = require("snacks.zk.source")
@@ -139,14 +135,6 @@ function M.open(opts)
 
     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   end)
-end
-
-function M.set_opts(opts)
-  if not M.opts then
-    local user_opts = Snacks.config.get("zk", {}) or {}
-    opts = Snacks.config.merge(opts, user_opts)
-    M.opts = opts -- DEBUG: dynamic なんとかはセットしてない簡易的なやつ
-  end
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer

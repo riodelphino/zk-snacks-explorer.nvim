@@ -207,10 +207,23 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 
 Add custom sorter `created`:
 ```lua
-select = { "title", "path", "filename", "created"},
+select = { "title", "absPath", "filename", "created"},
 sorters = {
-  created = function(a, b)
-    return a.metadata.created > b.metadata.created
+  created = function(a, b) -- FIX: error
+    local notes = require("snacks.zk").notes_cache
+    local an = notes[a.path] or nil
+    local bn = notes[b.path] or nil
+    local ac = an and an.created
+    local bc = bn and bn.created
+    a_has_created = (an.created ~= nil)
+    b_has_created = (bn.created ~= nil)
+    if a_has_created ~= b_has_created then
+      return a_has_created < b_has_created
+    end
+    if a_has_created and b_has_created then
+      return a.created < b.created
+    end
+    return a.filename < b.filename
   end,
 }
 ```
@@ -274,14 +287,15 @@ Use custom query `todo`:
 
 ## Actions
 
-Not implemented yet...
-  
 ### Add Custom Actions
 
+Not implemented yet...
+
 ```lua
+-- DEBUG: Should be merged with require("snacks.actions").actions table, not in the root.
 actions = {
   zk_add_new = function()
-    return true
+    ...
   end,
 },
 ```

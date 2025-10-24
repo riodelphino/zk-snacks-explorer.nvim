@@ -31,7 +31,7 @@ end
 ---@param a snacks.picker.explorer.Node
 ---@param b snacks.picker.explorer.Node
 ---@return boolean
-M.created = function(a, b)
+M.created = function(a, b) -- FIX: error
   local notes = require("snacks.zk").notes_cache
   local an = notes[a.path] or nil
   local bn = notes[b.path] or nil

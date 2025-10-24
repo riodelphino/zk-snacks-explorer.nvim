@@ -34,6 +34,10 @@ Provides UI functions: `setup()`, `open()`, `reveal()`
 
 Snacks calls `M.setup()` function once automatically, when the source is loaded.
 
+> [!Warning]
+> Additional source like `zk-explorer`, this is not done automatically.
+> Should call manually `require('snacks.picker.source.zk').setup()` in `config = function() ... end` option in `snacks-zk-explorer.nvim`.
+
 
 #### Entry Point 2
 

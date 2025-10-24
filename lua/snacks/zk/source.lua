@@ -57,11 +57,9 @@ local source = {
   -- Actions
   actions = require("snacks.zk.actions"),
 
-  config = function(opts)
-    -- return require("snacks.picker.source.zk").setup(opts)
-    print("source.lua  config function is called.")
-    require("snacks.picker.source.zk").setup(opts) -- DEBUG: 直接実行？できる？
-  end,
+  -- config = function(opts)
+  --   return require("snacks.picker.source.zk").setup(opts) -- TODO: This functions is not evaluated.
+  -- end,
   win = {
     list = {
       keys = {
