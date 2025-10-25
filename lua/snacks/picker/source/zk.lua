@@ -368,12 +368,11 @@ function M.search(opts, ctx)
 
       -- hierarchical sorting
       local label = item.title or basename
-      if item.dir then
-        item.sort = parent.sort .. "!" .. label .. " "
-      else
-        item.sort = parent.sort .. "%" .. label .. " "
-      end
       item.hidden = basename:sub(1, 1) == "."
+      local kind = item.dir and "D" or "F" -- Sort: D:directories -> F:files
+      local priority = item.title and "0" or (item.hidden and "2" or "1") -- Sort: 0:has title -> 1:no title (basename) -> 2:hidden files
+      item.sort = string.format("%s[%s%s]%s ", parent.sort, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
+
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
       local node = Tree:node(item.file)
       if node then
