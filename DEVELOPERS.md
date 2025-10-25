@@ -214,9 +214,13 @@ local zk_opts = require("snacks.zk.source") -- It's not current config but zk's 
 local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is opened. It returns `{}` if the picker not opened.
 ```
 
-## ソート
+## Sort
 
-`lua/snacks/picker/sort.lua`: Has built-in sorters `default` and `idx`
+`opts.sort` accespts either function or config(table).
+  - function: `@snacks.picker.sort`
+  - config  : `@snacks.picker.sort.Config`
+
+`lua/snacks/picker/sort.lua`: Has built-in sorter function `default` and `idx`
 
 > [!Caution]
 > Unfortunately, `Snacks.explorer` does not evaluate `sort` config.
