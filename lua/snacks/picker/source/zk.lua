@@ -332,7 +332,7 @@ function M.zk(opts, ctx)
         local kind = item.dir and "D" or "F" -- Sort: D:directories -> F:files
         local priority = item.title and "0" or (item.hidden and "2" or "1") -- Sort: 0:has title -> 1:no title (basename) -> 2:hidden files
         -- item.sort = string.format("%s[%s%s]%s ", parent.sort or parent.file, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
-        item.sort = string.format("%s[%s%s]%s ", dirname, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
+        -- item.sort = string.format("%s[%s%s]%s ", dirname, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir -- DEBUG: いったんなしにしてみて、ソートされてるかチェック
 
         cb(item)
         items[node.path] = item
