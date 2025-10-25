@@ -366,9 +366,9 @@ function M.search(opts, ctx)
         item.text = basename
       end
 
-      -- hierarchical sorting
-      local label = item.title or basename
+      -- hierarchical sorting -- DEBUG: Split as a function?
       item.hidden = basename:sub(1, 1) == "."
+      local label = item.title or basename
       local kind = item.dir and "D" or "F" -- Sort: D:directories -> F:files
       local priority = item.title and "0" or (item.hidden and "2" or "1") -- Sort: 0:has title -> 1:no title (basename) -> 2:hidden files
       item.sort = string.format("%s[%s%s]%s ", parent.sort, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir

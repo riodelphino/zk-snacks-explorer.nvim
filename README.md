@@ -324,7 +324,8 @@ win = {
 - [ ] Supports custom actions for zk?
 - [ ] Supports custom queries
 - [ ] Supports custom sorter (`M.change_sorter()` is already implemented in `init.lua`)
-
+- [ ] Keep `sorters`, `sort` in config and `M.sort` in init.lua consistent
+- [ ] Does `sort = { field = { "sort" } }` in config work in `zk-explorer` too ?
 
 ## Related
 
