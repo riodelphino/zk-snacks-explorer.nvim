@@ -220,10 +220,29 @@ local zk_opts = Snacks.config.get({ source = "zk" }) -- WORKS when zk picker is 
   - function: `@snacks.picker.sort`
   - config  : `@snacks.picker.sort.Config`
 
-`lua/snacks/picker/sort.lua`: Has built-in sorter function `default` and `idx`
+`lua/snacks/picker/sort.lua`: Has built-in sorter function `default` and `idx`.
+`default` is a function which convert `@snacks.picker.sort.Field[]` fields into a sort function.
+
+Below `M.sort()` function switches between fields and function.
+lua/snacks/picker/config/init.lua:
+```lua
+---@param opts snacks.picker.Config
+function M.sort(opts)
+  local sort = opts.sort or require("snacks.picker.sort").default()
+  sort = type(sort) == "table" and require("snacks.picker.sort").default(sort) or sort
+  ---@cast sort snacks.picker.sort
+  return sort
+end
+```
+In most cases, below settings can cofigure the sorting.
+  1. Set `item.sort` to a string that defines the sorting order. (item = `@snacks.picker.Item`)
+  2. Then, set `sort = { fields = { 'sort' } }` in config.
+
+`item.sort` should be set in `Tree.get()` within `M.zk()` in `zk.lua`.
+
 
 > [!Caution]
-> Unfortunately, `Snacks.explorer` does not evaluate `sort` config.
+> Unfortunately, `Snacks.explorer` does not evaluate `sort` config. (right?)
 
 ### Customize sorting
 
