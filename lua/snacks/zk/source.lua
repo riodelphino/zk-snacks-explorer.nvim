@@ -47,6 +47,7 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
+  sort = { fields = { "sort" } }, -- Need for search by `/`
   -- Sorters
   sorters = require("snacks.zk.sorters"),
   default_sorter = "title",

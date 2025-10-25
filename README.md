@@ -42,12 +42,12 @@ Search 'a'
 ## Install
 
 for lazy.nvim:
-```lua:snacks-zk.lua
+```lua
 return {
   'riodelphino/snacks-zk.nvim',
   dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
   config = function()
-    require('snacks.picker.source.zk').setup({})
+    require('snacks.picker.source.zk').setup({}) -- Call setup once. Add to picker list, merge opts, e.t.c.
   end,
   keys = {
     { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
@@ -111,6 +111,7 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
+  sort = { fields = { "sort" } }, -- Need for search by `/`
   -- Sorters
   sorters = require("snacks.zk.sorters"),
   default_sorter = "title",
