@@ -21,9 +21,11 @@ function Tree:walk(node, fn, opts)
     return abort
   end
   local children = vim.tbl_values(node.children) ---@type snacks.picker.explorer.Node[]
-  table.sort(children, function(a, b)
-    return zk.sorter(a, b)
-  end) -- Sort
+  -- table.sort(children, function(a, b) -- DEBUG: Can use default sort system instead?
+  --   return zk.sorter(a, b)
+  -- end)
+  -- ここでは item じゃなく node なので、picker の sort システムは使えない？
+  -- 無理やり sort システムを呼び出して sort することは可能か？ -> 難しそうだ node だし
   for c, child in ipairs(children) do
     child.last = c == #children
     abort = false
@@ -54,7 +56,7 @@ function Tree:get(cwd, cb, opts)
   local query_enabled = (zk.query.desc ~= zk.opts.queries[zk.opts.default_query].desc)
 
   ---@type snacks.picker.Config
-  local zk_opts = require("snacks.picker").sources.zk
+  local zk_opts = require("snacks.picker").sources.zk -- DEBUG: Is this current dynamic config or static config?
 
   self:walk(node, function(n)
     if zk_opts.formatters.file.markdown_only then
