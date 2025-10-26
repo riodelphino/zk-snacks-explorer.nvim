@@ -1,11 +1,3 @@
----@class snacks.picker.zk.Config : snacks.picker.explorer.Config
----@field select table?
----@field default_sorter string?
----@field sorters table?
----@field default_query string?
----@field queries table?
----@field query_postfix string?
-
 ---@type snacks.picker.zk.Config
 local source = {
   title = "Zk",
@@ -47,11 +39,10 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  -- sort = { fields = { "sort" } }, -- Need for search by `/` -- DEBUG: function にはなるものの 戻り値が nil になるので、いったん関数にしてみる
-  sort = function(a, b)
-    print("sort: a: " .. vim.inspect(a))
-    return a.sort or a.path or a.file < b.sort or b.path or b.file
-  end,
+  sort = { fields = { "sort" } }, -- Need for search by `/` -- DEBUG:: Works fine.
+  -- sort = function(a, b) -- DEBUG: test
+  --   return (a.sort or a.path or a.file) < (b.sort or b.path or b.file)
+  -- end,
   -- Sorters
   sorters = require("snacks.zk.sorters"),
   default_sorter = "title",
@@ -63,7 +54,7 @@ local source = {
   actions = require("snacks.zk.actions"),
 
   -- config = function(opts)
-  --   return require("snacks.picker.source.zk").setup(opts) -- TODO: This functions is not evaluated.
+  --   return require("snacks.picker.source.zk").setup(opts) -- This functions is not evaluated.
   -- end,
   win = {
     list = {

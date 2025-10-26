@@ -2,8 +2,8 @@ local M = {}
 
 -- DEBUG: All are using Node. not Item.
 --
----@param a snacks.picker.explorer.Node
----@param b snacks.picker.explorer.Node
+---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
+---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@return boolean
 M.title = function(a, b)
   local notes = require("snacks.zk").notes_cache
@@ -30,8 +30,8 @@ M.title = function(a, b)
   return a.name < b.name
 end
 
----@param a snacks.picker.explorer.Node
----@param b snacks.picker.explorer.Node
+---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
+---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@return boolean
 M.created = function(a, b) -- FIX: error
   local notes = require("snacks.zk").notes_cache
@@ -42,8 +42,8 @@ M.created = function(a, b) -- FIX: error
   return ac < bc
 end
 
----@param a snacks.picker.explorer.Node
----@param b snacks.picker.explorer.Node
+---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
+---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@return boolean
 M.modified = function(a, b)
   return a.name < b.name

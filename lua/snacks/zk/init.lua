@@ -1,3 +1,5 @@
+require("snacks.zk.types")
+
 ---@class snacks.zk
 ---@overload fun(opts?: snacks.picker.zk.Config): snacks.Picker
 local M = setmetatable({}, {

@@ -1,14 +1,13 @@
+local config = require("snacks.picker.config")
+local zk = require("snacks.zk")
+local zk_util = require("snacks.zk.util")
+
 ---@type snacks.picker.explorer.Tree
 local ExplorerTree = require("snacks.explorer.tree")
----@class snacks.picker.zk.Tree : snacks.picker.explorer.Tree
+---@class snacks.picker.zk.Tree
 local Tree = {}
 
----@class snacks.picker.zk.Node : snacks.picker.explorer.Node
----@field sort string?
-
 setmetatable(Tree, { __index = ExplorerTree }) -- Inherit from snacks.explorer.Tree class
-
-local zk = require("snacks.zk")
 
 local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)
@@ -23,16 +22,21 @@ function Tree:walk(node, fn, opts)
   if abort ~= nil then
     return abort
   end
-  local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
-  -- table.sort(children, function(a, b) -- DEBUG: Can use default sort system instead?
-  --   return zk.sorter(a, b)
-  -- end)
-  -- ここでは item じゃなく node なので、picker の sort システムは使えない？
-  -- 無理やり sort システムを呼び出して sort することは可能か？ -> 難しそうだ node だし
 
-  -- TODO: Use built-in sort system:
-  local sort_function = require("snacks.picker.config").sort(zk.opts)
-  table.sort(children, sort_function) -- sort children
+  -- Ensure each child node has `sort` set before sorting
+  ---@param child snacks.picker.zk.Node
+  for _, child in pairs(node.children) do
+    if not child.sort then
+      local note = zk.notes_cache[child.path]
+      child.title = note and note.title or nil
+      child.zk = note or nil
+      child.sort = zk_util.get_sort_string(child)
+    end
+  end
+
+  local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
+  local sorter = config.sort(zk.opts) -- Use built-in sort system
+  table.sort(children, sorter)
 
   for c, child in ipairs(children) do
     child.last = c == #children
@@ -56,7 +60,8 @@ function Tree:get(cwd, cb, opts)
   -- opts.hidden|ignored|exclude[]|include[] are automatically considered somehow.
   opts = opts or {}
   assert_dir(cwd)
-  local node = self:find(cwd)
+
+  local node = self:find(cwd) ---@cast node snacks.picker.zk.Node
   node.open = true
   local filter = self:filter(opts)
 
@@ -84,9 +89,7 @@ function Tree:get(cwd, cb, opts)
     if n.dir and n.open and not n.expanded and opts.expand ~= false then
       self:expand(n)
     end
-    if not n.sort then
-      n.sort = require("snacks.picker.source.zk").get_sort_string(n)
-    end
+    n.sort = zk_util.get_sort_string(n)
     cb(n)
   end)
 end

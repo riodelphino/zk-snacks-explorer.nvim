@@ -1,10 +1,11 @@
 ---@diagnostic disable: await-in-sync
 ---@class snacks.picker.explorer.Item: snacks.picker.finder.Item
 
-local Tree = require("snacks.zk.tree")
 local zk = require("snacks.zk")
--- local zk_actions = require("snacks.zk.actions")
 local zk_format = require("snacks.zk.format")
+local zk_util = require("snacks.zk.util")
+
+local Tree = require("snacks.zk.tree")
 
 local M = {}
 
@@ -270,7 +271,6 @@ function M.zk(opts, ctx)
     local top = Tree:find(ctx.filter.cwd)
     local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item>
 
-    -- get で各 node を取得 (各 node 取得時の処理は cb が行う。node を nodes ? に追加するなど) -- DEBUG: Translate to English
     Tree:get(
       ctx.filter.cwd,
       function(node)
@@ -310,8 +310,11 @@ function M.zk(opts, ctx)
 
         local dirname, basename = item.file:match("(.*)/(.*)")
         dirname, basename = dirname or "", basename or item.file
-        -- local parent = dirs[dirname] ~= item and dirs[dirname] or root
+        -- local parent = dirs[dirname] ~= item and dirs[dirname] or root -- DEBUG: Missing dirs, root
 
+        item.hidden = node.hidden or basename:sub(1, 1) == "."
+
+        -- DEBUG: Is this block needed ?
         -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
         -- if node then
         --   item.dir = node.dir
@@ -325,17 +328,6 @@ function M.zk(opts, ctx)
         else
           item.text = basename
         end
-
-        -- -- hierarchical sorting -- DEBUG: Split as a function?
-        -- item.hidden = basename:sub(1, 1) == "."
-        -- local label = item.title or basename
-        -- local kind = item.dir and "D" or "F" -- Sort: D:directories -> F:files
-        -- local priority = item.title and "0" or (item.hidden and "2" or "1") -- Sort: 0:has title -> 1:no title (basename) -> 2:hidden files
-        -- item.sort = string.format("%s[%s%s]%s ", parent.sort or parent.file, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
-        -- -- item.sort = string.format("%s[%s%s]%s ", dirname, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir -- DEBUG: いったんなしにしてみて、ソートされてるかチェック
-
-        -- DEBUG: ここでは遅い。
-        -- item.sort = M.get_sort_string(item)
 
         cb(item)
         items[node.path] = item
@@ -403,8 +395,7 @@ function M.search(opts, ctx)
         item.text = basename
       end
 
-      -- hierarchical sorting -- DEBUG: Split as a function?
-      item.sort = M.get_sort_string(item) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
+      item.sort = zk_util.get_sort_string(item)
 
       if opts.tree then
         -- tree
@@ -468,18 +459,4 @@ function M.search(opts, ctx)
   end
 end
 
--- DEBUG: entry.parent.sort が設定済みじゃないと正しく動作しない気がします。
----@param entry snacks.picker.explorer.Node|snacks.picker.explorer.Item
-function M.get_sort_string(entry)
-  local full_path = entry.file or entry.path
-  local dirname, basename = full_path:match("(.*)/(.*)")
-  dirname = dirname or ""
-  basename = basename or full_path
-  local hidden = entry.hidden or basename:sub(1, 1) == "."
-  local label = entry.title or basename
-  local kind = entry.dir and "D" or "F" -- Sort: D:directories -> F:files
-  local priority = entry.title and "0" or (hidden and "2" or "1") -- Sort: 0:has title -> 1:no title (basename) -> 2:hidden files
-  local parent_sort = entry.parent and entry.parent.sort or full_path -- TODO: こんなんで動くのか？
-  return string.format("%s[%s%s]%s ", parent_sort, kind, priority, label) -- e.g. parent[F0]title, parent[F1]basename, parent[D1].hidden_dir
-end
 return M

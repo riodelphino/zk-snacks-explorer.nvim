@@ -77,6 +77,7 @@ search() をコピペする、しか道がなさそうだ。
 ## SOLUTION 2
 
 sorter 関数を、Node/Item どちらでも受け取れるようにする？
+--> どうにか実現できた。
 
 ```lua
 -- sort フィールドを取得する関数 (item/node両対応)
@@ -187,6 +188,7 @@ item|node.sort = M.get_sort_string(item|node)
 
 ## 注意点
 
+- [ ] search 時に親フォルダが子ファイルより下に来てしまう
 - [ ] opts.sort に集約する (init.lua の M.sort は使わない)
 - [ ] ディレクトリは無条件で open されているが、expand 設定に従うこと
 - [ ] git / diagnostics が有効か？
