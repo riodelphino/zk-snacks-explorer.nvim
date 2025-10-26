@@ -26,6 +26,62 @@ function Tree:walk(node, fn, opts)
   -- end)
   -- ここでは item じゃなく node なので、picker の sort システムは使えない？
   -- 無理やり sort システムを呼び出して sort することは可能か？ -> 難しそうだ node だし
+
+  -- TODO: Use built-in sort system:
+  local sort_function = require("snacks.picker.config").sort(zk.opts)
+  table.sort(children, sort_function) -- sort children
+
+  -- DEBUG: TEST CODE
+  --
+  -- table.sort(children, sort_function)
+  -- local tbl = { { file = "c", sort = "c" }, { file = "b", sort = "b" }, { file = "a", sort = "a" } }
+  -- print(type(sort_function))
+  -- -- print("children: " .. vim.inspect(children))
+  --
+  -- tbl = {
+  --   {
+  --     children = {},
+  --     dir = true,
+  --     hidden = false,
+  --     name = "c",
+  --     parent = nil,
+  --     path = "/Users/rio/Projects/terminal/zk-md-tests/c",
+  --     type = "directory",
+  --     sort = "c",
+  --   },
+  --   {
+  --     children = {},
+  --     dir = true,
+  --     hidden = false,
+  --     name = "b",
+  --     parent = nil,
+  --     path = "/Users/rio/Projects/terminal/zk-md-tests/b",
+  --     type = "directory",
+  --     sort = "b",
+  --   },
+  --   {
+  --     children = {},
+  --     dir = true,
+  --     hidden = false,
+  --     name = "a",
+  --     parent = nil,
+  --     path = "/Users/rio/Projects/terminal/zk-md-tests/a",
+  --     type = "directory",
+  --     sort = "a",
+  --   },
+  -- }
+  -- -- nil
+  -- -- print(vim.inspect(table.sort(tbl, function(a, b)
+  -- --   return sort_function(a, b)
+  -- -- end)))
+  -- -- sort_function = zk.opts.sort -- これも sort 結果が nil になる
+  -- sort_function = function(a, b)
+  --   print("sort: a: " .. vim.inspect(a))
+  --   return a.sort < b.sort
+  -- end
+  -- table.sort(tbl, sort_function)
+  -- print("tbl sorted by sort_function: " .. vim.inspect(tbl))
+
   for c, child in ipairs(children) do
     child.last = c == #children
     abort = false
@@ -55,11 +111,8 @@ function Tree:get(cwd, cb, opts)
   local notes_cache = zk.notes_cache
   local query_enabled = (zk.query.desc ~= zk.opts.queries[zk.opts.default_query].desc)
 
-  ---@type snacks.picker.Config
-  local zk_opts = require("snacks.picker").sources.zk -- DEBUG: Is this current dynamic config or static config?
-
   self:walk(node, function(n)
-    if zk_opts.formatters.file.markdown_only then
+    if zk.opts.formatters.file.markdown_only then
       if n ~= node and n.dir == false and not n.path:match("%.md$") then -- Restrict glob to markdown files
         return false
       end

@@ -234,6 +234,13 @@ function M.sort(opts)
   return sort
 end
 ```
+
+Usage:
+```lua
+local sort_function = require("snacks.picker.config").sort(opts)
+table.sort(items|nodes, sort_function)
+```
+
 In most cases, below settings can cofigure the sorting.
   1. Set `item.sort` to a string that defines the sorting order. (item = `@snacks.picker.Item`)
   2. Then, set `sort = { fields = { 'sort' } }` in config.

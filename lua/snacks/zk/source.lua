@@ -47,7 +47,11 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sort = { fields = { "sort" } }, -- Need for search by `/`
+  -- sort = { fields = { "sort" } }, -- Need for search by `/` -- DEBUG: function にはなるものの 戻り値が nil になるので、いったん関数にしてみる
+  sort = function(a, b)
+    print("sort: a: " .. vim.inspect(a))
+    return a.sort < b.sort
+  end,
   -- Sorters
   sorters = require("snacks.zk.sorters"),
   default_sorter = "title",
