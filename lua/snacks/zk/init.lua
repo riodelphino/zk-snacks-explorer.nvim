@@ -73,6 +73,7 @@ function M.fetch_zk(cb)
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
       M.notes_cache = index_notes_by_path(notes)
+      print("M.notes_cache: " .. vim.inspect(M.notes_cache))
       add_dir_to_notes(M.notes_cache)
       if cb and type(cb) == "function" then
         vim.schedule(cb)

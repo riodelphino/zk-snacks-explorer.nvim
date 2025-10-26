@@ -1,4 +1,4 @@
-local config = require("snacks.picker.config")
+-- local config = require("snacks.picker.config")
 local zk = require("snacks.zk")
 local zk_util = require("snacks.zk.util")
 
@@ -25,17 +25,23 @@ function Tree:walk(node, fn, opts)
 
   -- Ensure each child node has `sort` set before sorting
   ---@param child snacks.picker.zk.Node
-  for _, child in pairs(node.children) do
-    if not child.sort then
+  for k, child in pairs(node.children) do
+    if not child.sort then -- DEBUG: sort 文字列は毎回セットした方がいいんじゃない？
       local note = zk.notes_cache[child.path]
-      child.title = note and note.title or nil
-      child.zk = note or nil
-      child.sort = zk_util.get_sort_string(child)
+      -- child.title = note and note.title or nil
+      if note then
+        -- child = vim.tbl_deep_extend("force", child, note) -- Merge all fields in zk note -- DEBUG: これでいいのか？ metadata が nil っぽい？
+        -- child.metadata = note.metadata -- DEBUG: あえて追加してみると
+        node.children[k] = vim.tbl_deep_extend("force", child, note) -- DEBUG: children に直接書き換えないとダメ
+      end
+      -- child.sort = zk_util.get_sort_string(child)
+      node.children[k].sort = zk_util.get_sort_string(node.children[k]) -- DEBUG: children に直接書き換えないとダメ
     end
   end
 
   local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
-  local sorter = config.sort(zk.opts) -- Use built-in sort system
+  -- local sorter = config.sort(zk.opts) -- Use built-in sort system
+  local sorter = zk_util.sort(zk.opts) -- Use built-in sort system
   table.sort(children, sorter)
 
   for c, child in ipairs(children) do

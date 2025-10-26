@@ -223,6 +223,7 @@ function M.setup(opts)
     default_sort = opts.sort, -- Keep it as default
   })
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
+  print("opts: " .. vim.inspect(opts))
   return opts
 end
 
@@ -322,6 +323,10 @@ function M.zk(opts, ctx)
         --   item.type = node.type
         --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
         -- end
+
+        if zk_note then
+          item = vim.tbl_deep_extend("force", item, zk_note) -- Merge all fields in zk note
+        end
 
         -- Set title as search text
         if item.title then
