@@ -50,7 +50,7 @@ local source = {
   -- sort = { fields = { "sort" } }, -- Need for search by `/` -- DEBUG: function にはなるものの 戻り値が nil になるので、いったん関数にしてみる
   sort = function(a, b)
     print("sort: a: " .. vim.inspect(a))
-    return a.sort < b.sort
+    return a.sort or a.path or a.file < b.sort or b.path or b.file
   end,
   -- Sorters
   sorters = require("snacks.zk.sorters"),
