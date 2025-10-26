@@ -1,3 +1,5 @@
+-- DEBUG: この定義をどうするか？
+
 -- ---@class snacks.picker.sorters
 local M = {}
 
@@ -29,31 +31,13 @@ function M.default(opts)
   ---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
   ---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
   return function(a, b)
-    -- if a.metadata and a.metadata.created and a.metadata.created == "2025-10-01 00:00:00" then
-    --   print("a.metadata.created == 2025-10-03 00:00:00")
-    -- end
     local function get_nested_value(obj, path)
       local val = obj
-      -- print(string.format("Path: %s", path)) -- DEBUG:
       for key in path:gmatch("[^%.]+") do
         if val == nil then
           return nil
         end
         val = val[key]
-        -- if key == "metadata" or key == "created" then
-        --   print(string.format("%s: %s", key, val)) -- DEBUG:
-        -- end
-        -- 3 と 1 の比較
-        if
-          obj.path == "/Users/rio/Projects/terminal/zk-md-tests/notes/c3ug5z.md" -- Third
-          or obj.path == "/Users/rio/Projects/terminal/zk-md-tests/notes/a9ikue.md" -- First
-        then
-          print("⭐️" .. obj.title .. " metadata: " .. vim.inspect(obj.metadata)) -- DEBUG: metadata が nil だ!!!
-        end
-        -- print(string.format("  %s: %s", key, vim.inspect(val))) -- DEBUG:
-        -- if path == "metadata.created" and key == "created" then
-        --   print("metadata.created: " .. vim.inspect(val) .. " じゃないかな？")
-        -- end
       end
       return val
     end

@@ -43,7 +43,7 @@ local source = {
   -- Sort
   -- sort = { fields = { "sort" } }, -- DEBUG: OK
   -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- DEBUG: OK
-  sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG:
+  sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG: OK
   -- sort = function(a, b) -- DEBUG: test
   --   return (a.sort or a.path or a.file) < (b.sort or b.path or b.file)
   -- end,
