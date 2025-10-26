@@ -111,20 +111,18 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sort = { fields = { "sort" } }, -- Need for search by `/`
-  -- Sorters
+  -- Sort
+  sort = { fields = { "sort" } },
   sorters = require("snacks.zk.sorters"),
-  default_sorter = "title",
-  -- Queries
+  -- Query
+  query = { desc = "all", query = {} },
   queries = require("snacks.zk.queries"),
-  default_query = "all",
   query_postfix = ": ",
   -- Actions
   actions = require("snacks.zk.actions"),
-
-  config = function(opts)
-    return require("snacks.picker.source.zk").setup(opts)
-  end,
+  -- config = function(opts) -- This functions is not evaluated.
+  --   return require("snacks.picker.source.zk").setup(opts)
+  -- end,
   win = {
     list = {
       keys = {

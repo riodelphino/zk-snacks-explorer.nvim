@@ -23,7 +23,7 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title", "created" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -39,22 +39,25 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  sort = { fields = { "sort" } }, -- Need for search by `/` -- DEBUG:: Works fine.
+
+  -- Sort
+  -- sort = { fields = { "sort" } }, -- DEBUG: OK
+  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- DEBUG: OK
+  sort = { fields = { "dir", "hidden:desc", "created", "title", "name" } }, -- DEBUG:
   -- sort = function(a, b) -- DEBUG: test
   --   return (a.sort or a.path or a.file) < (b.sort or b.path or b.file)
   -- end,
-  -- Sorters
   sorters = require("snacks.zk.sorters"),
-  default_sorter = "title",
-  -- Queries
+  -- Query
+  -- query = "all", -- DEBUG: If set string, the query should have static `query` field. Error if has `input` field as function.
+  query = { desc = "all", query = {} },
   queries = require("snacks.zk.queries"),
-  default_query = "all",
   query_postfix = ": ",
   -- Actions
   actions = require("snacks.zk.actions"),
 
-  -- config = function(opts)
-  --   return require("snacks.picker.source.zk").setup(opts) -- This functions is not evaluated.
+  -- config = function(opts) -- This functions is not evaluated.
+  --   return require("snacks.picker.source.zk").setup(opts)
   -- end,
   win = {
     list = {

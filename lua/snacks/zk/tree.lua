@@ -66,7 +66,7 @@ function Tree:get(cwd, cb, opts)
   local filter = self:filter(opts)
 
   local notes_cache = zk.notes_cache
-  local query_enabled = (zk.query.desc ~= zk.opts.queries[zk.opts.default_query].desc)
+  local query_enabled = (zk.opts.query.desc:lower() ~= zk.opts.default_query.desc:lower())
 
   self:walk(node, function(n)
     if zk.opts.formatters.file.markdown_only then
@@ -90,6 +90,7 @@ function Tree:get(cwd, cb, opts)
       self:expand(n)
     end
     n.sort = zk_util.get_sort_string(n)
+    n.sort_base = zk_util.get_sort_string(n, true)
     cb(n)
   end)
 end

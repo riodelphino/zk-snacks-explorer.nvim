@@ -131,7 +131,6 @@ end
 
 ---@param opts snacks.picker.zk.Config
 function M.setup(opts)
-  print("setup() in zk.lua is called")
   local searching = false
   local ref ---@type snacks.Picker.ref
 
@@ -140,21 +139,21 @@ function M.setup(opts)
   user_opts = Snacks.config.merge(require("snacks.zk.source"), user_opts) -- Merge user_opts over source.lua
   opts = Snacks.config.merge(user_opts, opts) -- Merge opts from arg over user_opts
 
-  -- Set default sorter
-  if not zk.sorter then
-    zk.sorter = opts.sorters[opts.default_sorter] or nil
-    if not zk.sorter then
-      error(string.format("'%s' is not a valid sorter name.", opts.default_sorter))
-    end
-  end
-
-  -- Set default query
-  if not zk.query then
-    zk.query = opts.queries[opts.default_query] or nil
-    if not zk.query then
-      error(string.format("'%s' is not a valid query name.", opts.default_query))
-    end
-  end
+  -- -- Set default sorter
+  -- if not zk.sorter then
+  --   zk.sorter = opts.sorters[opts.default_sorter] or nil
+  --   if not zk.sorter then
+  --     error(string.format("'%s' is not a valid sorter name.", opts.default_sorter))
+  --   end
+  -- end
+  --
+  -- -- Set default query
+  -- if not zk.query then
+  --   zk.query = opts.queries[opts.default_query] or nil
+  --   if not zk.query then
+  --     error(string.format("'%s' is not a valid query name.", opts.default_query))
+  --   end
+  -- end
 
   opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
@@ -220,6 +219,8 @@ function M.setup(opts)
         filename_only = opts.tree,
       },
     },
+    default_query = opts.query, -- Keep it as default
+    default_sort = opts.sort, -- Keep it as default
   })
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
   return opts

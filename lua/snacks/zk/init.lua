@@ -18,8 +18,8 @@ M.opts = {} ---@type snacks.picker.zk.Config
 M.notes_cache = {} ---@type table
 M.notebook_path = nil ---@type string?
 
-M.query = nil ---@type table?
-M.sorter = nil ---@type table?
+-- M.query = nil ---@type table?
+-- M.sorter = nil ---@type table?
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`
@@ -48,11 +48,24 @@ local function add_dir_to_notes(notes)
   end
 end
 
+-- DEBUG: NEED THIS ???
+--
+-- ---Get query (string -> return query table / query table -> return query table)
+-- ---@param query snacks.picker.zk.Query
+-- ---@return table
+-- function M.get_query(query)
+--   if not query.query and query.input then
+--     -- DEBUG: このエラー処理と文言、しっかりまとめないと
+--     error("query should have `query` field in `opts.query`. `input` field is not acceptable.")
+--   end
+--   return query.query
+-- end
+
 ---Fetch and store zk info as M.notes_cache
 ---@param cb function?
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
-  local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.query and M.query.query or {})
+  local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
 
   zk_api.index(M.notebook_path, zk_api_opts, function()
     zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
@@ -173,22 +186,13 @@ function M.update_picker_title(picker)
   end
   local default_title = M.opts.title or "Zk"
   local title
-  if M.query and M.query.desc == M.opts.queries[M.opts.default_query].desc then
+  if M.opts.query and M.opts.query.desc and M.opts.query.desc:lower() == M.opts.default_query.desc:lower() then
     title = default_title
   else
-    title = default_title .. ": " .. M.query.desc
+    title = default_title .. ": " .. M.opts.query.desc
   end
   picker.title = title
   picker:update_titles()
-end
-
----Change current sorter
----@param sorter string?
-function M.change_sorter(sorter)
-  sorter = sorter or M.opts.default_sorter
-  local sorter_func = M.opts.sorters[sorter]
-  M.sorter = sorter_func
-  -- TODO: Add refresh here? (maybe NO)
 end
 
 return M

@@ -188,10 +188,12 @@ item|node.sort = M.get_sort_string(item|node)
 
 ## 注意点
 
-- [ ] search 時に親フォルダが子ファイルより下に来てしまう
 - [ ] opts.sort に集約する (init.lua の M.sort は使わない)
+- [ ] default_sort を利用する
+- [ ] change_sort() を完成させる
+- [ ] notes_cache を opts に含める？ (M.notes_cacheを廃止)
+- [ ] search 時に親フォルダが子ファイルより下に来てしまう
 - [ ] ディレクトリは無条件で open されているが、expand 設定に従うこと
-- [ ] git / diagnostics が有効か？
 - [ ] actions が有効か？
-- [ ] / キーでのサーチ状態になっていないか？
-
+- [x] / キーでのサーチ状態になっていないか？
+- [x] git / diagnostics が有効か？
