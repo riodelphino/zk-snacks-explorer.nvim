@@ -185,7 +185,6 @@ item|node.sort = M.get_sort_string(item|node)
 
 ```
 
-
 ## 注意点
 
 - [ ] opts.sort に集約する (init.lua の M.sort は使わない)

@@ -43,9 +43,10 @@ local source = {
 
   -- Sort
   -- sort = { fields = {} }, -- OK
-  -- sort = { fields = { "sort" } }, -- OK
-  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- OK -- TODO: The item which has `title` should come first (Currently `nil` comes first)
-  sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
+  sort = { fields = { "sort" } }, -- OK
+  -- sort = { fields = { "!zk" } }, -- OK (Caution: `*.md` files without YAML or title also have zk field)
+  -- sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }, -- OK (Same with sorting with `sort` field)
+  -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
   -- sort = function(a, b) -- OK
   --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
   -- end,

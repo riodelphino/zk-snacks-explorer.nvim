@@ -24,3 +24,9 @@
 ---@field zk table?
 
 ---@class snacks.picker.zk.Tree : snacks.picker.explorer.Tree
+
+---@class snacks.picker.zk.sort.Field
+---@field name string
+---@field desc boolean
+---@field len boolean?
+---@field has boolean?

@@ -249,7 +249,7 @@ In most cases, below settings can cofigure the sorting.
 
 
 > [!Caution]
-> Unfortunately, `Snacks.explorer` does not evaluate `sort` config. (right?)
+> Unfortunately, `Snacks.explorer` does not evaluate `sort` config. --> But `zk-explorer` enables it.
 
 ### Customize sorting
 
@@ -259,79 +259,9 @@ The items are already sorted as intended by walk.
 `walk` recursively scans directries and find items, and `get` appends them into a table.
 Since `picker.opts.sort` does not evaluated in `explorer`, the items shoud be already sorted as intended inside of `walk`. -> (implemented!)
 
-### Sort
+### Sort config
 
-Basic
-
-```lua
--- Basic sort
-local source = {
-   sort = { fields = { 'sort' } } -- Asc by item.sort
-}
-```
-#### 2 ways for sorting
-
-##### Use built-in sorter
-
-```lua
--- by item.sort field (Asc)
-sort = { fields = { 'sort' } }
-
--- by item.sort field (Asc explicitly)
-sort = { fields = { 'sort:asc' } }
-
--- by item.sort field (Desc)
-sort = { fields = { 'sort:desc' } }
-
--- by mutliple fields in item
-sort = {
-   fields = {
-      "dir:desc",   -- by item.dir (Asc, dir first)
-      "title",      -- by item.title (Asc)
-      "idx"         -- by item.idx (Asc) = insertion order
-   }
-}
-
--- by the length of item.title string
-sort = { 
-   fields = { 
-      "#title"
-   }
-}
-
--- by detailed table
-sort = { 
-   fields = {
-      name = "title", -- by item.title field
-      desc = true,    -- Descending
-      len = true      -- Use length for sort (default: false)
-   }
-}
-
--- by combined list (detailed table and field name)
-sort = { 
-  fields = { 
-    { name = "score", desc = true },  -- by item.score (Desc)
-    "title"                           -- by item.title (Asc)
-  }
-}
-
--- Default sort
-sort = { 
-   fields = { 
-      { name = "score", desc = true },  -- by score (Desc)
-      "idx"                             -- by Insertion order (Asc)
-   }
-}
-```
-##### Use a sorter function
-
-e.g.
-```lua
-sort = function(a, b)
-   return a.name < b.name
-end,
-```
+Moved to [README.md #Sort](README.md#Sort)
 
 
 ## node

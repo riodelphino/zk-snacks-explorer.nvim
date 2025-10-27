@@ -4,7 +4,7 @@
 Snacks source for zk, based on `Snacks.explorer`.
 
 > [!Caution]
-> This repository is experimental.
+> This repository is still experimental. And this `README.md` is also work in progress.
 > Be careful to use it.
 > Any PR is apprecieated.
 
@@ -59,6 +59,8 @@ return {
 
 ## Config
 
+### Minimam Config
+
 ```lua
 require('snacks').setup({
   zk = {
@@ -68,7 +70,7 @@ require('snacks').setup({
 })
 ```
 
-## Default Config
+### Default Config
 
 ```lua
 zk = {
@@ -112,7 +114,7 @@ zk = {
     on_done = nil, -- (fixed) *1
   },
   -- Sort
-  sort = { fields = { "sort" } },
+  sort = { fields = { "sort" } }, -- *2
   sorters = require("snacks.zk.sorters"),
   -- Query
   query = { desc = "all", query = {} },
@@ -168,11 +170,87 @@ zk = {
   },
 }
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
--- *2 : Setting a table in sort like `sort = { fields = { "sort" } }` is completely skipped by `explorer` and `zk`
+-- *2 : `explorer` completely skips `opts.sort`. But `zk-explorer` evaluates it.
 ```
 
 > [!Note]
 > `Tree` view is fixed for zk picker, since it is the purpose for this repo. So `{ tree = false }` not works.
+
+
+### Sort
+
+> [!Note]
+> Sorting is available for both Node and Item in `zk-explorer`.
+
+There are two ways to define sorting.
+
+#### Use Fields
+```lua
+-- by item.sort field (Asc)
+sort = { fields = { 'sort' } }
+
+-- by item.sort field (Asc explicitly)
+sort = { fields = { 'sort:asc' } }
+
+-- by item.sort field (Desc)
+sort = { fields = { 'sort:desc' } }
+
+-- by the length of item.name string
+sort = { fields = { "#name" } }
+
+-- by existing of item.zk.title
+sort = { fields = { "!zk.title" } } -- *
+-- * Ensure that "title" field is added into `opts.select`.
+
+-- by layered field (and use zk field)
+sort = { fields = { 'zk.title' } } -- *
+sort = { fields = { 'zk.modified' } } -- *
+sort = { fields = { 'zk.metadata.created' } } -- *
+-- * Ensure that "title" or "modified" or "metadata" fields are added into `opts.select`.
+
+-- by mutliple fields in item
+sort = {
+   fields = {
+      "dir",        -- by item.dir (Asc) = dir first
+      "name",       -- by item.name (Asc)
+      "idx"         -- by item.idx (Asc) = insertion order
+   }
+}
+
+-- by detailed table
+sort = { 
+   fields = {
+      name = "name",  -- by item.name field
+      desc = true,    -- Descending
+      len = true      -- Use length for sort (default: false)
+   }
+}
+-- Same with "#name:desc"
+
+-- by combined list (detailed table and field name)
+sort = { 
+  fields = { 
+    { name = "score", desc = true },  -- by item.score (Desc)
+    "name"                            -- by item.name (Asc)
+  }
+}
+
+-- Default sorting if `sort.fields` is not set
+sort = { 
+   fields = { 
+      { name = "score", desc = true },  -- by score (Desc)
+      "idx"                             -- by Insertion order (Asc)
+   }
+}
+```
+##### Use a sorter function
+
+e.g.
+```lua
+sort = function(a, b)
+   return a.name < b.name
+end,
+```
 
 
 ## Usage
