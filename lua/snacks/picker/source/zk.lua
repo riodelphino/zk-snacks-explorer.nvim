@@ -300,7 +300,6 @@ function M.zk(opts, ctx)
           status = status,
           type = node.type,
           severity = severity,
-          title = title,
           -- last = true, -- DEBUG:
           last = node.last or nil,
         }
@@ -323,9 +322,7 @@ function M.zk(opts, ctx)
         --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
         -- end
 
-        if zk_note then
-          item = vim.tbl_deep_extend("force", item, zk_note) -- Merge all fields in zk note -- FIXME: into .zk field !!!
-        end
+        item.zk = zk_note or nil -- Add zk note data to the `Node`
 
         -- Set title as search text
         if item.title then

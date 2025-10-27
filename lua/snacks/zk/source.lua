@@ -24,7 +24,7 @@ local source = {
     transform = nil, -- (fixed) *1
   },
   -- select = { "absPath", "filename", "title", "created", "modified", "metadata" }, -- Fields fetched by `zk.api.list`
-  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title", "metadata" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -42,14 +42,14 @@ local source = {
   },
 
   -- Sort
-  sort = { fields = { "sort" } }, -- OK
-  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- OK -- TODO: Priorer the item which has `title` (Currently `nil` comes first)
-  -- sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG: OK
-  -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- DEBUG: OK
   -- sort = { fields = {} }, -- OK
+  -- sort = { fields = { "sort" } }, -- OK
+  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- OK -- TODO: The item which has `title` should come first (Currently `nil` comes first)
+  sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
   -- sort = function(a, b) -- OK
   --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
   -- end,
+
   sorters = require("snacks.zk.sorters"),
   -- Query
   -- query = "all", -- DEBUG: If set string, the query should have static `query` field. Error if has `input` field as function.

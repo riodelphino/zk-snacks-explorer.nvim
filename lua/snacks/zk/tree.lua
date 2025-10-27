@@ -27,13 +27,14 @@ function Tree:walk(node, fn, opts)
   ---@param child snacks.picker.zk.Node
   for k, child in pairs(node.children) do
     if not child.sort then -- DEBUG: or should set sort string everytime? (If omit this `if ~ end` the item expantion does not work.)
-      local note = zk.notes_cache[child.path]
-      child.title = note and note.title or nil
-      if note then
-        child = vim.tbl_deep_extend("force", child, note) -- Should rewrite children[k] directory (not child)
-      end
+      local zk_note = zk.notes_cache[child.path]
+      child.zk = zk_note or nil -- Add zk note data to the `Node`
       child.sort = zk_util.get_sort_string(child)
     end
+  end
+
+  if node.path == "/Users/rio/Projects/terminal/zk-md-tests/tests/sort_metadata" then
+    print("node.children: " .. vim.inspect(node.children))
   end
 
   local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]

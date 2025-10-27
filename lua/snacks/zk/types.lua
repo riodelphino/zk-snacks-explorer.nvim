@@ -18,38 +18,10 @@
 ---@class snacks.picker.zk.Node : snacks.picker.explorer.Node
 ---@field sort string? -- A string used for sorting in the tree view (This field works alone)
 ---@field sort_base string? -- A base string used for sorting in the tree view with other fields
----@field filename string?
----@field filenameStem string?
----@field path string?
----@field absPath string?
----@field title string?
----@field lead string?
----@field body string?
----@field snippets string?
----@field rawContent string?
----@field wordCount number?
----@field tags (string|table)?
----@field metadata table?
----@field created string?
----@field modified string?
----@field checksum string?
+---@field zk table?
 
 ---@class snacks.picker.zk.Item : snacks.picker.explorer.Item
 ---@field hidden boolean?
----@field filename string?
----@field filenameStem string?
----@field path string?
----@field absPath string?
----@field title string?
----@field lead string?
----@field body string?
----@field snippets string?
----@field rawContent string?
----@field wordCount number?
----@field tags (string|table)?
----@field metadata table?
----@field created string?
----@field modified string?
----@field checksum string?
+---@field zk table?
 
 ---@class snacks.picker.zk.Tree : snacks.picker.explorer.Tree
