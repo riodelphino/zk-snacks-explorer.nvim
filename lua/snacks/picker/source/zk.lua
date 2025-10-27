@@ -271,7 +271,8 @@ function M.zk(opts, ctx)
 
     local items = {} ---@type table<string, snacks.picker.explorer.Item>
     local top = Tree:find(ctx.filter.cwd)
-    local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item>
+    -- local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item> -- DEBUG::w
+    --
 
     Tree:get(
       ctx.filter.cwd,
@@ -296,15 +297,16 @@ function M.zk(opts, ctx)
           hidden = node.hidden,
           ignored = node.ignored,
           status = (not node.dir or not node.open or opts.git_status_open) and status or nil,
-          last = true,
+          -- last = true, -- DEBUG:
           type = node.type,
           severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil,
           title = title,
+          last = node.last or nil, -- DEBUG: last を node から取得
         }
-        if last[node.parent] then
-          last[node.parent].last = false
-        end
-        last[node.parent] = item
+        -- if last[node.parent] then -- DEBUG: ツリーアイコンが崩れる (last判定が複数出てしまう) ので削除
+        --   last[node.parent].last = false
+        -- end
+        -- last[node.parent] = item
         if top == node then
           item.hidden = false
           item.ignored = false
