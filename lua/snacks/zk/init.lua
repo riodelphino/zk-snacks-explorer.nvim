@@ -76,7 +76,9 @@ function M.fetch_zk(cb)
       print("M.notes_cache: " .. vim.inspect(M.notes_cache))
       add_dir_to_notes(M.notes_cache)
       if cb and type(cb) == "function" then
-        vim.schedule(cb)
+        vim.schedule(function()
+          cb()
+        end)
       end
     end)
   end)
