@@ -23,7 +23,8 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  select = { "absPath", "filename", "title", "created", "modified", "metadata" }, -- Fields fetched by `zk.api.list`
+  -- select = { "absPath", "filename", "title", "created", "modified", "metadata" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -41,9 +42,10 @@ local source = {
   },
 
   -- Sort
-  -- sort = { fields = { "sort" } }, -- DEBUG: OK
+  sort = { fields = { "sort" } }, -- DEBUG: OK
   -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- DEBUG: OK
-  sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG: OK
+  -- sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG: OK
+  -- sort = { fields = {} }, -- DEBUG: ??? ますますわからん
   -- sort = function(a, b) -- DEBUG: test
   --   return (a.sort or a.path or a.file) < (b.sort or b.path or b.file)
   -- end,
