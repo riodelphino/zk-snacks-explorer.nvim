@@ -52,14 +52,21 @@ function M.abort()
   end
 end
 
+local refreshing = false
+
 -- batch updates and give explorer the time to update before the watcher
 function M.refresh()
+  if refreshing then
+    return
+  end
+  refreshing = true
   timer:start(
     100,
     0,
     vim.schedule_wrap(function()
       local picker = Snacks.picker.get({ source = "zk" })[1]
       if not picker or picker.closed then
+        refreshing = false
         return
       end
       local zk = require("snacks.zk")
@@ -67,6 +74,7 @@ function M.refresh()
         if picker and not picker.closed then
           picker:find()
         end
+        refreshing = false
       end)
     end)
   )
