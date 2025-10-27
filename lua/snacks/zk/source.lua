@@ -110,6 +110,4 @@ local source = {
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
 -- *2 : Setting a table in sort like `sort = { fields = { "sort" } }` is completely skipped by `explorer` and `zk`
 
-local merge_config = {}
-
 return source
