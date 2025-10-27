@@ -223,7 +223,7 @@ function M.setup(opts)
     default_sort = opts.sort, -- Keep it as default
   })
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
-  print("opts: " .. vim.inspect(opts))
+  -- print("opts: " .. vim.inspect(opts)) -- DEBUG: Remove this
   return opts
 end
 

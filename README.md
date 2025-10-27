@@ -251,7 +251,7 @@ There are two ways to define sorting.
 Accepts both string and table.
 
 ```lua
--- by item.sort field (Asc)
+-- by item.sort field (Asc)  (Default)
 sort = { fields = { 'sort' } }
 
 -- by item.sort field (Asc explicitly)
@@ -273,22 +273,25 @@ sort = { fields = { 'zk.modified' } } -- *
 sort = { fields = { 'zk.metadata.created' } } -- *
 -- * Ensure that "title" or "modified" or "metadata" fields are added into `opts.select`.
 
+-- Almost same with `fields = { "sort" }`
+sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } },
+
 -- by mutliple fields in item
 sort = {
-   fields = {
-      "dir",        -- by item.dir (Asc) = dir first
-      "name",       -- by item.name (Asc)
-      "idx"         -- by item.idx (Asc) = insertion order
-   }
+  fields = {
+    "dir",        -- by item.dir (Asc) = dir first
+    "name",       -- by item.name (Asc)
+    "idx"         -- by item.idx (Asc) = insertion order
+  }
 }
 
 -- by detailed table
 sort = { 
-   fields = {
-      name = "name",  -- by item.name field
-      desc = true,    -- Descending
-      len = true      -- Use length for sort (default: false)
-   }
+  fields = {
+    name = "name",  -- by item.name field
+    desc = true,    -- Descending
+    len = true      -- Use length for sort (default: false)
+  }
 }
 -- Same with "#name:desc"
 
@@ -300,12 +303,12 @@ sort = {
   }
 }
 
--- Default sorting if `sort.fields` is not set
+-- Default sorting when `sort.fields` is not set
 sort = { 
-   fields = { 
-      { name = "score", desc = true },  -- by score (Desc)
-      "idx"                             -- by Insertion order (Asc)
-   }
+  fields = { 
+    { name = "score", desc = true },  -- by score (Desc)
+    "idx"                             -- by Insertion order (Asc)
+  }
 }
 ```
 #### Set a Sorter Function
