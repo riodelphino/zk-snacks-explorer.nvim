@@ -17,7 +17,6 @@
 
 ---@class snacks.picker.zk.Node : snacks.picker.explorer.Node
 ---@field sort string? -- A string used for sorting in the tree view (This field works alone)
----@field sort_base string? -- A base string used for sorting in the tree view with other fields
 ---@field zk table?
 
 ---@class snacks.picker.zk.Item : snacks.picker.explorer.Item

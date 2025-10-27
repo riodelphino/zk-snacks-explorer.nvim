@@ -99,7 +99,6 @@ function Tree:get(cwd, cb, opts)
       self:expand(n)
     end
     n.sort = zk_util.get_sort_string(n)
-    n.sort_base = zk_util.get_sort_string(n, true)
     cb(n)
   end)
 end
