@@ -17,7 +17,6 @@ end
 ---@param fn fun(node: snacks.picker.zk.Node):boolean? return `false` to not process children, `true` to abort
 ---@param opts? {all?: boolean}
 function Tree:walk(node, fn, opts)
-  -- print("WALK start:", node.path) -- DEBUG:
   local abort = false ---@type boolean?
   abort = fn(node)
   if abort ~= nil then
@@ -31,42 +30,24 @@ function Tree:walk(node, fn, opts)
       local note = zk.notes_cache[child.path]
       child.title = note and note.title or nil
       if note then
-        -- node.children[k] = vim.tbl_deep_extend("force", child, note) -- Should rewrite children[k] directory (not child)
         child = vim.tbl_deep_extend("force", child, note) -- Should rewrite children[k] directory (not child)
       end
-      -- node.children[k].sort = zk_util.get_sort_string(node.children[k]) -- Should rewrite children[k] directory (not child)
       child.sort = zk_util.get_sort_string(child)
     end
   end
 
   local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
-  -- local sorter = config.sort(zk.opts) -- Use built-in sort system
   local sorter = zk_util.sort(zk.opts) -- Use built-in sort system
-  -- DEBUG:
-  local function print_children(prefix, target_children)
-    if node.path ~= "/Users/rio/Projects/terminal/zk-md-tests/notes" then -- notes フォルダのみテスト
-      return
-    end
-    local ret = ""
-    for _, child in ipairs(target_children) do
-      local child_simple = vim.deepcopy(child)
-      child_simple.parent = nil -- Remove parent
-      ret = ret .. vim.inspect(child_simple) .. ",\n"
-    end
-    -- print(prefix .. ": " .. node.path .. ": children: \n" .. ret) -- DEBUG:
-  end
 
-  print_children("before", children) -- DEBUG:
   table.sort(children, sorter)
 
   for c, child in ipairs(children) do
-    -- child.last = c == #children -- DEBUG: 何度も並べ替えしている中で、過程で最終になっていただけのファイルにも last フラグが付いてしまう。
-    if c == #children then -- DEBUG: それを回避
+    if c == #children then
       child.last = true
     else
       child.last = false
     end
-    -- DEBUG: 非表示のドットファイルが last になってしまい、現在表示中の最終ファイルが last にならない問題
+    -- FIXME: A problem where the hidden dot file becomes last and the currently displayed final file does not become last.
     abort = false
     if child.dir and (child.open or (opts and opts.all)) then
       abort = self:walk(child, fn, opts)
@@ -74,11 +55,9 @@ function Tree:walk(node, fn, opts)
       abort = fn(child)
     end
     if abort then
-      print_children("after (abort)", children) -- DEBUG:
       return true
     end
   end
-  print_children("after", children) -- DEBUG:
   return false
 end
 

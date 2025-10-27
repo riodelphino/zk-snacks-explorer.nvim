@@ -42,12 +42,13 @@ local source = {
   },
 
   -- Sort
-  sort = { fields = { "sort" } }, -- DEBUG: OK
-  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- DEBUG: OK
+  sort = { fields = { "sort" } }, -- OK
+  -- sort = { fields = { "sort_base", "dir", "hidden:desc", "title", "name" } }, -- OK -- TODO: Priorer the item which has `title` (Currently `nil` comes first)
   -- sort = { fields = { "dir", "hidden:desc", "metadata.created" } }, -- DEBUG: OK
-  -- sort = { fields = {} }, -- DEBUG: ??? ますますわからん
-  -- sort = function(a, b) -- DEBUG: test
-  --   return (a.sort or a.path or a.file) < (b.sort or b.path or b.file)
+  -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- DEBUG: OK
+  -- sort = { fields = {} }, -- OK
+  -- sort = function(a, b) -- OK
+  --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
   -- end,
   sorters = require("snacks.zk.sorters"),
   -- Query

@@ -1,7 +1,5 @@
 local M = {}
 
--- DEBUG: All are using Node. not Item.
---
 ---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@return boolean

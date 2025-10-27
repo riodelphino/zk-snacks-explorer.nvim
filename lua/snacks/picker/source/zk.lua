@@ -271,20 +271,21 @@ function M.zk(opts, ctx)
 
     local items = {} ---@type table<string, snacks.picker.explorer.Item>
     local top = Tree:find(ctx.filter.cwd)
-    -- local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item> -- DEBUG::w
-    --
+    -- local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item> -- DEBUG:
 
     Tree:get(
       ctx.filter.cwd,
       function(node)
         local parent = node.parent and items[node.parent.path] or nil
-        local status = node.status
-        if not status and parent and parent.dir_status then
-          status = parent.dir_status
-        end
-
         local zk_note = notes_cache[node.path] or nil
         local title = zk_note and zk_note.title
+        local status = node.status or (parent and parent.dir_status)
+        if node.dir and node.open and not opts.git_status_open then
+          status = nil
+        end
+        local dirname, basename = node.path:match("(.*)/(.*)")
+        dirname, basename = dirname or "", basename or node.path
+        local severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil
 
         ---@type snacks.picker.explorer.Item
         local item = {
@@ -294,29 +295,25 @@ function M.zk(opts, ctx)
           dir_status = node.dir_status or (parent and parent.dir_status),
           text = title or node.path,
           parent = parent,
-          hidden = node.hidden,
+          hidden = node.hidden or basename:sub(1, 1) == ".",
           ignored = node.ignored,
-          status = (not node.dir or not node.open or opts.git_status_open) and status or nil,
-          -- last = true, -- DEBUG:
+          status = status,
           type = node.type,
-          severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil,
+          severity = severity,
           title = title,
-          last = node.last or nil, -- DEBUG: last を node から取得
+          -- last = true, -- DEBUG:
+          last = node.last or nil,
         }
-        -- if last[node.parent] then -- DEBUG: ツリーアイコンが崩れる (last判定が複数出てしまう) ので削除
+        -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
         --   last[node.parent].last = false
         -- end
         -- last[node.parent] = item
+        -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
+
         if top == node then
           item.hidden = false
           item.ignored = false
         end
-
-        local dirname, basename = item.file:match("(.*)/(.*)")
-        dirname, basename = dirname or "", basename or item.file
-        -- local parent = dirs[dirname] ~= item and dirs[dirname] or root -- DEBUG: Missing dirs, root
-
-        item.hidden = node.hidden or basename:sub(1, 1) == "."
 
         -- DEBUG: Is this block needed ?
         -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
@@ -327,7 +324,7 @@ function M.zk(opts, ctx)
         -- end
 
         if zk_note then
-          item = vim.tbl_deep_extend("force", item, zk_note) -- Merge all fields in zk note
+          item = vim.tbl_deep_extend("force", item, zk_note) -- Merge all fields in zk note -- FIXME: into .zk field !!!
         end
 
         -- Set title as search text

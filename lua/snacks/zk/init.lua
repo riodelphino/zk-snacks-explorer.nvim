@@ -55,7 +55,7 @@ end
 -- ---@return table
 -- function M.get_query(query)
 --   if not query.query and query.input then
---     -- DEBUG: このエラー処理と文言、しっかりまとめないと
+--     -- DEBUG: Need to sort out the errors and the messages below.
 --     error("query should have `query` field in `opts.query`. `input` field is not acceptable.")
 --   end
 --   return query.query

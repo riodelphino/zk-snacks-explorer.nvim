@@ -1,4 +1,4 @@
--- DEBUG: この定義をどうするか？
+-- TODO: What should do about following definitions?
 
 -- ---@class snacks.picker.sorters
 local M = {}
