@@ -23,7 +23,7 @@ Hereafter, abbreviated as `zk-explorer`.
       - [Set Fields](#set-fields)
       - [Set a Sorter Function](#set-a-sorter-function)
       - [Change Sort](#change-sort)
-      - [Custom Sorter Presets](#custom-sorter-presets)
+      - [Add Custom Sorter Presets](#add-custom-sorter-presets)
    - [Queries](#queries)
       - [Add Custom Queries](#add-custom-queries)
 - [Actions](#actions)
@@ -384,7 +384,19 @@ Keymaps (in the file tree):
    - `S` key reset the current sorter.
 
 
-#### Custom Sorter Presets
+Built-in sorters:
+  - Title
+  - Title (-)
+  - Created
+  - Created (-)
+  - Modified
+  - Modified (-)
+
+no sign = "asc"
+(-)     = "desc"
+
+
+#### Add Custom Sorter Presets
 
 Custom sorter presets can be added into `sorters = {}` config.
 They will be appeared in the [change sort](#change-sort) list.
@@ -396,10 +408,37 @@ sorters = {
   metadata_status = {
     desc = "metadata.status"
     sort = { "!zk.metadata.status", "zk.metadata.status" },
-    -- NOTE: Above works, but following fields are recommended for more usable sorting.
+    -- Above works, but following fields are recommended for more usable sorting.
     -- sort = { "dir", "hidden:desc", "!zk.metadata.status", "zk.metadata.status", "zk.title", "name" },
   },
 }
+```
+
+Add sorters for custom YAML frontmatter fields:
+```lua
+select = { "title", "absPath", "filename", "metadata"}, -- Ensure that the fields used in the sorter are set.
+sorters = {
+   metadata_title_desc = {
+      desc = 'YAML: Title (-)',
+      sort = { 'dir', 'hidden:desc', '!zk.metadata.title', 'zk.metadata.title:desc', 'name:desc' },
+   },
+   metadata_created = {
+      desc = 'YAML: Created ',
+      sort = { 'dir', 'hidden:desc', 'zk.metadata.created', 'zk.metadata.title', 'name' },
+   },
+   metadata_created_desc = {
+      desc = 'YAML: Created (-)',
+      sort = { 'dir', 'hidden:desc', 'zk.metadata.created:desc', 'zk.metadata.title', 'name' },
+   },
+   metadata_modified = {
+      desc = 'YAML: Modified ',
+      sort = { 'dir', 'hidden:desc', 'zk.metadata.modified', 'zk.metadata.title', 'name' },
+   },
+   metadata_modified_desc = {
+      desc = 'YAML: Modified (-)',
+      sort = { 'dir', 'hidden:desc', 'zk.metadata.modified:desc', 'zk.metadata.title', 'name' },
+   },
+},
 ```
 
 
@@ -417,7 +456,7 @@ require('snacks.zk.actions').actions.zk_change_query()
 require('snacks.zk.actions').actions.zk_reset_query()
 ```
 
-Available queries:
+Built-in queries:
   - All (default)
   - Created
   - Created after

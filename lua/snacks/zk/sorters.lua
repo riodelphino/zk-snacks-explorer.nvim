@@ -6,37 +6,37 @@ local M = {}
 
 ---@type snacks.picker.zk.Sort
 M.title = {
-  desc = "Title (asc)",
+  desc = "Title ",
   sort = { "dir", "hidden:desc", "zk.title", "name" },
 }
 
 ---@type snacks.picker.zk.Sort
 M.title_desc = {
-  desc = "Title (desc)",
+  desc = "Title (-)",
   sort = { "dir", "hidden:desc", "zk.title:desc", "name:desc" },
 }
 
 ---@type snacks.picker.zk.Sort
 M.created = {
-  desc = "Created (asc)",
+  desc = "Created ",
   sort = { "dir", "hidden:desc", "zk.created" },
 }
 
 ---@type snacks.picker.zk.Sort
 M.created_desc = {
-  desc = "Created (desc)",
+  desc = "Created (-)",
   sort = { "dir", "hidden:desc", "zk.created:desc" },
 }
 
 ---@type snacks.picker.zk.Sort
 M.modified = {
-  desc = "Modified (asc)",
+  desc = "Modified ",
   sort = { "dir", "hidden:desc", "zk.modified" },
 }
 
 ---@type snacks.picker.zk.Sort
 M.modified_desc = {
-  desc = "Modified (desc)",
+  desc = "Modified (-)",
   sort = { "dir", "hidden:desc", "zk.modified!" },
 }
 
