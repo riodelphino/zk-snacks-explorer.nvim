@@ -8,6 +8,28 @@ Snacks source for zk, based on `Snacks.explorer`.
 > Be careful to use it.
 > Any PR is apprecieated.
 
+<!-- mtoc start -->
+- [Features](#features)
+- [Screen shots](#screen-shots)
+- [Dependencies](#dependencies)
+- [Install](#install)
+- [Minimam Config](#minimam-config)
+- [Usage](#usage)
+- [Config](#config)
+   - [Default Config](#default-config)
+   - [Select](#select)
+   - [Sort](#sort)
+      - [Set Fields](#set-fields)
+      - [Set a Sorter Function](#set-a-sorter-function)
+   - [Custom Sorters Presets](#custom-sorters-presets)
+   - [Queries](#queries)
+      - [Add Custom Queries](#add-custom-queries)
+- [Actions](#actions)
+   - [Add Custom Actions](#add-custom-actions)
+- [Issues](#issues)
+- [TODO](#todo)
+- [Related](#related)
+<!-- mtoc end -->
 
 ## Features
 
@@ -231,8 +253,9 @@ The available fields are:
   filename, filenameStem, path, absPath, title, lead, body, snippets, rawContent, wordCount, tags, metadata, created, modified and checksum
 
 > [!Note]
-> * `metadata` includes all the fields in YAML frontmatter.
-> * `tags` are fetched from YAML frontmatter and the content.
+> * `metadata` fetches all the fields in YAML frontmatter.
+> * `title` is fetched from YAML frontmatter first, then searched from the top level heading. (`#`, `##`, ...)
+> * `tags` is fetched and mixed from both YAML frontmatter and the content (e.g. `#my_tag`).
 > * `created` is the file created timestamp in filesystem. (Basically cannnot modify it.)
 > * `modified` is the file modified timestamp in filesystem.
 
@@ -414,7 +437,7 @@ Use custom query `todo`:
 Not implemented yet...
 
 ```lua
--- DEBUG: Should be merged with require("snacks.actions").actions table, not in the root.
+-- FIXME: Should be merged with require("snacks.actions").actions table, not in the root.
 actions = {
   zk_add_new = function()
     ...
@@ -444,7 +467,7 @@ win = {
 - [ ] Add action for zk.api.new()
 - [ ] Supports custom actions for zk?
 - [ ] Supports custom queries
-- [ ] Supports custom sorter (`M.change_sorter()` is already implemented in `init.lua`)
+- [ ] Supports custom sorter (Though `M.change_sorter()` is already implemented in `init.lua`...)
 
 
 ## Related
