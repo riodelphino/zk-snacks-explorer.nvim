@@ -44,4 +44,37 @@ M.actions.zk_reset_query = function()
   require("snacks.zk.watch").refresh()
 end
 
+---Change the sort dynamically
+M.actions.zk_change_sort = function()
+  local items = {}
+  for _, item in pairs(require("snacks.zk.sorters")) do
+    table.insert(items, item)
+  end
+  table.sort(items, function(a, b)
+    return a.desc < b.desc
+  end)
+  vim.ui.select(items, { prompt = "zk sort", format_item = format_item }, function(item)
+    if not item then
+      return
+    end
+    if type(item.sort) == "table" then -- snacks.picker.zk.sort.Fields[]
+      zk.opts.sort = { fields = item.sort }
+      -- print("item.sort: " .. vim.inspect(item.sort)) -- DEBUG:
+      -- print("opts.sort: " .. vim.inspect(zk.opts.sort)) -- DEBUG:
+    elseif type(item.sort) == "function" then -- "snacks.picker.zk.sort.Func"
+      zk.opts.sort = item.sort
+      -- print("item.sort: function") -- DEBUG:
+    end
+    zk.update_picker_title()
+    require("snacks.zk.watch").refresh()
+  end)
+end
+
+---Reset sort
+M.actions.zk_reset_sort = function()
+  zk.opts.sort = zk.opts.default_sort
+  zk.update_picker_title()
+  require("snacks.zk.watch").refresh()
+end
+
 return M

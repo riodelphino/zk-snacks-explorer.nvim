@@ -21,7 +21,8 @@ Snacks source for zk, based on `Snacks.explorer`.
    - [Sort](#sort)
       - [Set Fields](#set-fields)
       - [Set a Sorter Function](#set-a-sorter-function)
-   - [Custom Sorters Presets](#custom-sorters-presets)
+      - [Change Sort](#change-sort)
+      - [Custom Sorter Presets](#custom-sorter-presets)
    - [Queries](#queries)
       - [Add Custom Queries](#add-custom-queries)
 - [Actions](#actions)
@@ -38,12 +39,12 @@ Snacks source for zk, based on `Snacks.explorer`.
 - Shows Git and Diagnostics sign icons
 - Search by the title
 - Watch for files and directories (add/modify/rename/delete) 
-- Sorter is customizable (Integrated with built-in picker sort system)
+- Sort can be cahnged
+- Built-in Sorters and Custom Sorters
 - Built-in Queries and Custom Queries
 - User Config
 
 (in future)
-- Custom sorters
 - Custom actions
 
 ## Screen shots
@@ -345,36 +346,29 @@ sort = function(a, b)
 end,
 ```
 
-### Custom Sorters Presets
+#### Change Sort
 
-> [!Caution]
-> Sorry, `Custom Sorters Presets` feature is not implemented yet.
+Keymaps (in the file tree):
+   - `s` key shows a list of sorters.
+   - `S` key reset the current sorter.
 
-Add custom sorter preset `created`:
+
+#### Custom Sorter Presets
+
+Custom sorter presets can be added into `sorters = {}` config.
+They will be appeared in the [change sort](#change-sort) list.
+
+Add `metadata.status` sorter:
 ```lua
-select = { "title", "absPath", "filename", "created"},
+select = { "title", "absPath", "filename", "metadata"}, -- Ensure that the fields used in the sorter are set.
 sorters = {
-  created = function(a, b) -- FIX: error
-    local notes = require("snacks.zk").notes_cache
-    local an = notes[a.path] or nil
-    local bn = notes[b.path] or nil
-    local ac = an and an.created
-    local bc = bn and bn.created
-    a_has_created = (an.created ~= nil)
-    b_has_created = (bn.created ~= nil)
-    if a_has_created ~= b_has_created then
-      return a_has_created < b_has_created
-    end
-    if a_has_created and b_has_created then
-      return a.created < b.created
-    end
-    return a.filename < b.filename
-  end,
+  metadata_status = {
+    desc = "metadata.status"
+    sort = { "!zk.metadata.status", "zk.metadata.status" },
+    -- NOTE: Above works, but following fields are recommended for more usable sorting.
+    -- sort = { "dir", "hidden:desc", "!zk.metadata.status", "zk.metadata.status", "zk.title", "name" },
+  },
 }
-```
-Use custom sorter:
-```lua
-sorter = "created"
 ```
 
 
@@ -467,7 +461,6 @@ win = {
 - [ ] Add action for zk.api.new()
 - [ ] Supports custom actions for zk?
 - [ ] Supports custom queries
-- [ ] Supports custom sorter (Though `M.change_sorter()` is already implemented in `init.lua`...)
 
 
 ## Related

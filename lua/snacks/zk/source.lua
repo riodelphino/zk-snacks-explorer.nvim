@@ -23,7 +23,7 @@ local source = {
   filter = {
     transform = nil, -- (fixed) *1
   },
-  select = { "absPath", "filename", "title", "metadata" }, -- Fields fetched by `zk.api.list`
+  select = { "absPath", "filename", "title", "metadata", "modified", "created" }, -- Fields fetched by `zk.api.list`
   formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
@@ -97,6 +97,8 @@ local source = {
         -- zk actions
         ["z"] = "zk_change_query",
         ["Q"] = "zk_reset_query",
+        ["s"] = "zk_change_sort",
+        ["S"] = "zk_reset_sort",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
         ["zb"] = false, -- "list_scroll_bottom",
         ["zt"] = false, -- "list_scroll_top",

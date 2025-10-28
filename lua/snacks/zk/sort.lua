@@ -63,8 +63,8 @@ function M.default(opts)
         if field.has then
           av, bv = a_has, b_has
         end
-        if a_table or b_table then
-          av, bv = a_has, b_has -- fallback to `has`
+        if a_table or b_table then -- fallback to `has` if table
+          av, bv = a_has, b_has
         end
         if av ~= bv then
           if type(av) == "boolean" then

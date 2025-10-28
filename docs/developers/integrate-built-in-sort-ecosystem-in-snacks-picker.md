@@ -30,12 +30,13 @@ The functions `M.explorer()` and `M.search()` in `lua/snacks/sources/explorer.lu
 Item and Node are similar but have differencies in some fileds.
 (e.g. `node.path` <-> `item.file`)
 
-| explorer.Node | Item      | explorer.Item | MEMO             |
-| ------------- | --------- | ------------- | ---------------- |
-| node.dir      | -         | item.dir      | Directory or not |
-| node.path     | item.file | item.file     | The full path        |
-| -             | -         | item.sort     | A string for sort  |
-| node.parent   | -         | item.parent   | The parent           |
+| explorer.Node | Item      | explorer.Item | MEMO              | e.g.                               |
+| ------------- | --------- | ------------- | ----------------- | ---------------------------------- |
+| node.dir      | -         | item.dir      | Directory or not  | true or false                      |
+| node.name     | -         | -             | The filename      | the-file-name.md                   |
+|               | item.file | item.file     | The full path     | /path/to/the/file.md               |
+| -             | -         | item.sort     | A string for sort | `/path[! 0]to[! 0]the[# @]file.md` |
+| node.parent   | -         | item.parent   | The parent        | /path/to/the                       |
 
 
 ## Solutions

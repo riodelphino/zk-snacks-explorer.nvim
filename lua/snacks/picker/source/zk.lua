@@ -1,5 +1,4 @@
 ---@diagnostic disable: await-in-sync
----@class snacks.picker.explorer.Item: snacks.picker.finder.Item
 
 local zk = require("snacks.zk")
 local zk_format = require("snacks.zk.format")
