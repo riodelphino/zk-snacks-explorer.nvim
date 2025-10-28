@@ -34,7 +34,7 @@ Item and Node are similar but have differencies in some fileds.
 | ------------- | --------- | ------------- | ----------------- | ---------------------------------- |
 | node.dir      | -         | item.dir      | Directory or not  | true or false                      |
 | node.name     | -         | -             | The filename      | the-file-name.md                   |
-|               | item.file | item.file     | The full path     | /path/to/the/file.md               |
+| node.path     | item.file | item.file     | The full path     | /path/to/the/file.md               |
 | -             | -         | item.sort     | A string for sort | `/path[! 0]to[! 0]the[# @]file.md` |
 | node.parent   | -         | item.parent   | The parent        | /path/to/the                       |
 

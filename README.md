@@ -338,11 +338,41 @@ sort = {
 #### Set a Sorter Function
 
 A function can be set directly.
+
+Simple:
 ```lua
 ---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
 sort = function(a, b)
    return a.name < b.name
+end,
+```
+
+Same with `sort = { fields = { "sort" } }`:
+```lua
+---@type snacks.picker.zk.Sort
+sort = function(a, b)
+  local an = notes[a.path] or nil
+  local bn = notes[b.path] or nil
+  local at = an and an.title
+  local bt = bn and bn.title
+  local a_has_title = (at ~= nil)
+  local b_has_title = (bt ~= nil)
+  local a_is_dot = (a.name:sub(1, 1) == ".")
+  local b_is_dot = (b.name:sub(1, 1) == ".")
+  if a.dir ~= b.dir then
+    return a.dir
+  end
+  if a_is_dot ~= b_is_dot then
+    return not a_is_dot
+  end
+  if a_has_title ~= b_has_title then
+    return a_has_title
+  end
+  if a_has_title and b_has_title then
+    return at < bt
+  end
+  return a.name < b.name
 end,
 ```
 

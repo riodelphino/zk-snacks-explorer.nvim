@@ -128,9 +128,9 @@ function M.setup(event)
       handle(event)
     end
 
-    -- TODO: Is this correct place to set notebook_path?
-    zk_util = require("zk.util")
-    M.notebook_path = zk_util.notebook_root(zk_util.resolve_notebook_path() or vim.fn.getcwd())
+    -- FIXME: Cannnot get notebook_path
+
+    M.notebook_path = require("zk.util").notebook_root(require("zk.util").resolve_notebook_path() or vim.fn.getcwd())
 
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {
@@ -164,7 +164,6 @@ function M.reveal(opts)
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
   local picker = Snacks.picker.get({ source = "zk" })[1] or M.open()
   local cwd = picker:cwd()
-
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
       if Tree:in_cwd(parent, cwd) then

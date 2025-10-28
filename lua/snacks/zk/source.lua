@@ -100,6 +100,7 @@ local source = {
         ["s"] = "zk_change_sort",
         ["S"] = "zk_reset_sort",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
+
         ["zb"] = false, -- "list_scroll_bottom",
         ["zt"] = false, -- "list_scroll_top",
         ["zz"] = false, -- "list_scroll_center",

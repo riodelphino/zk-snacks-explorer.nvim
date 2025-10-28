@@ -138,22 +138,6 @@ function M.setup(opts)
   user_opts = Snacks.config.merge(require("snacks.zk.source"), user_opts) -- Merge user_opts over source.lua
   opts = Snacks.config.merge(user_opts, opts) -- Merge opts from arg over user_opts
 
-  -- -- Set default sorter
-  -- if not zk.sorter then
-  --   zk.sorter = opts.sorters[opts.default_sorter] or nil
-  --   if not zk.sorter then
-  --     error(string.format("'%s' is not a valid sorter name.", opts.default_sorter))
-  --   end
-  -- end
-  --
-  -- -- Set default query
-  -- if not zk.query then
-  --   zk.query = opts.queries[opts.default_query] or nil
-  --   if not zk.query then
-  --     error(string.format("'%s' is not a valid query name.", opts.default_query))
-  --   end
-  -- end
-
   opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
     actions = {
       confirm = opts.actions.actions.confirm,
@@ -172,7 +156,7 @@ function M.setup(opts)
         end
       end,
     },
-    format = zk_format.file, -- DEBUG: これ直接書けばOKじゃ？
+    format = zk_format.file,
     matcher = {
       --- Add parent dirs to matching items
       ---@param matcher snacks.picker.Matcher
@@ -222,7 +206,6 @@ function M.setup(opts)
     default_sort = opts.sort, -- Keep it as default
   })
   zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
-  -- print("opts: " .. vim.inspect(opts)) -- DEBUG: Remove this
   return opts
 end
 
@@ -263,6 +246,8 @@ function M.zk(opts, ctx)
   end
 
   return function(cb)
+    local found = false
+
     if state.on_find then
       ctx.picker.matcher.task:on("done", vim.schedule_wrap(state.on_find))
       state.on_find = nil
@@ -275,6 +260,7 @@ function M.zk(opts, ctx)
     Tree:get(
       ctx.filter.cwd,
       function(node)
+        found = true
         local parent = node.parent and items[node.parent.path] or nil
         local zk_note = notes_cache[node.path] or nil
         local title = zk_note and zk_note.title
@@ -335,6 +321,19 @@ function M.zk(opts, ctx)
       end,
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
     )
+    if not found then -- Set root if zero items
+      local root = Tree:find(ctx.filter.cwd)
+      if root then
+        cb({
+          file = root.path,
+          dir = root.dir,
+          open = true,
+          hidden = false,
+          type = "directory",
+          text = root.name or root.path,
+        })
+      end
+    end
   end
 end
 

@@ -33,14 +33,14 @@ function Tree:walk(node, fn, opts)
     end
   end
 
-  -- if node.path == "/Users/rio/Projects/terminal/zk-md-tests/tests/sort_metadata" then -- DEBUG: Remove this
-  --   print("node.children: " .. vim.inspect(node.children))
-  -- end
-
   local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
   local sorter = zk_util.sort(zk.opts) -- Use built-in sort system
 
   table.sort(children, sorter)
+
+  -- if node.path == "/Users/rio/Projects/terminal/zk-md-tests" then -- DEBUG: REMOVE THIS
+  --   print("children: " .. vim.inspect(children))
+  -- end
 
   for c, child in ipairs(children) do
     if c == #children then

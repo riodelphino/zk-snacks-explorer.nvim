@@ -55,7 +55,8 @@ end
 local refreshing = false
 
 -- batch updates and give explorer the time to update before the watcher
-function M.refresh()
+---@param cb function?
+function M.refresh(cb)
   if refreshing then
     return
   end
@@ -75,6 +76,11 @@ function M.refresh()
           picker:find()
         end
         refreshing = false
+        if cb ~= nil and type(cb) == "function" then
+          vim.schedule(function()
+            cb()
+          end)
+        end
       end)
     end)
   )

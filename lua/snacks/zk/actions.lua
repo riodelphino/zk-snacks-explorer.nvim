@@ -1,5 +1,6 @@
 local explorer_actions = require("snacks.explorer.actions")
 local zk = require("snacks.zk")
+local zk_watch = require("snacks.zk.watch")
 
 local M = {}
 
@@ -9,15 +10,19 @@ local function format_item(item)
   return item.desc
 end
 
----Change the query dynamically
-M.actions.zk_change_query = function()
+local function get_current_id()
   local id
   local picker = Snacks.picker.get({ source = "zk" })[1]
   if picker and not picker.closed then
     local item = picker:current()
     id = item.file
   end
+  return id
+end
 
+---Change the query dynamically
+M.actions.zk_change_query = function()
+  local id = get_current_id()
   local items = {}
   for _, item in pairs(require("snacks.zk.queries")) do
     table.insert(items, item)
@@ -32,20 +37,30 @@ M.actions.zk_change_query = function()
     item.input(zk.notebook_path, id, function(res)
       zk.opts.query = res
       zk.update_picker_title()
-      require("snacks.zk.watch").refresh()
+      zk_watch.refresh(function()
+        zk.reveal({ file = id })
+      end)
     end)
   end)
 end
 
 ---Reset query
 M.actions.zk_reset_query = function()
+  local id = get_current_id()
   zk.opts.query = zk.opts.default_query
   zk.update_picker_title()
-  require("snacks.zk.watch").refresh()
+  zk_watch.refresh(function()
+    local root = require("snacks.zk.util").get_cwd()
+    if id ~= root then --Aavoid moving up the root
+      zk.reveal({ file = id })
+    end
+  end)
 end
 
 ---Change the sort dynamically
 M.actions.zk_change_sort = function()
+  local id = get_current_id()
+
   local items = {}
   for _, item in pairs(require("snacks.zk.sorters")) do
     table.insert(items, item)
@@ -59,22 +74,24 @@ M.actions.zk_change_sort = function()
     end
     if type(item.sort) == "table" then -- snacks.picker.zk.sort.Fields[]
       zk.opts.sort = { fields = item.sort }
-      -- print("item.sort: " .. vim.inspect(item.sort)) -- DEBUG:
-      -- print("opts.sort: " .. vim.inspect(zk.opts.sort)) -- DEBUG:
     elseif type(item.sort) == "function" then -- "snacks.picker.zk.sort.Func"
       zk.opts.sort = item.sort
-      -- print("item.sort: function") -- DEBUG:
     end
     zk.update_picker_title()
-    require("snacks.zk.watch").refresh()
+    zk_watch.refresh(function()
+      zk.reveal({ file = id })
+    end)
   end)
 end
 
 ---Reset sort
 M.actions.zk_reset_sort = function()
+  local id = get_current_id()
   zk.opts.sort = zk.opts.default_sort
   zk.update_picker_title()
-  require("snacks.zk.watch").refresh()
+  zk_watch.refresh(function()
+    zk.reveal({ file = id })
+  end)
 end
 
 return M
