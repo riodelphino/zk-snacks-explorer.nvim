@@ -42,9 +42,9 @@ local source = {
 
   -- Sort
   -- sort = { fields = {} }, -- OK
-  -- sort = { fields = { "sort" } }, -- OK
+  sort = { fields = { "sort" } }, -- OK
   -- sort = { fields = { "!zk" } }, -- OK (Caution: `*.md` files without YAML or title also have zk field)
-  sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }, -- OK (Almost same with `fields = { "sort" }`)
+  -- sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }, -- OK (Almost same with `fields = { "sort" }`)
   -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
   -- sort = function(a, b) -- OK
   --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
