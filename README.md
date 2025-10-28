@@ -50,7 +50,7 @@ Hereafter, abbreviated as `zk-explorer`.
 
 ## Screen shots
 
-:lua Snacks.zk()
+Main
 ![assets/images/screenshot_01_main.png](assets/images/screenshot_01_main.png)
 
 Search
@@ -207,7 +207,7 @@ require('snacks').setup({
           ["u"] = "explorer_update",
           ["<c-c>"] = "tcd",
           ["<leader>/"] = "picker_grep",
-          ["<c-t>"] = "terminal", -- FIX: cause duplicated key error with `["<c-t>"] = "tab"`
+          -- ["<c-t>"] = "terminal", -- FIX: Duplicated key error with `["<c-t>"] = "tab"`
           ["."] = "explorer_focus",
           ["I"] = "toggle_ignored",
           ["H"] = "toggle_hidden",
