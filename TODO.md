@@ -2,94 +2,36 @@
 # TODO
 
 
-## 検討中
-
-Tree:get の中で手動で sorter を呼ぶのをいったんやめてます。
-```lua
-Before:  (item.sort あり)                 After: (item.sort なし)
-
-󰝰 zk-md-tests                             󰝰 zk-md-tests                         
- ├╴󰉋 daily                                ├╴󰉋 assets                            
- ├╴󰝰 tests                                ├╴󰉋 daily                             
- │ ├╴󰉋 others                             ├╴󰝰 tests                             
- │ ├╴󱁽 lsp                               │ ├╴󰉋 dir                           ○ 
- │ ├╴󰉋 title                         ○    │ ├╴󰉋 git                             
- │ ├╴󰝰 sort                               │ ├╴󰉋 filter                          
- │ │ ├╴󰍔 D                                │ ├╴󰉋 title                         ○ 
- │ │ ├╴󰉋 a                                │ ├╴󰉋 filetype                        
- │ │ ├╴󰉋 b                                │ ├╴󰉋 tag                             
- │ │ ├╴󰉋 c                                │ ├╴󰉋 yaml                            
- │ │ ├╴󰍔 A                                │ ├╴󰉋 hidden                          
- │ │ ├╴󰍔 C.md                             │ ├╴󰝰 sort                            
- │ │ ├╴󰍔 A.md                             │ │ ├╴󰍔 D                             
- │ │ ├╴󰍔 B                                │ │ ├╴󰍔 D.md                          
- │ │ ├╴󰍔 D.md                             │ │ ├╴󰉋 c                             
- │ │ ├╴󰍔 B.md                             │ │ ├╴󰉋 a                             
- │ │ └╴󰍔 C                                │ │ ├╴󰍔 A                             
- │ ├╴󰉋 hidden                             │ │ ├╴󰍔 A.md                          
- │ ├╴󰉋 filter                             │ │ ├╴󰍔 B                             
- │ ├╴󰉋 yaml                               │ │ ├╴󰉋 b                             
- │ ├╴󰉋 filetype                           │ │ ├╴󰍔 B.md                          
- │ ├╴󰉋 tag                                │ │ ├╴󰍔 C                             
- │ ├╴󰉋 dir                           ○    │ │ └╴󰍔 C.md                          
- │ └╴󰉋 git                                │ ├╴󱁽 lsp                            
- ├╴󰝰 notes                                │ └╴󰉋 others                          
- │ ├╴󰍔 First note in notes dir            ├╴󰝰 notes                             
- │ └╴󰍔 Second note in notes dir           │ ├╴󰍔 First note in notes dir         
- ├╴ zk-md-tests                          │ └╴󰍔 Second note in notes dir        
- └╴󰉋 assets                               └╴ zk-md-tests                        
-```
-
-● item.sort あり
-  ❌️ dir file もソートされておらずバラバラ
-  ❌️ title も考慮されていない
-
-● item.sort なし
-  ⭕️ ルートの dir file は sort されているが
-  ❌️ サブディレクトリの dir file はバラバラ
-  ❌️ title は考慮されていない
-
-⚠️ 現状では、`item.sort` と `sort = { fields = { "sort" } }` がかえってオーダーを壊している。 
-⚠️ が、いずれにせよ、オーダーは正しくない。
-
-node -> item なのだが、node の時点でソートする必要がある、となると、`sort = { fields = { "sort" } }` の built-in 系はそのままでは使えない。
-node を item に変換して...とかも面倒くさそうだ。 `node.path` <-> `item.file` と違うし。
-
-```lua
----@type a @snacks.picker.explorer.Node|@snacks.picker.Item
----@type b @snacks.picker.explorer.Node|@snacks.picker.Item
-M.sort_test = function(a, b)
-  if type(a) == "@snacks.picker.Node" then
-    a.file = a.path
-    b.file = b.path
-  end
-  ...
-end
-```
-のように、Node / Item どちらでもOKとするか？
-
-
 ## SOLUTION 1
 
-search() をコピペする、しか道がなさそうだ。
-- [ ] notes_cache から title や created など 全フィールドを、 item.zk or node.zk にぜんぶ付与してしまおうか？
+search() をコピペする。
+
+* もし2が動かなければで。
 
 ## SOLUTION 2
 
 sorter 関数を、Node/Item どちらでも受け取れるようにする？
 --> どうにか実現できた。
 
+順番的には、
+  1. 内部的な Node
+  2. Tree 表示は Item
+なのだが、Node の Tree:walk() の中でソートする必要がある。
+
+`node.path` <-> `item.file` と違う点も考慮し、 以下のように、Node / Item どちらでもOKとした。
+
 ```lua
--- sort フィールドを取得する関数 (item/node両対応)
----@param entry snacks.picker.explorer.Node|snacks.picker.explorer.Item
-function M.get_sort_string(entry) end
-
-return M
-
--- sort フィールドにセット
-item|node.sort = M.get_sort_string(item|node)
--- sort 実行
+---@type a @snacks.picker.explorer.Node|@snacks.picker.Item
+---@type b @snacks.picker.explorer.Node|@snacks.picker.Item
+local sort = function(a, b)
+  if type(a) == "@snacks.picker.Node" then
+    a_full_path = a.path or a.file
+    b_full_path = b.path or b.file
+  end
+  ...
+end
 ```
+
  
 対応表:
 | explorer.Node | Item      | explorer.Item | MEMO             |
@@ -187,12 +129,7 @@ item|node.sort = M.get_sort_string(item|node)
 
 ## 注意点
 
-- [ ] opts.sort に集約する (init.lua の M.sort は使わない)
-- [ ] default_sort を利用する
+- [ ] この TODO.md を DEVELOPERS.md と zk TODO に移行する
+- [ ] search 時に親フォルダが子ファイルより下に来てしまう
 - [ ] change_sort() を完成させる
 - [ ] notes_cache を opts に含める？ (M.notes_cacheを廃止)
-- [ ] search 時に親フォルダが子ファイルより下に来てしまう
-- [ ] ディレクトリは無条件で open されているが、expand 設定に従うこと
-- [ ] actions が有効か？
-- [x] / キーでのサーチ状態になっていないか？
-- [x] git / diagnostics が有効か？
