@@ -1,25 +1,71 @@
 
-# TODO
+# Integrate built-in sort ecosystem in snacks.picker
 
 
-## SOLUTION 1
+How `snacks-zk-explorer.nvim` integrates with the built-in sort ecosystem in `snacks.picker`.
 
-search() をコピペする。
 
-* もし2が動かなければで。
+## Assignments
 
-## SOLUTION 2
+- Make explorer() function evaluates the `sort = ...` config.
+- Bridge between `Node` and `Item`.
 
-sorter 関数を、Node/Item どちらでも受け取れるようにする？
---> どうにか実現できた。
 
-順番的には、
-  1. 内部的な Node
-  2. Tree 表示は Item
-なのだが、Node の Tree:walk() の中でソートする必要がある。
+### Differencies between explorer() and search() functions
 
-`node.path` <-> `item.file` と違う点も考慮し、 以下のように、Node / Item どちらでもOKとした。
+The functions `M.explorer()` and `M.search()` in `lua/snacks/sources/explorer.lua` are fundamentally different.
 
+| Function     | Sort Logic | Config 'sort = ...' is | Class of the entries         |
+| ------------ | ---------- | ------------------- | ---------------------------- |
+| M.explorer() | Own way    | ignored             | @snacks.picker.explorer.Node |
+| M.search()   | Use config | evaluated           | @snacks.picker.Item          |
+
+1. Collect `Node` list from the filesystem (kept only inside)
+2. Generate `Item` list based on `Node` (copied and molded)
+3. The tree is shown based on `Item` list.
+
+
+### Differencies between Node and Item
+
+Item and Node are similar but have differencies in some fileds.
+(e.g. `node.path` <-> `item.file`)
+
+| explorer.Node | Item      | explorer.Item | MEMO             |
+| ------------- | --------- | ------------- | ---------------- |
+| node.dir      | -         | item.dir      | Directory or not |
+| node.path     | item.file | item.file     | The full path        |
+| -             | -         | item.sort     | A string for sort  |
+| node.parent   | -         | item.parent   | The parent           |
+
+
+## Solutions
+
+### Points:
+
+Sort config is designed to accept two ways:
+  - `sort = { fields = { "sort" } }`
+  - `sort = function(a, b) ... end`
+
+However, the sort ecosystem: 
+  - Only accepts `snacks.picker.Item` list
+  - Does not accepts `snacks.picker.explorer.Node` list
+
+
+### Solution 1: Duplicate search function
+
+Duplicate and modify `search()` as `zk()`
+It's from `lua/snacks/sources/zk.lua` in `snacks-zk-explorer.nvim`.
+* If the 2nd solution does not work.
+
+
+### Solution 2: Accepts both Node and Item
+
+Make sort function accepts both Node and Item.
+--> Finally finished.
+
+The entries(`Node`) should be sorted in `Tree:walk()`
+
+A sample sort function (accepts both Node and Item):
 ```lua
 ---@type a @snacks.picker.explorer.Node|@snacks.picker.Item
 ---@type b @snacks.picker.explorer.Node|@snacks.picker.Item
@@ -32,20 +78,9 @@ local sort = function(a, b)
 end
 ```
 
- 
-対応表:
-| explorer.Node | Item      | explorer.Item | MEMO             |
-| ------------- | --------- | ------------- | ---------------- |
-| node.dir      | -         | item.dir      | is directory?    |
-| node.path     | item.file | item.file     | full path        |
-| -             | -         | item.sort     | string for sort  |
-| node.parent   | -         | item.parent   | parent node/item |
-- ディレクトリ判定: OK
-- parent 取得: OK
-- sort フィールド:
-  - うーん、explorer.Node に無いけど、zk.Node に継承・拡張して、無理やり sort を作っておくか？
-  - 作ったとしても、実際に sort 実行は、手動でコード書くしかないかも？
-  - あ、sort 関数を return してくれる関数があったよね！
+## Notes
+
+### Node and Item class definitions
 
 @snacks.picker.explorer.Node:
 ```lua
@@ -109,8 +144,8 @@ end
 ---@field status? string
 ```
 
+#### Just for references
 
-参考まで
 @snacks.picker.explorer.Filter
 ```lua
 ---@class snacks.picker.explorer.Filter
@@ -119,17 +154,4 @@ end
 ---@field exclude? string[] globs to exclude
 ---@field include? string[] globs to exclude
 ```
-@snacks.picker.finder.Item:
-```lua
----@class snacks.picker.finder.Item: snacks.picker.Item
----@field idx? number
----@field score? number
 
-```
-
-## 注意点
-
-- [ ] この TODO.md を DEVELOPERS.md と zk TODO に移行する
-- [ ] search 時に親フォルダが子ファイルより下に来てしまう
-- [ ] change_sort() を完成させる
-- [ ] notes_cache を opts に含める？ (M.notes_cacheを廃止)
