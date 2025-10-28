@@ -51,10 +51,16 @@ Hereafter, abbreviated as `zk-explorer`.
 ## Screen shots
 
 :lua Snacks.zk()
-![assets/images/screenshot_01.png](assets/images/screenshot_01.png)
+![assets/images/screenshot_01_main.png](assets/images/screenshot_01_main.png)
 
-Search 'a'
-![assets/images/screenshot_02.png](assets/images/screenshot_02.png)
+Search
+![assets/images/screenshot_02_search.png](assets/images/screenshot_02_search.png)
+
+Queries
+![assets/images/screenshot_03_queries.png](assets/images/screenshot_03_queries.png)
+
+Sorters
+![assets/images/screenshot_04_sorters.png](assets/images/screenshot_04_sorters.png)
 
 
 ## Dependencies
