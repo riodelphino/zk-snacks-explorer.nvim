@@ -1,7 +1,8 @@
 # snacks-zk-explorer.nvim
 
 
-Snacks source for zk, based on `Snacks.explorer`.
+`snacks-zk-explorer.nvim` is a snacks source for zk, based on `Snacks.explorer`.
+Hereafter, abbreviated as `zk-explorer`.
 
 > [!Caution]
 > This repository is still experimental. And this `README.md` is also work in progress.
