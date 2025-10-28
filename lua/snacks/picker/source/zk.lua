@@ -246,8 +246,6 @@ function M.zk(opts, ctx)
   end
 
   return function(cb)
-    local found = false
-
     if state.on_find then
       ctx.picker.matcher.task:on("done", vim.schedule_wrap(state.on_find))
       state.on_find = nil
@@ -260,7 +258,6 @@ function M.zk(opts, ctx)
     Tree:get(
       ctx.filter.cwd,
       function(node)
-        found = true
         local parent = node.parent and items[node.parent.path] or nil
         local zk_note = notes_cache[node.path] or nil
         local title = zk_note and zk_note.title
@@ -321,18 +318,16 @@ function M.zk(opts, ctx)
       end,
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
     )
-    if not found then -- Set root if zero items
-      local root = Tree:find(ctx.filter.cwd)
-      if root then
-        cb({
-          file = root.path,
-          dir = root.dir,
-          open = true,
-          hidden = false,
-          type = "directory",
-          text = root.name or root.path,
-        })
-      end
+    local root = Tree:find(ctx.filter.cwd)
+    if not items[root] then -- Ensure that root item exists
+      cb({
+        file = root.path,
+        dir = root.dir,
+        open = true,
+        hidden = false,
+        type = "directory",
+        text = root.name or root.path,
+      })
     end
   end
 end
