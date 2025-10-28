@@ -319,7 +319,7 @@ function M.zk(opts, ctx)
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
     )
     local root = Tree:find(ctx.filter.cwd)
-    if not items[root] then -- Ensure that root item exists
+    if not items[root.path] then -- Ensure that root item exists
       cb({
         file = root.path,
         dir = root.dir,
