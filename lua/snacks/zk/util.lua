@@ -2,29 +2,27 @@ local zk = require("snacks.zk")
 
 local M = {}
 
----Returns a formatted string used for sorting
+---Returns a hierarchical sort string based purely on file path
 ---@param entry snacks.picker.explorer.Node|snacks.picker.explorer.Item
 function M.get_sort_string(entry)
-  local path = entry.file or entry.path -- Catch full path from both Node and Item
-  -- local dirname, basename = full_path:match("(.*)/(.*)")
-  -- dirname = dirname or ""
-  -- basename = basename or full_path
-  local parent = vim.fn.fnamemodify(path, ":h")
-  local basename = vim.fn.fnamemodify(path, ":t")
-  local hidden = entry.hidden or basename:sub(1, 1) == "."
-  local label = entry.zk and entry.zk.title or basename
-  local kind = entry.dir and "D" or "F" -- D:directories -> F:files
-  local visibility = not hidden and "+" or "." -- +:visible -> .:hidden
-  local zk_flag = entry.zk and not entry.dir and "@" or "_" -- @:has zk -> _:none-zk (directories are always considered as none-zk)
-  local parent_sort = entry.parent and entry.parent.sort or parent
-  sort_str = string.format("%s[%s%s%s]%s", parent_sort, kind, visibility, zk_flag, label)
-  -- e.g.
-  -- dir_name[D+_]visible_dir
-  -- dir_name[D._].hidden_dir
-  -- dir_name[F+@]file_with_zk
-  -- dir_name[F+_]none_zk
-  -- dir_name[F._].hidden_file
-  return sort_str
+  local path = entry.file or entry.path
+  if not path then
+    return ""
+  end
+
+  local parts = vim.split(path, "/", { trimempty = true })
+
+  local sort_parts = {}
+  for i, name in ipairs(parts) do
+    local is_last = (i == #parts)
+    local hidden = name:sub(1, 1) == "."
+    local kind = (is_last and not entry.dir) and "#" or "!"
+    local visibility = not hidden and "+" or "."
+    local zk_flag = (is_last and entry.zk and not entry.dir) and "@" or "_"
+    table.insert(sort_parts, string.format("[%s%s%s]%s", kind, visibility, zk_flag, name))
+  end
+
+  return table.concat(sort_parts)
 end
 
 ---Return sort function : copied from `lua/snacks/picker/config/init.lua: M.sort()`
