@@ -434,11 +434,6 @@ function M.search(opts, ctx)
     table.sort(items, sorter)
 
     for _, item in ipairs(items) do
-      -- if item.file:match("lsp") then -- DEBUG:
-      print(item.file .. " : " .. item.sort)
-      -- end
-    end
-    for _, item in ipairs(items) do
       cb(item)
     end
   end

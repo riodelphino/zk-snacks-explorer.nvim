@@ -531,8 +531,8 @@ win = {
 
 ## Issues
 
-- Warning when opening zk picker: `["<c-t>"] = "terminal"` and `["<c-t>"] = "tab"`.
-- The focus is lost when query select.ui is canceled.
+- The focus is lost when queries/sorters `select.ui` is canceled.
+- Use none default sort disorders the tree.
 
 
 ## TODO

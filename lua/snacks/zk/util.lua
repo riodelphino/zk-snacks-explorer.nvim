@@ -29,11 +29,11 @@ end
 function M.get_sort_key(entry, root)
   local path = entry.file or entry.path -- fallback Node -> Item
   path = uv.fs_realpath(path) or path
-  if root then
-    if path:sub(1, #root) == root then
-      path = path:sub(#root + 2) -- +2 removes "/" too
-    end
-  end
+  -- if root then -- DEBUG: This disorderes the sort
+  --   if path:sub(1, #root) == root then
+  --     path = path:sub(#root + 2) -- +2 removes "/" too
+  --   end
+  -- end
   local parts = vim.split(path, "/", { trimempty = true })
 
   local sort_list = {}
