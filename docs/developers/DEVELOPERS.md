@@ -145,18 +145,23 @@ The config is set here, but setup() in `explorer.lua` overwrites?
 
 This setting is used for matching in the Search function.
 
+on_match : Main purpose is to add the parent directories to picker automatically.
+
 #### filter
 
 - config  : Nothing is set
 - setup() : `transform = function(picker, filter) ... end`)
 
-filter here
+filter ??? transform ???
 
 #### searcher
 
 - config  : Nothing is set
-in picker default config, `search = 'serch_string'`. So it might be current search string.
-And above `matcher` is the function for searching.
+in picker default config, `search = 'search_string'`. So it might be current search string.
+And above `matcher` is the additional function suports searching.
+
+`zk-explorer` does not use built-in command like `fd`, `rg`, `find` or seach filesystem.
+It manually searches zk files from `M.note_cache` in `lua/snacks/zk/init.lua`, since `zk-explorer` has to search both the filename and the title.
 
 
 #### watcher

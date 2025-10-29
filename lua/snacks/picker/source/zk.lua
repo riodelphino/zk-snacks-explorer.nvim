@@ -174,7 +174,7 @@ function M.setup(opts)
               parent.match_tick = matcher.tick
               parent.match_topk = nil
               parent.dir = true -- Ensure dir
-              parent.sort = zk_util.get_sort_string(parent)
+              parent.sort = zk_util.get_sort_key(parent)
               picker.list:add(parent)
             else
               break
@@ -371,7 +371,7 @@ function M.search(opts, ctx)
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
 
-      item.sort = zk_util.get_sort_string(item)
+      item.sort = zk_util.get_sort_key(item)
       item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text .. " +"
 

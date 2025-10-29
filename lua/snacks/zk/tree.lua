@@ -29,7 +29,7 @@ function Tree:walk(node, fn, opts)
     if not child.sort then -- DEBUG: or should set sort string everytime? (If omit this `if ~ end` the item expantion does not work.)
       local zk_note = zk.notes_cache[child.path]
       child.zk = zk_note or nil -- Add zk note data to the `Node`
-      child.sort = zk_util.get_sort_string(child)
+      child.sort = zk_util.get_sort_key(child)
     end
   end
 
@@ -98,7 +98,7 @@ function Tree:get(cwd, cb, opts)
     if n.dir and n.open and not n.expanded and opts.expand ~= false then
       self:expand(n)
     end
-    n.sort = zk_util.get_sort_string(n)
+    n.sort = zk_util.get_sort_key(n)
     cb(n)
   end)
 end
