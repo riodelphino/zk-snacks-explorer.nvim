@@ -24,11 +24,17 @@ end
 
 ---Get a hierarchical sort key based on path
 ---@param entry snacks.picker.explorer.Node|snacks.picker.explorer.Item
+---@param root string?
 ---@return string
-function M.get_sort_key(entry)
+function M.get_sort_key(entry, root)
   local path = entry.file or entry.path -- fallback Node -> Item
-  local normalized_path = uv.fs_realpath(path) or path
-  local parts = vim.split(normalized_path, "/", { trimempty = true })
+  path = uv.fs_realpath(path) or path
+  if root then
+    if path:sub(1, #root) == root then
+      path = path:sub(#root + 2) -- +2 removes "/" too
+    end
+  end
+  local parts = vim.split(path, "/", { trimempty = true })
 
   local sort_list = {}
   for i, name in ipairs(parts) do

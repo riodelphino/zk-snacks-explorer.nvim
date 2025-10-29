@@ -15,7 +15,7 @@ end
 
 ---@param node snacks.picker.zk.Node
 ---@param fn fun(node: snacks.picker.zk.Node):boolean? return `false` to not process children, `true` to abort
----@param opts? {all?: boolean}
+---@param opts? {all?: boolean, cwd: string}
 function Tree:walk(node, fn, opts)
   local abort = false ---@type boolean?
   abort = fn(node)
@@ -29,7 +29,7 @@ function Tree:walk(node, fn, opts)
     if not child.sort then -- DEBUG: or should set sort string everytime? (If omit this `if ~ end` the item expantion does not work.)
       local zk_note = zk.notes_cache[child.path]
       child.zk = zk_note or nil -- Add zk note data to the `Node`
-      child.sort = zk_util.get_sort_key(child)
+      child.sort = zk_util.get_sort_key(child, opts.cwd)
     end
   end
 
@@ -98,9 +98,10 @@ function Tree:get(cwd, cb, opts)
     if n.dir and n.open and not n.expanded and opts.expand ~= false then
       self:expand(n)
     end
-    n.sort = zk_util.get_sort_key(n)
+    n.sort = zk_util.get_sort_key(n, cwd)
+
     cb(n)
-  end)
+  end, { cwd = cwd })
 end
 
 return Tree

@@ -371,7 +371,7 @@ function M.search(opts, ctx)
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
 
-      item.sort = zk_util.get_sort_key(item)
+      item.sort = zk_util.get_sort_key(item, opts.cwd)
       item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text .. " +"
 
@@ -430,9 +430,8 @@ function M.search(opts, ctx)
       end
     end
 
-    table.sort(items, function(a, b) -- DEBUG: Should be sor
-      return a.sort < b.sort
-    end)
+    local sorter = zk_util.sort(opts)
+    table.sort(items, sorter)
 
     for _, item in ipairs(items) do
       -- if item.file:match("lsp") then -- DEBUG:

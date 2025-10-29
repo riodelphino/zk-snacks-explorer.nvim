@@ -109,7 +109,7 @@ function M.watch(cwd)
       used[node.path] = true
       M.start(node.path)
     end
-  end)
+  end, { cwd = cwd })
 
   -- Stop unused watches
   for path in pairs(M._watches) do
