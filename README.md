@@ -38,10 +38,12 @@ Hereafter, abbreviated as `zk-explorer`.
 
 - Tree style like `Snacks.explorer`
 - Displays the title instead of the filename
-- Shows git and diagnostics sign icons
-- Search by the title
-- Watch for files and directories (add/modify/rename/delete) 
-- Sort can be cahnged
+- Search by filename and title
+- Shows Git icons
+- Shows Diagnostics icons
+- Watch for files and directories changing.
+- Sorters selector 
+- Queries selector
 - Built-in and custom Sorters
 - Built-in and custom Queries
 - Built-in and custom Actions
