@@ -318,15 +318,16 @@ function M.zk(opts, ctx)
       end,
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
     )
-    local root = Tree:find(ctx.filter.cwd)
-    if not items[root.path] then -- Ensure that root item exists
+
+    local root = ctx.filter.cwd
+    if not items[root] then -- Ensure that root item exists even though the queries returns 0 items.
       cb({
-        file = root.path,
-        dir = root.dir,
+        file = root,
+        dir = true,
         open = true,
         hidden = false,
         type = "directory",
-        text = root.name or root.path,
+        text = root,
       })
     end
   end
@@ -337,6 +338,7 @@ end
 function M.search(opts, ctx)
   local notes_cache = require("snacks.zk").notes_cache
   opts = Snacks.picker.util.shallow_copy(opts)
+
   opts.cmd = "fd"
   opts.cwd = ctx.filter.cwd
   opts.notify = false
