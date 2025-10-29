@@ -171,8 +171,8 @@ require('snacks').setup({
     },
     format = nil, -- (fixed) *1
     matcher = {
-      sort_empty = false,
-      fuzzy = true,
+      sort_empty = false, -- (Skipped) *3
+      fuzzy = true, -- (Skipped) *3
       on_match = nil, -- (fixed) *1
       on_done = nil, -- (fixed) *1
     },
@@ -238,6 +238,7 @@ require('snacks').setup({
 }
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
 -- *2 : `explorer` completely skips `opts.sort`. But `zk-explorer` evaluates it.
+-- *3 : Since searching in both `filename` and `title` is required, zk-explorer` does not use built-in commands like `fd`, `rg` or `find`.
 ```
 
 > [!Note]
