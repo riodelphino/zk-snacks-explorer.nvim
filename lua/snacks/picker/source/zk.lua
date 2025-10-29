@@ -349,7 +349,7 @@ function M.search(opts, ctx)
   opts.dirs = { ctx.filter.cwd }
   ctx.picker.list:set_target()
 
-  ---@type snacks.picker.explorer.Item
+  ---@type snacks.picker.zk.Item
   local root = {
     file = opts.cwd,
     dir = true,
@@ -361,14 +361,14 @@ function M.search(opts, ctx)
 
   local files = require("snacks.picker.source.files").files(opts, ctx)
 
-  local dirs = {} ---@type table<string, snacks.picker.explorer.Item>
+  local dirs = {} ---@type table<string, snacks.picker.zk.Item>
   local last = {} ---@type table<snacks.picker.finder.Item, snacks.picker.finder.Item>
 
   ---@async
   return function(cb)
     cb(root)
 
-    ---@param item snacks.picker.explorer.Item
+    ---@param item snacks.picker.zk.Item
     local function add(item)
       local dirname, basename = item.file:match("(.*)/(.*)")
       dirname, basename = dirname or "", basename or item.file
@@ -410,7 +410,7 @@ function M.search(opts, ctx)
 
     -- get files and directories
     files(function(item)
-      ---@cast item snacks.picker.explorer.Item
+      ---@cast item snacks.picker.zk.Item
       item.cwd = nil -- we use absolute paths
 
       -- Directories
