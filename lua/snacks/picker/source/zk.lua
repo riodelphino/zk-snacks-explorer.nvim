@@ -255,6 +255,17 @@ function M.zk(opts, ctx)
     local top = Tree:find(ctx.filter.cwd)
     -- local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item> -- DEBUG:
 
+    ---@type snacks.picker.zk.Item
+    local root = {
+      file = ctx.filter.cwd,
+      dir = true,
+      open = true,
+      hidden = false,
+      internal = true,
+      sort = "",
+      text = ctx.filter.cwd,
+    }
+
     Tree:get(
       ctx.filter.cwd,
       function(node)
@@ -319,16 +330,8 @@ function M.zk(opts, ctx)
       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
     )
 
-    local root = ctx.filter.cwd
-    if not items[root] then -- Ensure that root item exists even though the queries returns 0 items.
-      cb({
-        file = root,
-        dir = true,
-        open = true,
-        hidden = false,
-        type = "directory",
-        text = root,
-      })
+    if not items[root.file] then -- Ensure that root item exists even though the queries returns 0 items.
+      cb(root)
     end
   end
 end
@@ -408,6 +411,9 @@ function M.search(opts, ctx)
 
       -- add to picker
       cb(item)
+
+      -- DEBUG:
+      print("item: " .. vim.inspect(item))
     end
 
     -- get files and directories
