@@ -2,7 +2,6 @@
 
 
 `snacks-zk-explorer.nvim` is a snacks source for zk, based on `Snacks.explorer`.
-Hereafter, abbreviated as `zk-explorer`.
 
 > [!Caution]
 > This repository is still experimental. And this `README.md` is also work in progress.
@@ -33,20 +32,20 @@ Hereafter, abbreviated as `zk-explorer`.
 - [Related](#related)
 <!-- mtoc end -->
 
+Hereafter, abbreviated as `zk-explorer`.
+
 ## Features
 
 - Tree style like `Snacks.explorer`
 - Displays the title instead of the filename
-- Shows Git and Diagnostics sign icons
+- Shows git and diagnostics sign icons
 - Search by the title
 - Watch for files and directories (add/modify/rename/delete) 
 - Sort can be cahnged
-- Built-in Sorters and Custom Sorters
-- Built-in Queries and Custom Queries
+- Built-in and custom Sorters
+- Built-in and custom Queries
+- Built-in and custom Actions
 - User Config
-
-(in future)
-- Custom actions
 
 ## Screen shots
 
@@ -277,6 +276,10 @@ See [zk-list](https://zk-org.github.io/zk/tips/editors-integration.html#zk-list)
 
 > [!Note]
 > Sorting is available for both Node and Item in `zk-explorer`.
+
+> [!Warning]
+> For now, sorters don't work correctly when searching with the `/` key.
+> Only the default sort works properly.
 
 There are two ways to define sorting.
 
