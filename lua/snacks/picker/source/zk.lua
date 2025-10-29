@@ -173,7 +173,7 @@ function M.setup(opts)
               parent.score = 1
               parent.match_tick = matcher.tick
               parent.match_topk = nil
-              picker.list:add(parent)
+              picker.list:add(parent) -- DEBUG: いったん消してみる
             else
               break
             end
@@ -336,12 +336,285 @@ function M.zk(opts, ctx)
   end
 end
 
+-- ---@param opts snacks.picker.zk.Config
+-- ---@type snacks.picker.finder
+-- function M.search(opts, ctx)
+--   local notes_cache = require("snacks.zk").notes_cache
+--   opts = Snacks.picker.util.shallow_copy(opts)
+--
+--   opts.cmd = "fd"
+--   opts.cwd = ctx.filter.cwd
+--   opts.notify = false
+--   opts.args = {
+--     "--type",
+--     "d", -- include directories
+--     "--path-separator", -- same everywhere
+--     "/",
+--   }
+--   opts.dirs = { ctx.filter.cwd }
+--   ctx.picker.list:set_target()
+--
+--   ---@type snacks.picker.zk.Item
+--   local root = {
+--     file = opts.cwd,
+--     dir = true,
+--     open = true,
+--     text = "",
+--     sort = "",
+--     internal = true,
+--   }
+--
+--   local files = require("snacks.picker.source.files").files(opts, ctx)
+--
+--   local dirs = {} ---@type table<string, snacks.picker.zk.Item>
+--   local last = {} ---@type table<snacks.picker.finder.Item, snacks.picker.finder.Item>
+--
+--   ---@async
+--   return function(cb)
+--     cb(root)
+--
+--     ---@param item snacks.picker.zk.Item
+--     local function add(item)
+--       local dirname, basename = item.file:match("(.*)/(.*)")
+--       dirname, basename = dirname or "", basename or item.file
+--       local parent = dirs[dirname] ~= item and dirs[dirname] or root
+--       item.hidden = basename:sub(1, 1) == "."
+--
+--       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
+--       local node = Tree:node(item.file)
+--       if node then
+--         item.dir = node.dir
+--         item.type = node.type
+--         item.status = (not node.dir or opts.git_status_open) and node.status or nil
+--       end
+--
+--       -- Set title as search text
+--       if item.title then
+--         item.text = item.title:lower()
+--       else
+--         item.text = basename
+--       end
+--
+--       item.sort = zk_util.get_sort_string(item)
+--
+--       if opts.tree then
+--         -- tree
+--         item.parent = parent
+--         if not last[parent] or last[parent].sort < item.sort then
+--           if last[parent] then
+--             last[parent].last = false
+--           end
+--           item.last = true
+--           last[parent] = item
+--         end
+--       end
+--
+--       -- add to picker
+--       cb(item)
+--
+--       -- print("item: " .. vim.inspect(item)) -- DEBUG:
+--     end
+--
+--     -- get files and directories
+--     files(function(item)
+--       ---@cast item snacks.picker.zk.Item
+--       item.cwd = nil -- we use absolute paths
+--
+--       -- Directories
+--       if item.file:sub(-1) == "/" then
+--         item.dir = true
+--         item.file = item.file:sub(1, -2)
+--         if dirs[item.file] then
+--           dirs[item.file].internal = false
+--           return
+--         end
+--         item.open = true
+--         dirs[item.file] = item
+--       end
+--
+--       -- Add parents when needed
+--       for dir in Snacks.picker.util.parents(item.file, opts.cwd) do
+--         if dirs[dir] then
+--           break
+--         else
+--           dirs[dir] = {
+--             text = dir,
+--             file = dir,
+--             dir = true,
+--             open = true,
+--             internal = true,
+--           }
+--           dirs[dir].sort = zk_util.get_sort_string(dirs[dir])
+--
+--           add(dirs[dir]) -- DEBUG: いったん消してみる
+--         end
+--       end
+--
+--       -- Add title
+--       local note = notes_cache[item.file]
+--       if note then
+--         if note.title and note.title ~= "" then
+--           item.title = note.title
+--         end
+--       end
+--
+--       add(item)
+--     end)
+--   end
+-- end
+
+-- ---@param opts snacks.picker.zk.Config
+-- ---@type snacks.picker.finder
+-- function M.search(opts, ctx)
+--   local notes_cache = require("snacks.zk").notes_cache
+--   opts = Snacks.picker.util.shallow_copy(opts)
+--
+--   opts.cmd = "fd"
+--   opts.cwd = ctx.filter.cwd
+--   opts.notify = false
+--   opts.args = {
+--     "--type",
+--     "d", -- include directories
+--     "--path-separator", -- same everywhere
+--     "/",
+--   }
+--   opts.dirs = { ctx.filter.cwd }
+--   ctx.picker.list:set_target()
+--
+--   ---@type snacks.picker.zk.Item
+--   local root = {
+--     file = opts.cwd,
+--     dir = true,
+--     open = true,
+--     text = opts.cwd,
+--     sort = "",
+--     internal = true,
+--   }
+--   print(vim.inspect(opts.cwd))
+--
+--   local files = require("snacks.picker.source.files").files(opts, ctx)
+--   local dirs = {} ---@type table<string, snacks.picker.zk.Item>
+--   local items = {} ---@type snacks.picker.zk.Item[]
+--
+--   ---@async
+--   return function(cb)
+--     -- まず root を追加しておく
+--     table.insert(items, root)
+--
+--     -- local function add(item)
+--     --   -- 親を先に確保
+--     --   local dirname = vim.fn.fnamemodify(item.file, ":h")
+--     --   local parent = dirs[dirname] or root
+--     --   item.parent = parent
+--     --   item.hidden = vim.startswith(vim.fn.fnamemodify(item.file, ":t"), ".")
+--     --   -- タイトル優先
+--     --   if item.title then
+--     --     item.text = item.title:lower()
+--     --   else
+--     --     item.text = vim.fn.fnamemodify(item.file, ":t")
+--     --   end
+--     --   -- ソート文字列
+--     --   item.sort = zk_util.get_sort_string(item)
+--     --   -- if item.dir then
+--     --   --   dirs[item.file] = item -- DEBUG: いらんくね？下で追加してるし。これ消すとディレクトリツリーが消える
+--     --   -- end
+--     --
+--     --   -- 親ディレクトリも追加
+--     --   for dir in Snacks.picker.util.parents(item.file, opts.cwd) do
+--     --     -- print("dir: " .. dir)
+--     --     -- print("dirs: " .. vim.inspect(dirs))
+--     --     print("dir:", vim.inspect(dir), "exists:", dirs[dir] ~= nil)
+--     --     if not dirs[dir] then -- DEBUG: この判定がおかしい。false になる。
+--     --       print("do  : " .. dir .. " ... is not in dirs")
+--     --       local parent_item = {
+--     --         file = dir,
+--     --         text = dir,
+--     --         dir = true,
+--     --         open = true,
+--     --         internal = true,
+--     --       }
+--     --       parent_item.sort = zk_util.get_sort_string(parent_item)
+--     --       -- add(parent_item)
+--     --       table.insert(items, parent_item)
+--     --     end
+--     --   end
+--     --   -- print("parents :" .. vim.inspect(Snacks.picker.util.parents(item.file, opts.cwd)))
+--     --
+--     --   print("dirs: " .. vim.inspect(dirs))
+--     --
+--     --   table.insert(items, item)
+--     -- end
+--     local function add(item)
+--       if item.dir and item.file == opts.cwd then
+--         return
+--       end
+--       local dirname = vim.fn.fnamemodify(item.file, ":h")
+--       if dirname ~= item.file and not dirs[dirname] then
+--         local parent_item = {
+--           file = dirname,
+--           dir = true,
+--           open = true,
+--           internal = true,
+--         }
+--         parent_item.sort = zk_util.get_sort_string(parent_item)
+--         add(parent_item)
+--       end
+--
+--       item.parent = dirs[dirname] or root
+--       item.hidden = vim.startswith(vim.fn.fnamemodify(item.file, ":t"), ".")
+--       if item.title then
+--         item.text = item.title:lower()
+--       else
+--         item.text = vim.fn.fnamemodify(item.file, ":t")
+--       end
+--       item.sort = zk_util.get_sort_string(item)
+--       if item.dir then
+--         dirs[item.file] = item
+--       end
+--
+--       table.insert(items, item)
+--     end
+--
+--     files(function(item)
+--       ---@cast item snacks.picker.zk.Item
+--       item.cwd = nil -- 絶対パス使用
+--
+--       -- ディレクトリ処理
+--       if vim.endswith(item.file, "/") then
+--         item.dir = true
+--         item.file = item.file:sub(1, -2)
+--         if dirs[item.file] then
+--           dirs[item.file].internal = false
+--           return
+--         end
+--         item.open = true
+--       end
+--
+--       -- タイトル取得
+--       local note = notes_cache[item.file]
+--       if note and note.title and note.title ~= "" then
+--         item.title = note.title
+--       end
+--
+--       add(item)
+--     end)
+--
+--     -- すべて集めた後にソート
+--     table.sort(items, function(a, b)
+--       return a.sort < b.sort
+--     end)
+--
+--     -- cb で順番に追加
+--     for _, item in ipairs(items) do
+--       cb(item)
+--     end
+--   end
+-- end
+
 ---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.search(opts, ctx)
-  local notes_cache = require("snacks.zk").notes_cache
   opts = Snacks.picker.util.shallow_copy(opts)
-
   opts.cmd = "fd"
   opts.cwd = ctx.filter.cwd
   opts.notify = false
@@ -369,6 +642,8 @@ function M.search(opts, ctx)
   local dirs = {} ---@type table<string, snacks.picker.zk.Item>
   local last = {} ---@type table<snacks.picker.finder.Item, snacks.picker.finder.Item>
 
+  local notes_cache = require("snacks.zk").notes_cache
+
   ---@async
   return function(cb)
     cb(root)
@@ -378,8 +653,14 @@ function M.search(opts, ctx)
       local dirname, basename = item.file:match("(.*)/(.*)")
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
-      item.hidden = basename:sub(1, 1) == "."
 
+      -- hierarchical sorting
+      if item.dir then
+        item.sort = parent.sort .. "!" .. basename .. " "
+      else
+        item.sort = parent.sort .. "#" .. basename .. " "
+      end
+      item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
       local node = Tree:node(item.file)
       if node then
@@ -387,15 +668,6 @@ function M.search(opts, ctx)
         item.type = node.type
         item.status = (not node.dir or opts.git_status_open) and node.status or nil
       end
-
-      -- Set title as search text
-      if item.title then
-        item.text = item.title:lower()
-      else
-        item.text = basename
-      end
-
-      item.sort = zk_util.get_sort_string(item)
 
       if opts.tree then
         -- tree
@@ -409,11 +681,15 @@ function M.search(opts, ctx)
         end
       end
 
+      -- Set title as search text
+      if item.title then
+        item.text = item.title:lower()
+      else
+        item.text = basename
+      end
+
       -- add to picker
       cb(item)
-
-      -- DEBUG:
-      print("item: " .. vim.inspect(item))
     end
 
     -- get files and directories
@@ -451,10 +727,8 @@ function M.search(opts, ctx)
 
       -- Add title
       local note = notes_cache[item.file]
-      if note then
-        if note.title and note.title ~= "" then
-          item.title = note.title
-        end
+      if note and note.title and note.title ~= "" then
+        item.title = note.title
       end
 
       add(item)
