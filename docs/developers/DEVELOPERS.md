@@ -240,31 +240,6 @@ List all available sources
 So, finaly pickers calls `Snacks.picker("zk")`
 
 
-### Which one works
-
-Currently, only `Snacks.zk()` works fine.
-
-Following works too.
-  - `require('snacks.zk').open()` -> `Snacks.picker.zk()`
-
-Followings don't work. (Because they don't call `open()` insidely somewhy.)
-  - `Snacks.picker('zk')`
-  - `Snacks.picker.zk()`
-  - `Snacks.picker.zk(require('snacks.zk.source'))`
-  - `Snacks.picker.pick('zk')`
-  - `Snacks.picker.zk = require('snacks.zk').open` -> `Snacks.picker.zk()`
-  - `require("snacks.picker").sources.zk = require('snacks.zk').opts` -> `Snacks.picker.zk()`
-  - `require('snacks.zk').setup()` -> `Snacks.picker.zk()`
-
-So, some code in open() are the key.
-
-
-### When the setup is called
-
-  - `lua/snacks/explorer/init.lua`           M.setup() : Called on snacks initializing.
-  - `lua/snacks/picker/source/explorer.lua`  M.setup() : Called on snacks.explorer loading.
-
-
 ### Several ways to call pickers
 
 :h snacks-picker-usage
@@ -285,66 +260,6 @@ below.
     Snacks.picker.pick("files", opts)
     Snacks.picker.pick({source = "files", ...})
 ```
-
-### See 
-
-This example shows how to add custom action and keymaps.
-
-:h snacks-picker-examples-flash
-```help
-==============================================================================
-5. Examples                                           *snacks-picker-examples*
-
-
-FLASH                                           *snacks-picker-examples-flash*
-
->lua
-    {
-      "folke/flash.nvim",
-      optional = true,
-      specs = {
-        {
-          "folke/snacks.nvim",
-          opts = {
-            picker = {
-              win = {
-                input = {
-                  keys = {
-                    ["<a-s>"] = { "flash", mode = { "n", "i" } },
-                    ["s"] = { "flash" },
-                  },
-                },
-              },
-              actions = {
-                flash = function(picker)
-                  require("flash").jump({
-                    pattern = "^",
-                    label = { after = { 0, 0 } },
-                    search = {
-                      mode = "search",
-                      exclude = {
-                        function(win)
-                          return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
-                        end,
-                      },
-                    },
-                    action = function(match)
-                      local idx = picker.list:row2idx(match.pos[1])
-                      picker.list:_move(idx, true, true)
-                    end,
-                  })
-                end,
-              },
-            },
-          },
-        },
-      },
-    }
-```
-
-See also
-:h snacks-picker-examples-todo_comments
-:h snacks-picker-examples-trouble
 
 ## Get picker config
 
