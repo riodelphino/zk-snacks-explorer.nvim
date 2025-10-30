@@ -364,7 +364,39 @@ end
 ---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.zk(opts, ctx)
+  -- Stateをセットアップして watcher を起動
+  local state = M.get_state(ctx.picker)
+
+  if opts.git_status then
+    require("snacks.explorer.git").update(ctx.filter.cwd, {
+      untracked = opts.git_untracked,
+      on_update = function()
+        if ctx.picker.closed then
+          return
+        end
+        ctx.picker.list:set_target()
+        ctx.picker:find()
+      end,
+    })
+  end
+
+  if opts.diagnostics then
+    require("snacks.explorer.diagnostics").update(ctx.filter.cwd)
+  end
+
   return function(cb)
+    -- on_find コールバックの設定
+    if state.on_find then
+      ctx.picker.matcher.task:on("done", vim.schedule_wrap(state.on_find))
+      state.on_find = nil
+    end
+
+    -- Watcher を起動（重要！）
+    if state:setup(ctx) then
+      -- フィルターが空でない場合は search モードに移行
+      return M.search(opts, ctx)(cb)
+    end
+
     local function process_items(notes_cache)
       local items = {} ---@type table<string, snacks.picker.explorer.Item>
       local top = Tree:find(ctx.filter.cwd)
@@ -411,10 +443,10 @@ function M.zk(opts, ctx)
           item.ignored = false
         end
 
-        item.zk = zk_note or nil -- Add zk note data to the `Node`
+        item.zk = zk_note or nil
 
-        if item.title then
-          item.text = item.title:lower()
+        if item.zk and item.zk.title then
+          item.text = item.zk.title
         else
           item.text = basename
         end
@@ -428,18 +460,8 @@ function M.zk(opts, ctx)
       end
     end
 
-    -- -- fetch first, then process
-    -- vim.schedule(function()
-    --   zk.fetch_zk(function()
-    --     process_items(zk.notes_cache)
-    --   end)
-    -- end)
-    --
-    -- -- To avoid `matcher is nil` error
-    -- return process_items(zk.notes_cache)
-
     -- まず空のキャッシュで処理（初期表示）
-    process_items({})
+    process_items(zk.notes_cache or {})
 
     -- 非同期でZKデータを取得して再処理
     vim.schedule(function()
