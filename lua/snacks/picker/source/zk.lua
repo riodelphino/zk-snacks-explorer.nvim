@@ -236,135 +236,9 @@ function M.get_state(picker)
   return M._state[picker]
 end
 
--- ---@param opts snacks.picker.zk.Config
--- ---@type snacks.picker.finder
--- function M.zk(opts, ctx)
---   print("lua/snacks/picker/source/zk.lua M.zk(): called")
---   local notes_cache = zk.notes_cache
---
---   local state = M.get_state(ctx.picker)
---
---   if state:setup(ctx) then
---     return M.search(opts, ctx)
---   end
---
---   if opts.git_status then
---     require("snacks.explorer.git").update(ctx.filter.cwd, {
---       untracked = opts.git_untracked,
---       on_update = function()
---         if ctx.picker.closed then
---           return
---         end
---         ctx.picker.list:set_target()
---         ctx.picker:find()
---       end,
---     })
---   end
---
---   if opts.diagnostics then
---     require("snacks.explorer.diagnostics").update(ctx.filter.cwd)
---   end
---
---   return function(cb)
---     if state.on_find then
---       ctx.picker.matcher.task:on("done", vim.schedule_wrap(state.on_find))
---       state.on_find = nil
---     end
---
---       if not zk.notes_cache then
---     zk.fetch_zk()
---   end
---
---
---     local items = {} ---@type table<string, snacks.picker.explorer.Item>
---     local top = Tree:find(ctx.filter.cwd)
---     -- local last = {} ---@type table<snacks.picker.explorer.Node, snacks.picker.explorer.Item> -- DEBUG:
---
---     ---@type snacks.picker.zk.Item
---     local root = {
---       file = ctx.filter.cwd,
---       dir = true,
---       open = true,
---       hidden = false,
---       internal = true,
---       sort = "",
---       text = ctx.filter.cwd,
---     }
---
---     Tree:get(
---       ctx.filter.cwd,
---       function(node)
---         local parent = node.parent and items[node.parent.path] or nil
---         local zk_note = notes_cache[node.path] or nil
---         local title = zk_note and zk_note.title
---         local status = node.status or (parent and parent.dir_status)
---         if node.dir and node.open and not opts.git_status_open then
---           status = nil
---         end
---         local dirname, basename = node.path:match("(.*)/(.*)")
---         dirname, basename = dirname or "", basename or node.path
---         local severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil
---
---         ---@type snacks.picker.explorer.Item
---         local item = {
---           file = node.path,
---           dir = node.dir,
---           open = node.open,
---           dir_status = node.dir_status or (parent and parent.dir_status),
---           text = title or node.path,
---           parent = parent,
---           hidden = node.hidden or basename:sub(1, 1) == ".",
---           ignored = node.ignored,
---           status = status,
---           type = node.type,
---           severity = severity,
---           -- last = true, -- DEBUG:
---           last = node.last or nil,
---         }
---         -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
---         --   last[node.parent].last = false
---         -- end
---         -- last[node.parent] = item
---         -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
---
---         if top == node then
---           item.hidden = false
---           item.ignored = false
---         end
---
---         -- DEBUG: Is this block needed ?
---         -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
---         -- if node then
---         --   item.dir = node.dir
---         --   item.type = node.type
---         --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
---         -- end
---
---         item.zk = zk_note or nil -- Add zk note data to the `Node`
---
---         -- Set title as search text
---         if item.title then
---           item.text = item.title:lower()
---         else
---           item.text = basename
---         end
---
---         cb(item)
---         items[node.path] = item
---       end,
---       { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true }
---     )
---
---     if not items[root.file] then -- Ensure that root item exists even though the queries returns 0 items.
---       cb(root)
---     end
---   end
--- end
-
 ---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.zk(opts, ctx)
-  -- Stateをセットアップして watcher を起動
   local state = M.get_state(ctx.picker)
 
   if opts.git_status then
@@ -385,16 +259,14 @@ function M.zk(opts, ctx)
   end
 
   return function(cb)
-    -- on_find コールバックの設定
     if state.on_find then
       ctx.picker.matcher.task:on("done", vim.schedule_wrap(state.on_find))
       state.on_find = nil
     end
 
-    -- Watcher を起動（重要！）
+    -- Start watcher
     if state:setup(ctx) then
-      -- フィルターが空でない場合は search モードに移行
-      return M.search(opts, ctx)(cb)
+      return M.search(opts, ctx)(cb) -- Switch to search mode when filter enabled
     end
 
     local function process_items(notes_cache)
@@ -435,13 +307,27 @@ function M.zk(opts, ctx)
           status = status,
           type = node.type,
           severity = severity,
+          -- last = true, -- DEBUG:
           last = node.last or nil,
         }
+        -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
+        --   last[node.parent].last = false
+        -- end
+        -- last[node.parent] = item
+        -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
 
         if top == node then
           item.hidden = false
           item.ignored = false
         end
+
+        -- DEBUG: Is this block needed ?
+        -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
+        -- if node then
+        --   item.dir = node.dir
+        --   item.type = node.type
+        --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
+        -- end
 
         item.zk = zk_note or nil
 
@@ -460,10 +346,10 @@ function M.zk(opts, ctx)
       end
     end
 
-    -- まず空のキャッシュで処理（初期表示）
+    -- Return empty cache or older cache at first
     process_items(zk.notes_cache or {})
 
-    -- 非同期でZKデータを取得して再処理
+    -- Fetch zk data and redraw
     vim.schedule(function()
       zk.fetch_zk(function()
         process_items(zk.notes_cache)

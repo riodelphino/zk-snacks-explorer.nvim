@@ -65,7 +65,6 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
-  print(M.notebook_path) -- DEBUG:
 
   zk_api.index(M.notebook_path, zk_api_opts, function()
     zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
@@ -143,15 +142,13 @@ end
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
   local picker
-  print("open() is called") -- DEBUG: NOT CALLED
-  -- M.fetch_zk(
-  --   function() -- FIXME: fetch_zk should be removed here. It should be called before show all the Snacks.picker.zk() calling
+  -- M.fetch_zk( -- fetch_zk should be removed here. It should be called before show all the Snacks.picker.zk() calling
+  --   function()
   --     ---@type snacks.Picker?
   --     picker = Snacks.picker.zk(opts)
   --     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   --   end
   -- )
-
   ---@type snacks.Picker?
   picker = Snacks.picker.zk(opts)
   M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
