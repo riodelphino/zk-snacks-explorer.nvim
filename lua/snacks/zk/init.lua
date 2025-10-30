@@ -126,10 +126,6 @@ function M.setup(event)
       handle(event)
     end
 
-    -- FIXME: Cannnot get notebook_path
-    -- This setup() is not called somewhy.
-    M.notebook_path = require("zk.util").notebook_root(require("zk.util").resolve_notebook_path() or vim.fn.getcwd())
-
     -- Open the explorer when opening a directory
     vim.api.nvim_create_autocmd("BufEnter", {
       group = group,

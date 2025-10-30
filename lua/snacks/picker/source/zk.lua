@@ -210,7 +210,9 @@ function M.setup(opts)
     default_sort = opts.sort, -- Save it as default
   })
 
+  -- TODO: Should put them into opts?
   zk.opts = opts -- keep it in `snacks.zk` module for easy use.
+  zk.notebook_path = require("zk.util").notebook_root(require("zk.util").resolve_notebook_path(0) or vim.fn.getcwd())
 
   local enabled = opts.enabled == true or type(opts.enabled) == "function" and opts.enabled() == true
   if enabled then -- Register if enabled
