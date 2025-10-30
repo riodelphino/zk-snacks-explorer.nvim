@@ -3,7 +3,7 @@
 ---@class snacks.picker.explorer.Item: snacks.picker.finder.Item -- DEBUG: NEED THIS?
 
 ---@class snacks.picker.zk.Config : snacks.picker.explorer.Config
----@field enabled boolean|function?
+---@field enabled boolean|(fun():boolean)
 ---@field select table?
 ---@field sort snacks.picker.zk.sort.Config?
 ---@field default_sort snacks.picker.zk.sort.Config?

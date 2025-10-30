@@ -209,15 +209,10 @@ function M.setup(opts)
     default_query = opts.query, -- Save it as default
     default_sort = opts.sort, -- Save it as default
   })
+
   zk.opts = opts -- keep it in `snacks.zk` module for easy use.
 
-  local enabled
-  if type(opts.enabled) == "function" then
-    enabled = opts.enabled()
-  elseif type(opts.enabled) == "boolean" then
-    enabled = opts.enabled and true or false
-  end
-
+  local enabled = opts.enabled == true or type(opts.enabled) == "function" and opts.enabled() == true
   if enabled then -- Register if enabled
     require("snacks.picker").sources.zk = opts -- As a source
     Snacks.picker["zk"] = function(tmp_opts) -- As `Snacks.picker.zk()`
