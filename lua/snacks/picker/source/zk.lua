@@ -428,15 +428,25 @@ function M.zk(opts, ctx)
       end
     end
 
-    -- fetch first, then process
+    -- -- fetch first, then process
+    -- vim.schedule(function()
+    --   zk.fetch_zk(function()
+    --     process_items(zk.notes_cache)
+    --   end)
+    -- end)
+    --
+    -- -- To avoid `matcher is nil` error
+    -- return process_items(zk.notes_cache)
+
+    -- まず空のキャッシュで処理（初期表示）
+    process_items({})
+
+    -- 非同期でZKデータを取得して再処理
     vim.schedule(function()
       zk.fetch_zk(function()
         process_items(zk.notes_cache)
       end)
     end)
-
-    -- To avoid `matcher is nil` error
-    return process_items(zk.notes_cache)
   end
 end
 
