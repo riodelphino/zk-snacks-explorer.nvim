@@ -211,10 +211,18 @@ function M.setup(opts)
   })
   zk.opts = opts -- keep it in `snacks.zk` module for easy use.
 
-  -- Register
-  require("snacks.picker").sources.zk = opts -- As a source
-  Snacks.picker["zk"] = function(tmp_opts) -- As `Snacks.picker.zk()`
-    return Snacks.picker.pick("zk", tmp_opts)
+  local enabled
+  if type(opts.enabled) == "function" then
+    enabled = opts.enabled()
+  elseif type(opts.enabled) == "boolean" then
+    enabled = opts.enabled and true or false
+  end
+
+  if enabled then -- Register if enabled
+    require("snacks.picker").sources.zk = opts -- As a source
+    Snacks.picker["zk"] = function(tmp_opts) -- As `Snacks.picker.zk()`
+      return Snacks.picker.pick("zk", tmp_opts)
+    end
   end
   return opts
 end

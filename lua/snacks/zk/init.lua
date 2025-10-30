@@ -55,7 +55,6 @@ end
 -- ---@return table
 -- function M.get_query(query)
 --   if not query.query and query.input then
---     -- DEBUG: Need to sort out the errors and the messages below.
 --     error("query should have `query` field in `opts.query`. `input` field is not acceptable.")
 --   end
 --   return query.query
@@ -73,7 +72,6 @@ function M.fetch_zk(cb)
         vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
       end
       M.notes_cache = index_notes_by_path(notes)
-      -- print("M.notes_cache: " .. vim.inspect(M.notes_cache)) -- DEBUG: Remove this
       add_dir_to_notes(M.notes_cache)
       if cb and type(cb) == "function" then
         vim.schedule(function()
@@ -87,8 +85,8 @@ end
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
+  vim.notify("init.lua M.setup() called", vim.log.levels.INFO) -- FIXME: Not called at all
   local opts = Snacks.config.get("zk", defaults) -- Get user-configured zk options
-  vim.notify("init.lua M.setup() called", vim.log.levels.INFO)
 
   if opts.replace_netrw then
     -- Disable netrw

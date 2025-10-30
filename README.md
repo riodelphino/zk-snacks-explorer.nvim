@@ -16,7 +16,7 @@
 - [Minimam Config](#minimam-config)
 - [Usage](#usage)
 - [Config](#config)
-   - [Default Config](#default-config)
+   - [Defaults](#defaults)
    - [Select](#select)
    - [Sort](#sort)
       - [Set Fields](#set-fields)
@@ -75,29 +75,38 @@ Sorters
 
 for lazy.nvim:
 ```lua
-return {
+{
   'riodelphino/snacks-zk.nvim',
   dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
+}
+```
+
+## Minimam Config
+
+for lazy.nvim:
+```lua
+{
+  "folke/snacks.nvim",
+  priority = 1000,
+  lazy = false,
   config = function()
-    require('snacks.picker.source.zk').setup({}) -- Call setup once. Add to picker list, merge opts, e.t.c.
+    ---@param snacks.Config
+    require('snacks').setup({
+      picker = {
+        enabled = true,
+        sources = {
+          zk = {
+            -- Set your custom config here (See #default-config)
+          },
+        },
+      },
+    })
+    require('snacks.picker.source.zk').setup({}) -- Setup snacks-zk-explorer
   end,
   keys = {
     { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
   }
 }
-```
-~~* Automatically snacks calls `M.setup()` function in `lua/snacks/picker/source/zk.lua` on loading this picker.~~
-
-
-## Minimam Config
-
-```lua
-require('snacks').setup({
-  zk = {
-    -- Set your custom config here
-    -- See #default-config
-  }
-})
 ```
 
 ## Usage
@@ -110,7 +119,7 @@ require('snacks.zk').open() -- Call open() function directry
 ```
 Open with custom config:
 ```lua
----@type (snacks.picker.zk.Config | {})?
+---@type (snacks.picker.zk.Config|{})?
 local opts = {} -- Set your custom config here / See #default-config
 Snacks.zk(opts)
 Snacks.picker.zk(opts)
@@ -132,111 +141,112 @@ Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
 See `lua/snacks/zk/source.lua`
 
 
-### Default Config
+### Defaults
 
 ```lua
-require('snacks').setup({
-  ...
-  zk = {
-    title = "Zk",
-    finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
-    reveal = true,
-    supports_live = true,
-    tree = true, -- (fixed) Always true on this picker and `false` not works
-    watch = true,
-    diagnostics = true,
-    diagnostics_open = false,
-    git_status = true,
-    git_status_open = false,
-    git_untracked = true,
-    follow_file = true,
-    focus = "list",
-    auto_close = false,
-    jump = { close = false },
-    layout = { preset = "sidebar", preview = false },
-    include = {}, -- (e.g. "*.jpg")
-    exclude = {}, -- (e.g. "*.md")
-    ignored = false,
-    hidden = false,
-    filter = {
-      transform = nil, -- (fixed) *1
+zk = {
+  enabled = function() -- Enabled only in zk directory
+    local zk_util = require("zk.util")
+    local notebook_path = zk_util.notebook_root(vim.fn.getcwd())
+    return notebook_path ~= nil
+  end,
+  title = "Zk",
+  finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
+  reveal = true,
+  supports_live = true,
+  tree = true, -- (fixed) Always true on this picker and `false` not works
+  watch = true,
+  diagnostics = true,
+  diagnostics_open = false,
+  git_status = true,
+  git_status_open = false,
+  git_untracked = true,
+  follow_file = true,
+  focus = "list",
+  auto_close = false,
+  jump = { close = false },
+  layout = { preset = "sidebar", preview = false },
+  include = {}, -- (e.g. "*.jpg")
+  exclude = {}, -- (e.g. "*.md")
+  ignored = false,
+  hidden = false,
+  filter = {
+    transform = nil, -- (fixed) *1
+  },
+  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
+  formatters = {
+    file = {
+      filename_only = nil, -- (fixed) *1
+      filename_first = false,
+      markdown_only = false, -- find only markdown files
     },
-    select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
-    formatters = {
-      file = {
-        filename_only = nil, -- (fixed) *1
-        filename_first = false,
-        markdown_only = false, -- find only markdown files
-      },
-      severity = { pos = "right" },
-    },
-    format = nil, -- (fixed) *1
-    matcher = {
-      sort_empty = false, -- (Skipped) *3
-      fuzzy = true, -- (Skipped) *3
-      on_match = nil, -- (fixed) *1
-      on_done = nil, -- (fixed) *1
-    },
-    -- Sort
-    sort = { fields = { "sort" } }, -- *2
-    sorters = require("snacks.zk.sorters"),
-    -- Query
-    query = { desc = "all", query = {} },
-    queries = require("snacks.zk.queries"),
-    query_postfix = ": ",
-    -- Actions
-    actions = require("snacks.zk.actions"),
-    -- config = function(opts) -- This functions is not evaluated.
-    --   return require("snacks.picker.source.zk").setup(opts)
-    -- end,
-    win = {
-      list = {
-        keys = {
-          -- Supports explorer actions
-          ["<BS>"] = "explorer_up",
-          ["l"] = "confirm",
-          ["h"] = "explorer_close", -- close directory
-          ["a"] = "explorer_add",
-          ["d"] = "explorer_del",
-          ["r"] = "explorer_rename",
-          ["c"] = "explorer_copy",
-          ["m"] = "explorer_move",
-          ["o"] = "explorer_open", -- open with system application
-          ["P"] = "toggle_preview",
-          ["y"] = { "explorer_yank", mode = { "n", "x" } },
-          ["p"] = "explorer_paste",
-          ["u"] = "explorer_update",
-          ["<c-c>"] = "tcd",
-          ["<leader>/"] = "picker_grep",
-          -- ["<c-t>"] = "terminal", -- FIX: Duplicated key error with `["<c-t>"] = "tab"`
-          ["."] = "explorer_focus",
-          ["I"] = "toggle_ignored",
-          ["H"] = "toggle_hidden",
-          ["Z"] = "explorer_close_all",
-          ["]g"] = "explorer_git_next",
-          ["[g"] = "explorer_git_prev",
-          ["]d"] = "explorer_diagnostic_next",
-          ["[d"] = "explorer_diagnostic_prev",
-          ["]w"] = "explorer_warn_next",
-          ["[w"] = "explorer_warn_prev",
-          ["]e"] = "explorer_error_next",
-          ["[e"] = "explorer_error_prev",
-          -- zk actions
-          ["z"] = "zk_change_query",
-          ["Q"] = "zk_reset_query",
-          ["s"] = "zk_change_sort",
-          ["S"] = "zk_reset_sort",
-          -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
-          ["zb"] = false, -- "list_scroll_bottom",
-          ["zt"] = false, -- "list_scroll_top",
-          ["zz"] = false, -- "list_scroll_center",
-          -- See lua/snacks/picker/config/defaults.lua
-        },
+    severity = { pos = "right" },
+  },
+  format = nil, -- (fixed) *1
+  matcher = {
+    sort_empty = false, -- (Skipped) *3
+    fuzzy = true, -- (Skipped) *3
+    on_match = nil, -- (fixed) *1
+    on_done = nil, -- (fixed) *1
+  },
+  -- Sort
+  sort = { fields = { "sort" } }, -- *2
+  sorters = require("snacks.zk.sorters"),
+  -- Query
+  query = { desc = "all", query = {} },
+  queries = require("snacks.zk.queries"),
+  query_postfix = ": ",
+  -- Actions
+  actions = require("snacks.zk.actions"),
+  -- config = function(opts) -- This functions is not evaluated.
+  --   return require("snacks.picker.source.zk").setup(opts)
+  -- end,
+  win = {
+    list = {
+      keys = {
+        -- Supports explorer actions
+        ["<BS>"] = "explorer_up",
+        ["l"] = "confirm",
+        ["h"] = "explorer_close", -- close directory
+        ["a"] = "explorer_add",
+        ["d"] = "explorer_del",
+        ["r"] = "explorer_rename",
+        ["c"] = "explorer_copy",
+        ["m"] = "explorer_move",
+        ["o"] = "explorer_open", -- open with system application
+        ["P"] = "toggle_preview",
+        ["y"] = { "explorer_yank", mode = { "n", "x" } },
+        ["p"] = "explorer_paste",
+        ["u"] = "explorer_update",
+        ["<c-c>"] = "tcd",
+        ["<leader>/"] = "picker_grep",
+        -- ["<c-t>"] = "terminal", -- FIX: Duplicated key error with `["<c-t>"] = "tab"`
+        ["."] = "explorer_focus",
+        ["I"] = "toggle_ignored",
+        ["H"] = "toggle_hidden",
+        ["Z"] = "explorer_close_all",
+        ["]g"] = "explorer_git_next",
+        ["[g"] = "explorer_git_prev",
+        ["]d"] = "explorer_diagnostic_next",
+        ["[d"] = "explorer_diagnostic_prev",
+        ["]w"] = "explorer_warn_next",
+        ["[w"] = "explorer_warn_prev",
+        ["]e"] = "explorer_error_next",
+        ["[e"] = "explorer_error_prev",
+        -- zk actions
+        ["z"] = "zk_change_query",
+        ["Q"] = "zk_reset_query",
+        ["s"] = "zk_change_sort",
+        ["S"] = "zk_reset_sort",
+        -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
+        ["zb"] = false, -- "list_scroll_bottom",
+        ["zt"] = false, -- "list_scroll_top",
+        ["zz"] = false, -- "list_scroll_center",
+        -- See lua/snacks/picker/config/defaults.lua
       },
     },
   },
-  ...
-}
+},
 -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
 -- *2 : `explorer` completely skips `opts.sort`. But `zk-explorer` evaluates it.
 -- *3 : Since searching in both `filename` and `title` is required, zk-explorer` does not use built-in commands like `fd`, `rg` or `find`.
@@ -494,11 +504,11 @@ Built-in queries:
 
 #### Add Custom Queries
 
-Add cusotm query `todo`:
+Add cusotm query `Todo`:
 ```lua
 queries = {
   todo = {
-    desc = "todo",
+    desc = "Todo",
     input = function(__, __, cb)
       cb({ desc = "Todo", query = { tags = { "todo" } } })
     end,
@@ -537,14 +547,12 @@ win = {
 ## Issues
 
 - The focus is lost when queries/sorters `select.ui` is canceled.
-- Use none default sort disorders the tree.
-
+- For now, almost sorters disorders the tree in searching with `/` key.
 
 ## TODO
 
 - [ ] Add action for zk.api.new()
-- [ ] Supports custom actions for zk?
-- [ ] Supports custom queries
+- [ ] Fix the order in searching
 
 
 ## Related
