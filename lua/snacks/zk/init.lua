@@ -140,12 +140,13 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
-  local picker
-  M.fetch_zk(function()
-    ---@type snacks.Picker?
-    picker = Snacks.picker.zk(opts)
-    M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
-  end)
+  ---@type snacks.Picker?
+  local picker = Snacks.picker.zk(opts)
+  if picker then
+    vim.schedule(function()
+      M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
+    end)
+  end
   return picker
 end
 
