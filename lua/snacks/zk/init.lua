@@ -65,6 +65,7 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
+  print(M.notebook_path)
 
   zk_api.index(M.notebook_path, zk_api_opts, function()
     zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
@@ -141,6 +142,7 @@ end
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
   local picker
+  print("open() is called") -- DEBUG: NOT CALLED
   M.fetch_zk(function()
     ---@type snacks.Picker?
     picker = Snacks.picker.zk(opts)

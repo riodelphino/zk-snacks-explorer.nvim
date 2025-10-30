@@ -215,10 +215,12 @@ function M.setup(opts)
   zk.notebook_path = require("zk.util").notebook_root(require("zk.util").resolve_notebook_path(0) or vim.fn.getcwd())
 
   local enabled = opts.enabled == true or type(opts.enabled) == "function" and opts.enabled() == true
+  print("setup() enabled: " .. tostring(enabled))
   if enabled then -- Register if enabled
     require("snacks.picker").sources.zk = opts -- As a source
-    Snacks.picker["zk"] = function(tmp_opts) -- As `Snacks.picker.zk()`
-      return Snacks.picker.pick("zk", tmp_opts)
+    Snacks.picker["zk"] = function() -- As `Snacks.picker.zk()`
+      print(vim.inspect(opts))
+      return Snacks.picker.pick("zk", opts)
     end
   end
   return opts
