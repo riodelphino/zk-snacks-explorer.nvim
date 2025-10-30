@@ -189,7 +189,12 @@ Detect files & folders modification.
 ```lua
 -- WORKS (Just add a source):
 Snacks.picker.sources.zk = require("snacks.zk.source") -- Used at M.open() in `lua/snacks/zk/init.lua`
-require('snacks.picker').source.zk = require('snacks.zk.source') -- This also works.
+
+require('snacks.zk').fetch_zk(Snacks.picker.zk()) -- WORKS but tricky
+-- But it should be like this. fetch zk -> show picker
+
+-- PARTIALLY WORKS:
+require('snacks.picker').source.zk = require('snacks.zk.source') -- Registering OK and displayed in pikers list / But cannot call by `Snacks.zk`
 
 -- NOT WORKS:
 require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
@@ -197,8 +202,6 @@ Snacks["zk"] = function(opts) M.open(opts) end -- ERROR: not found
 Snacks.picker["zk"] = opts -- No meanings
 require("snacks.picker.sources").zk = opts -- Error
 
--- PARTIALLY WORKS:
-require("snacks.picker").sources.zk = zk_source -- Registering OK and displayed in pikers list / But cannot call by `Snacks.zk`
 
 -- Others:
 require("snacks.picker.core.picker").new() -- NOT for registration
@@ -209,10 +212,139 @@ require("snacks.picker").pick("zk", opts) -- WORKS but opens picker imediately.
 
 
 ```
+### pickers
 
+FROM source doc:
+
+```vim
+:lua Snacks.picker.pickers(opts?)
 ```
 
+List all available sources
+
+```lua
+{
+  finder = "meta_pickers",
+  format = "text",
+  confirm = function(picker, item)
+    picker:close()
+
+    if item then
+      vim.schedule(function()
+        Snacks.picker(item.text)
+      end)
+    end
+  end,
+}
 ```
+So, finaly pickers calls `Snacks.picker("zk")`
+
+
+### Which one works
+
+Currently, only `Snacks.zk()` works fine.
+
+Following works too.
+  - `require('snacks.zk').open()` -> `Snacks.picker.zk()`
+
+Followings don't work. (Because they don't call `open()` insidely somewhy.)
+  - `Snacks.picker('zk')`
+  - `Snacks.picker.zk()`
+  - `Snacks.picker.zk(require('snacks.zk.source'))`
+  - `Snacks.picker.pick('zk')`
+  - `Snacks.picker.zk = require('snacks.zk').open` -> `Snacks.picker.zk()`
+  - `require("snacks.picker").sources.zk = require('snacks.zk').opts` -> `Snacks.picker.zk()`
+  - `require('snacks.zk').setup()` -> `Snacks.picker.zk()`
+
+So, some code in open() are the key.
+
+
+### When the setup is called
+
+  - `lua/snacks/explorer/init.lua`           M.setup() : Called on snacks initializing.
+  - `lua/snacks/picker/source/explorer.lua`  M.setup() : Called on snacks.explorer loading.
+
+
+### Several ways to call pickers
+
+:h snacks-picker-usage
+```help
+==============================================================================
+2. Usage                                                 *snacks-picker-usage*
+
+The best way to get started is to copy some of the example configs
+<https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#-examples>
+below.
+
+>lua
+    -- Show all pickers
+    Snacks.picker()
+    
+    -- run files picker (all three are equivalent)
+    Snacks.picker.files(opts)
+    Snacks.picker.pick("files", opts)
+    Snacks.picker.pick({source = "files", ...})
+```
+
+### See 
+
+This example shows how to add custom action and keymaps.
+
+:h snacks-picker-examples-flash
+```help
+==============================================================================
+5. Examples                                           *snacks-picker-examples*
+
+
+FLASH                                           *snacks-picker-examples-flash*
+
+>lua
+    {
+      "folke/flash.nvim",
+      optional = true,
+      specs = {
+        {
+          "folke/snacks.nvim",
+          opts = {
+            picker = {
+              win = {
+                input = {
+                  keys = {
+                    ["<a-s>"] = { "flash", mode = { "n", "i" } },
+                    ["s"] = { "flash" },
+                  },
+                },
+              },
+              actions = {
+                flash = function(picker)
+                  require("flash").jump({
+                    pattern = "^",
+                    label = { after = { 0, 0 } },
+                    search = {
+                      mode = "search",
+                      exclude = {
+                        function(win)
+                          return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
+                        end,
+                      },
+                    },
+                    action = function(match)
+                      local idx = picker.list:row2idx(match.pos[1])
+                      picker.list:_move(idx, true, true)
+                    end,
+                  })
+                end,
+              },
+            },
+          },
+        },
+      },
+    }
+```
+
+See also
+:h snacks-picker-examples-todo_comments
+:h snacks-picker-examples-trouble
 
 ## Get picker config
 

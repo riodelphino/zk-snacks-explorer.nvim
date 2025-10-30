@@ -65,7 +65,7 @@ end
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
   local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
-  print(M.notebook_path)
+  print(M.notebook_path) -- DEBUG:
 
   zk_api.index(M.notebook_path, zk_api_opts, function()
     zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
@@ -89,7 +89,8 @@ end
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
-  vim.notify("init.lua M.setup() called", vim.log.levels.INFO) -- FIXME: Not called at all
+  -- FIXME: Not called at all
+  print("lua/snacks/zk/init.lua M.setup()") -- DEBUG:
   local opts = Snacks.config.get("zk", defaults) -- Get user-configured zk options
 
   if opts.replace_netrw then
@@ -143,17 +144,24 @@ end
 function M.open(opts)
   local picker
   print("open() is called") -- DEBUG: NOT CALLED
-  M.fetch_zk(function()
-    ---@type snacks.Picker?
-    picker = Snacks.picker.zk(opts)
-    M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
-  end)
+  -- M.fetch_zk(
+  --   function() -- FIXME: fetch_zk should be removed here. It should be called before show all the Snacks.picker.zk() calling
+  --     ---@type snacks.Picker?
+  --     picker = Snacks.picker.zk(opts)
+  --     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
+  --   end
+  -- )
+
+  ---@type snacks.Picker?
+  picker = Snacks.picker.zk(opts)
+  M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   return picker
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
+  print("reveal() is called") -- DEBUG:
   local zk_actions = require("snacks.zk.actions")
   local Tree = require("snacks.zk.tree")
   opts = opts or {}
