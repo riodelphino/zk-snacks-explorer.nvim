@@ -129,7 +129,7 @@ function M.setup(event)
     end
 
     -- FIXME: Cannnot get notebook_path
-
+    -- This setup() is not called somewhy.
     M.notebook_path = require("zk.util").notebook_root(require("zk.util").resolve_notebook_path() or vim.fn.getcwd())
 
     -- Open the explorer when opening a directory
@@ -143,16 +143,13 @@ end
 --- Shortcut to open the explorer picker
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
+  local picker
   M.fetch_zk(function()
-    if not Snacks.picker.sources.zk then
-      Snacks.picker.sources.zk = require("snacks.zk.source")
-    end
     ---@type snacks.Picker?
-    -- local picker = Snacks.picker.zk(opts)
-    local picker = Snacks.picker.pick("zk", opts)
-
+    picker = Snacks.picker.zk(opts)
     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   end)
+  return picker
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer

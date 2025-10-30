@@ -194,16 +194,24 @@ require('snacks.picker').source.zk = require('snacks.zk.source') -- This also wo
 -- NOT WORKS:
 require("snacks.picker")["zk"] = function(opts) M.open(opts) end -- NOT WORKS
 Snacks["zk"] = function(opts) M.open(opts) end -- ERROR: not found
+Snacks.picker["zk"] = opts -- No meanings
+require("snacks.picker.sources").zk = opts -- Error
 
 -- PARTIALLY WORKS:
 require("snacks.picker").sources.zk = zk_source -- Registering OK and displayed in pikers list / But cannot call by `Snacks.zk`
 
 -- Others:
 require("snacks.picker.core.picker").new() -- NOT for registration
-require('snacks.picker').pick("zk", zk_source) -- NOT for registration. Creates and opens a new picker.
+require("snacks.picker").pick("zk", opts) -- WORKS but opens picker imediately.
 -- *** WIERD BEHAVIOUR ***
 -- It opens the picker imediately, which triggers M.open() in the zk module.
 -- This causes unexpected behaviour where the picker opens and imediately closes.
+
+
+```
+
+```
+
 ```
 
 ## Get picker config

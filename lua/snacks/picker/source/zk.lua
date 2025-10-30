@@ -133,12 +133,14 @@ function M.setup(opts)
   local searching = false
   local ref ---@type snacks.Picker.ref
 
-  -- Get user-configured zk options merged with default config(=source.lua).
-  local user_opts = Snacks.config.get("zk", {}) or {}
-  user_opts = Snacks.config.merge(require("snacks.zk.source"), user_opts) -- Merge user_opts over source.lua
-  opts = Snacks.config.merge(user_opts, opts) -- Merge opts from arg over user_opts
+  -- Merge all static config
+  local default_opts = require("snacks.zk.source")
+  local picker_opts = Snacks.config.get("picker", {})
+  local user_opts = picker_opts.sources and picker_opts.sources.zk or {}
+  opts = Snacks.config.merge(default_opts, user_opts, opts)
 
-  opts = Snacks.config.merge(opts, { -- Merge dynamic config. (Thay can be added only here.)
+  -- Merge dynamic config
+  opts = Snacks.config.merge(opts, {
     actions = {
       confirm = opts.actions.actions.confirm,
     },
@@ -204,10 +206,16 @@ function M.setup(opts)
         filename_only = opts.tree,
       },
     },
-    default_query = opts.query, -- Keep it as default
-    default_sort = opts.sort, -- Keep it as default
+    default_query = opts.query, -- Save it as default
+    default_sort = opts.sort, -- Save it as default
   })
-  zk.opts = opts -- keep it in `lua/snacks/zk/init.lua` module for easy use.
+  zk.opts = opts -- keep it in `snacks.zk` module for easy use.
+
+  -- Register
+  require("snacks.picker").sources.zk = opts -- As a source
+  Snacks.picker["zk"] = function(tmp_opts) -- As `Snacks.picker.zk()`
+    return Snacks.picker.pick("zk", tmp_opts)
+  end
   return opts
 end
 
