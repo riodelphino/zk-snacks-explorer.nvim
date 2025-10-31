@@ -134,6 +134,7 @@ function M.setup(opts)
 
   local searching = false
   local ref ---@type snacks.Picker.ref
+  print(vim.inspect(opts))
 
   -- Merge all static config
   local default_opts = require("snacks.zk.source")
@@ -218,8 +219,9 @@ function M.setup(opts)
   local enabled = opts.enabled == true or type(opts.enabled) == "function" and opts.enabled() == true
   if enabled then -- Register if enabled
     require("snacks.picker").sources.zk = opts -- As a source
-    Snacks.picker["zk"] = function() -- As `Snacks.picker.zk()`
-      return Snacks.picker.pick("zk", opts)
+    Snacks.picker["zk"] = function(runtime_opts) -- As `Snacks.picker.zk()`
+      local merged_opts = Snacks.config.merge(opts, runtime_opts or {})
+      return Snacks.picker.pick("zk", merged_opts)
     end
   end
   return opts
