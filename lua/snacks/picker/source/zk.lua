@@ -349,25 +349,25 @@ function M.zk(opts, ctx)
     -- Return empty cache or older cache at first
     process_items(zk.notes_cache or {})
 
-    -- -- Fetch zk data and redraw
-    -- vim.schedule(function()
-    --   zk.fetch_zk(function()
-    --     process_items(zk.notes_cache) -- DEBUG:
+    -- -- -- Fetch zk data and redraw -- DEBUG:
+    -- -- vim.schedule(function()
+    -- --   zk.fetch_zk(function()
+    -- --     process_items(zk.notes_cache)
+    -- --   end)
+    -- -- end)
+    --
+    -- -- ZKデータが既にある場合はそのまま表示
+    -- print("#zk.notes_cache: " .. #zk.notes_cache)
+    -- if zk.notes_cache and vim.tbl_count(zk.notes_cache) > 0 then
+    --   process_items(zk.notes_cache)
+    -- else
+    --   -- ZKデータがない場合は取得してから表示
+    --   vim.schedule(function()
+    --     zk.fetch_zk(function()
+    --       process_items(zk.notes_cache or {})
+    --     end)
     --   end)
-    -- end)
-
-    -- ZKデータが既にある場合はそのまま表示
-    print("#zk.notes_cache: " .. #zk.notes_cache)
-    if zk.notes_cache and vim.tbl_count(zk.notes_cache) > 0 then
-      process_items(zk.notes_cache)
-    else
-      -- ZKデータがない場合は取得してから表示
-      vim.schedule(function()
-        zk.fetch_zk(function()
-          process_items(zk.notes_cache or {})
-        end)
-      end)
-    end
+    -- end
   end
 end
 

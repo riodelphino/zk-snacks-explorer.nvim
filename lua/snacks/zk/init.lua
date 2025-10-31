@@ -142,17 +142,11 @@ end
 ---@param opts? snacks.picker.explorer.Config|{}
 function M.open(opts)
   local picker
-  -- M.fetch_zk( -- fetch_zk should be removed here. It should be called before show all the Snacks.picker.zk() calling
-  --   function()
-  --     ---@type snacks.Picker?
-  --     picker = Snacks.picker.zk(opts)
-  --     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
-  --   end
-  -- )
-  ---@type snacks.Picker?
-  picker = Snacks.picker.zk(opts)
-  M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
-  return picker
+  M.fetch_zk(function()
+    ---@type snacks.Picker?
+    picker = Snacks.picker.zk(opts)
+    M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
+  end)
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer
