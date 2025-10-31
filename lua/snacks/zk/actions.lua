@@ -51,6 +51,7 @@ M.actions.zk_reset_query = function()
   zk.update_picker_title()
   zk_watch.refresh(function()
     local root = require("snacks.zk.util").get_cwd()
+    print("root: " .. root .. " / id: " .. id)
     if id ~= root then --Aavoid moving up the root
       zk.reveal({ file = id })
     end

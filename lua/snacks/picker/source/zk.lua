@@ -268,85 +268,80 @@ function M.zk(opts, ctx)
       return M.search(opts, ctx)(cb) -- Switch to search mode when filter enabled
     end
 
-    local function process_items(notes_cache)
-      local items = {} ---@type table<string, snacks.picker.explorer.Item>
-      local top = Tree:find(ctx.filter.cwd)
-      local root = {
-        file = ctx.filter.cwd,
-        dir = true,
-        open = true,
-        hidden = false,
-        internal = true,
-        sort = "",
-        text = ctx.filter.cwd,
-      }
+    local items = {} ---@type table<string, snacks.picker.explorer.Item>
+    local top = Tree:find(ctx.filter.cwd)
+    local root = {
+      file = ctx.filter.cwd,
+      dir = true,
+      open = true,
+      hidden = false,
+      internal = true,
+      sort = "",
+      text = ctx.filter.cwd,
+    }
 
-      Tree:get(ctx.filter.cwd, function(node)
-        local parent = node.parent and items[node.parent.path] or nil
-        local zk_note = notes_cache[node.path] or nil
-        local title = zk_note and zk_note.title
-        local status = node.status or (parent and parent.dir_status)
-        if node.dir and node.open and not opts.git_status_open then
-          status = nil
-        end
-        local dirname, basename = node.path:match("(.*)/(.*)")
-        dirname, basename = dirname or "", basename or node.path
-        local severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil
-
-        ---@type snacks.picker.explorer.Item
-        local item = {
-          file = node.path,
-          dir = node.dir,
-          open = node.open,
-          dir_status = node.dir_status or (parent and parent.dir_status),
-          text = title or node.path,
-          parent = parent,
-          hidden = node.hidden or basename:sub(1, 1) == ".",
-          ignored = node.ignored,
-          status = status,
-          type = node.type,
-          severity = severity,
-          -- last = true, -- DEBUG:
-          last = node.last or nil,
-        }
-        -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
-        --   last[node.parent].last = false
-        -- end
-        -- last[node.parent] = item
-        -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
-
-        if top == node then
-          item.hidden = false
-          item.ignored = false
-        end
-
-        -- DEBUG: Is this block needed ?
-        -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
-        -- if node then
-        --   item.dir = node.dir
-        --   item.type = node.type
-        --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
-        -- end
-
-        item.zk = zk_note or nil
-
-        if item.zk and item.zk.title then
-          item.text = item.zk.title
-        else
-          item.text = basename
-        end
-
-        cb(item)
-        items[node.path] = item
-      end, { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true })
-
-      if not items[root.file] then
-        cb(root)
+    Tree:get(ctx.filter.cwd, function(node)
+      local parent = node.parent and items[node.parent.path] or nil
+      local note = zk.notes_cache[node.path] or nil
+      local title = note and note.title
+      local status = node.status or (parent and parent.dir_status)
+      if node.dir and node.open and not opts.git_status_open then
+        status = nil
       end
-    end
+      local dirname, basename = node.path:match("(.*)/(.*)")
+      dirname, basename = dirname or "", basename or node.path
+      local severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil
 
-    -- Return empty cache or older cache at first
-    process_items(zk.notes_cache or {})
+      ---@type snacks.picker.explorer.Item
+      local item = {
+        file = node.path,
+        dir = node.dir,
+        open = node.open,
+        dir_status = node.dir_status or (parent and parent.dir_status),
+        text = title or node.path,
+        parent = parent,
+        hidden = node.hidden or basename:sub(1, 1) == ".",
+        ignored = node.ignored,
+        status = status,
+        type = node.type,
+        severity = severity,
+        -- last = true, -- DEBUG:
+        last = node.last or nil,
+      }
+      -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
+      --   last[node.parent].last = false
+      -- end
+      -- last[node.parent] = item
+      -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
+
+      if top == node then
+        item.hidden = false
+        item.ignored = false
+      end
+
+      -- DEBUG: Is this block needed ?
+      -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
+      -- if node then
+      --   item.dir = node.dir
+      --   item.type = node.type
+      --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
+      -- end
+
+      item.zk = note or nil
+
+      if item.zk and item.zk.title then
+        item.text = item.zk.title
+      else
+        item.text = basename
+      end
+
+      cb(item)
+      items[node.path] = item
+    end, { hidden = opts.hidden, ignored = opts.ignored, exclude = opts.exclude, include = opts.include, expand = true })
+
+    if not items[root.file] then
+      cb(root)
+    end
 
     -- -- -- Fetch zk data and redraw -- DEBUG:
     -- -- vim.schedule(function()
