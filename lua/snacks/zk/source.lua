@@ -37,6 +37,13 @@ local source = {
     },
     severity = { pos = "right" },
   },
+  -- transform = function(item) -- DEBUG: transform is for searching
+  --   if item.zk and item.zk.title then
+  --     return item.zk.title
+  --   end
+  --   return vim.fn.fnamemodify(item.file, ":t")
+  -- end,
+
   format = nil, -- (fixed) *1
   matcher = {
     sort_empty = false,

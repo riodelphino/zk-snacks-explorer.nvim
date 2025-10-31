@@ -8,7 +8,6 @@ local uv = vim.uv or vim.loop
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
 rawset(M, "filename", function(item, picker)
-  -- M.filename = function(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
@@ -91,8 +90,7 @@ rawset(M, "filename", function(item, picker)
     real = real or uv.fs_readlink(item.file)
     if real then
       ret[#ret + 1] = { "-> ", "SnacksPickerDelim" }
-      ret[#ret + 1] =
-        { Snacks.picker.util.truncpath(real, 20), broken and "SnacksPickerLinkBroken" or "SnacksPickerLink" }
+      ret[#ret + 1] = { Snacks.picker.util.truncpath(real, 20), broken and "SnacksPickerLinkBroken" or "SnacksPickerLink" }
       ret[#ret + 1] = { " " }
     end
   end
