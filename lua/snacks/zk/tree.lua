@@ -13,6 +13,15 @@ local function assert_dir(path)
   assert(vim.fn.isdirectory(path) == 1, "Not a directory: " .. path)
 end
 
+---Returns true if the path is inside the cwd, or equal to it
+---@param cwd string
+---@param path string
+function Tree:in_cwd(cwd, path)
+  cwd = vim.fs.normalize(cwd)
+  path = vim.fs.normalize(path)
+  return path == cwd or path:find(cwd .. "/", 1, true) == 1
+end
+
 ---@param node snacks.picker.zk.Node
 ---@param fn fun(node: snacks.picker.zk.Node):boolean? return `false` to not process children, `true` to abort
 ---@param opts? {all?: boolean, cwd: string}
