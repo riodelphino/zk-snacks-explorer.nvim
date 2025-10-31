@@ -21,7 +21,7 @@ local function get_current_id()
 end
 
 ---Change the query dynamically
-M.actions.zk_change_query = function()
+M.zk_change_query = function()
   local id = get_current_id()
   local items = {}
   for _, item in pairs(require("snacks.zk.queries")) do
@@ -48,7 +48,7 @@ M.actions.zk_change_query = function()
 end
 
 ---Reset query
-M.actions.zk_reset_query = function()
+M.zk_reset_query = function()
   local id = get_current_id()
   local picker = Snacks.picker.get({ source = "zk" })[1]
   local cwd = picker and picker:cwd() or zk.notebook_path
@@ -61,7 +61,7 @@ M.actions.zk_reset_query = function()
 end
 
 ---Change the sort dynamically
-M.actions.zk_change_sort = function()
+M.zk_change_sort = function()
   local id = get_current_id()
 
   local items = {}
@@ -88,7 +88,7 @@ M.actions.zk_change_sort = function()
 end
 
 ---Reset sort
-M.actions.zk_reset_sort = function()
+M.zk_reset_sort = function()
   local id = get_current_id()
   zk.opts.sort = zk.opts.default_sort
   zk.update_picker_title()
