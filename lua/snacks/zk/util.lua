@@ -62,7 +62,6 @@ end
 ---Get cwd easily (when ctx.filter.cwd is not available)
 ---@return string
 function M.get_cwd()
-  -- zk.notebook_path -- DEBUG: Why nil ?
   local picker = Snacks.picker.get({ source = "zk" })[1]
   return picker.cwd(picker)
 end

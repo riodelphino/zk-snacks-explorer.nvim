@@ -2,8 +2,6 @@ local notes = require("snacks.zk").notes_cache
 
 local M = {}
 
--- TODO: Consider asc / desc
-
 ---@type snacks.picker.zk.Sort
 M.title = {
   desc = "Title ",

@@ -37,12 +37,15 @@ local source = {
     },
     severity = { pos = "right" },
   },
-  -- transform = function(item) -- DEBUG: transform is for searching
+  -- transform = function(item) -- DEBUG: transform is only for searching?
   --   if item.zk and item.zk.title then
   --     return item.zk.title
   --   end
   --   return vim.fn.fnamemodify(item.file, ":t")
   -- end,
+  -- TODO: Can it もっと簡単な方法で実現できるか？
+  -- item.text や item.title, item.zk への zk 情報の追加を transform で行い、
+  -- zk() の中身は explorer() の内容そのままコピペorラッピングするとか。
 
   format = nil, -- (fixed) *1
   matcher = {
@@ -64,13 +67,11 @@ local source = {
 
   sorters = require("snacks.zk.sorters"),
   -- Query
-  -- query = "all", -- DEBUG: If set string, the query should have static `query` field. Error if has `input` field as function.
   query = { desc = "all", query = {} },
   queries = require("snacks.zk.queries"),
   query_postfix = ": ",
   -- Actions
   actions = require("snacks.zk.actions"),
-
   -- config = function(opts) -- This functions is not evaluated.
   --   return require("snacks.picker.source.zk").setup(opts)
   -- end,
@@ -112,7 +113,6 @@ local source = {
         ["s"] = "zk_change_sort",
         ["S"] = "zk_reset_sort",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
-
         ["zb"] = false, -- "list_scroll_bottom",
         ["zt"] = false, -- "list_scroll_top",
         ["zz"] = false, -- "list_scroll_center",

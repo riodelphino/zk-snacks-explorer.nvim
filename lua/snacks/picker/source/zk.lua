@@ -341,26 +341,6 @@ function M.zk(opts, ctx)
     if not items[root.file] then
       cb(root)
     end
-
-    -- -- -- Fetch zk data and redraw -- DEBUG:
-    -- -- vim.schedule(function()
-    -- --   zk.fetch_zk(function()
-    -- --     process_items(zk.notes_cache)
-    -- --   end)
-    -- -- end)
-    --
-    -- -- ZKデータが既にある場合はそのまま表示
-    -- print("#zk.notes_cache: " .. #zk.notes_cache)
-    -- if zk.notes_cache and vim.tbl_count(zk.notes_cache) > 0 then
-    --   process_items(zk.notes_cache)
-    -- else
-    --   -- ZKデータがない場合は取得してから表示
-    --   vim.schedule(function()
-    --     zk.fetch_zk(function()
-    --       process_items(zk.notes_cache or {})
-    --     end)
-    --   end)
-    -- end
   end
 end
 

@@ -63,22 +63,7 @@ rawset(M, "filename", function(item, picker)
   if picker.opts.formatters.file.filename_only then -- `filename` only (or title)
     path = vim.fn.fnamemodify(item.file, ":t")
     path = path == "" and item.file or path
-    ret[#ret + 1] = { title or path, base_hl, field = "file" } -- DEBUG: right???
-  -- else
-  --   local dir, base = path:match("^(.*)/(.+)$")
-  --   if base and dir then
-  --     if picker.opts.formatters.file.filename_first then -- `filename dir` style
-  --       ret[#ret + 1] = { base, base_hl, field = "file" }
-  --       ret[#ret + 1] = { " " }
-  --       ret[#ret + 1] = { dir, dir_hl, field = "file" }
-  --     else
-  --       ret[#ret + 1] = { dir .. "/", dir_hl, field = "file" } -- `dir/filename` style
-  --       ret[#ret + 1] = { title or base, base_hl, field = "file" }
-  --     end
-  --   else
-  --     ret[#ret + 1] = { title or base or path, base_hl, field = "file" } -- only `filename` or `dirname` (`/` was not included)
-  --   end
-  -- end
+    ret[#ret + 1] = { title or path, base_hl, field = "file" }
   else
     ret[#ret + 1] = {
       "",

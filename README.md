@@ -220,7 +220,7 @@ zk = {
         ["u"] = "explorer_update",
         ["<c-c>"] = "tcd",
         ["<leader>/"] = "picker_grep",
-        -- ["<c-t>"] = "terminal", -- FIX: Duplicated key error with `["<c-t>"] = "tab"`
+        -- ["<c-t>"] = "terminal", -- TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
         ["."] = "explorer_focus",
         ["I"] = "toggle_ignored",
         ["H"] = "toggle_hidden",
@@ -525,7 +525,6 @@ Use custom query `todo`:
 Not implemented yet...
 
 ```lua
--- FIXME: Should be merged with require("snacks.actions").actions table, not in the root.
 actions = {
   zk_add_new = function()
     ...

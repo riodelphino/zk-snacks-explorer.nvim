@@ -159,7 +159,6 @@ function M.reveal(opts)
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
   local picker = Snacks.picker.get({ source = "zk" })[1] or M.open()
   local cwd = picker:cwd()
-  print(string.format("reveal(): cwd: %s / file: %s", cwd, file)) -- DEBUG:
   if not Tree:in_cwd(cwd, file) then
     for parent in vim.fs.parents(file) do
       if Tree:in_cwd(parent, cwd) then
