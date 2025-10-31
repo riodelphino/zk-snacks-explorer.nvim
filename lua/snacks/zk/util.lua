@@ -19,8 +19,9 @@ local function get_sort_key_part(part, entry, is_last)
   local kind = (is_last and not entry.dir) and "#" or "!" -- "!":directories -> "#":files
   local visibility = not hidden and "+" or "." -- "+":visible -> ".":hidden
   local title = is_last and not entry.dir and entry.zk and (entry.zk.title or entry.zk.metadata and entry.zk.metadata.title)
-  local has_title = (is_last and not entry.dir and entry.zk and title) and "@" or "_" -- "@":has title -> "_":no title
-  local name = is_last and not entry.dir and entry.zk and entry.zk.title or part
+
+  local has_title = (not entry.dir and is_last and entry.zk and title) and "@" or "_" -- "@":has title -> "_":no title
+  local name = title or part
   return string.format("[%s%s%s]%s", kind, visibility, has_title, name)
 end
 
