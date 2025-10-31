@@ -43,7 +43,6 @@ function M.get_sort_key(entry, root)
   for i, name in ipairs(parts) do
     table.insert(sort_list, get_sort_key_part(name, entry, (i == #parts)))
   end
-  print(table.concat(sort_list))
 
   return table.concat(sort_list)
 end

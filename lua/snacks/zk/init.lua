@@ -147,12 +147,12 @@ function M.open(opts)
     picker = Snacks.picker.zk(opts)
     M.update_picker_title(picker) -- Avoid 'picker is nil (==not generated yet)' error, by passing 'picker' as an argument.
   end)
+  return picker -- Always nil (because of async)
 end
 
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
-  print("reveal() is called") -- DEBUG:
   local zk_actions = require("snacks.zk.actions")
   local Tree = require("snacks.zk.tree")
   opts = opts or {}
