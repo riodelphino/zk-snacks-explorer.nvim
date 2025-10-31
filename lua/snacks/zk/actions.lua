@@ -34,10 +34,13 @@ M.actions.zk_change_query = function()
     if not item then
       return
     end
-    item.input(zk.notebook_path, id, function(res)
+    local picker = Snacks.picker.get({ source = "zk" })[1]
+    local cwd = picker and picker:cwd() or zk.notebook_path
+    item.input(cwd, id, function(res)
       zk.opts.query = res
       zk.update_picker_title()
       zk_watch.refresh(function()
+        print(string.format("zk_change_query: id: %s / cwd: %s", id, cwd))
         zk.reveal({ file = id })
       end)
     end)
@@ -47,14 +50,13 @@ end
 ---Reset query
 M.actions.zk_reset_query = function()
   local id = get_current_id()
+  local picker = Snacks.picker.get({ source = "zk" })[1]
+  local cwd = picker and picker:cwd() or zk.notebook_path
   zk.opts.query = zk.opts.default_query
   zk.update_picker_title()
   zk_watch.refresh(function()
-    local root = require("snacks.zk.util").get_cwd()
-    print("root: " .. root .. " / id: " .. id)
-    if id ~= root then --Aavoid moving up the root
-      zk.reveal({ file = id })
-    end
+    print(string.format("zk_reset_query: id: %s / cwd: %s", id, cwd))
+    zk.reveal({ file = id })
   end)
 end
 

@@ -134,7 +134,6 @@ function M.setup(opts)
 
   local searching = false
   local ref ---@type snacks.Picker.ref
-  print(vim.inspect(opts))
 
   -- Merge all static config
   local default_opts = require("snacks.zk.source")
@@ -161,7 +160,7 @@ function M.setup(opts)
         end
       end,
     },
-    format = zk_format.file,
+    format = zk_format.file, -- Call customized formatter for zk
     matcher = {
       --- Add parent dirs to matching items
       ---@param matcher snacks.picker.Matcher
