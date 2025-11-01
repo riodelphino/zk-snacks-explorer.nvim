@@ -1,8 +1,8 @@
 ---@type snacks.picker.zk.Config
 local source = {
   enabled = function() -- Enabled if zk directory
-    local zk_util = require("zk.util")
-    local notebook_path = zk_util.notebook_root(vim.fn.getcwd())
+    local zk_util = require("snacks.zk.util")
+    local notebook_path = zk_util.zk.get_notebook_path()
     return notebook_path ~= nil
   end,
   title = "Zk",
