@@ -4,6 +4,9 @@ Some notes for developers to help understanding:
   - `picker` and `Snacks.explorer` from `snacks.nvim`
   - `Snacks.zk` from `snacks-zk.nvim`.
 
+
+
+
 ## Structure
 
 ### zk (this repo)
@@ -261,7 +264,7 @@ below.
     Snacks.picker.pick({source = "files", ...})
 ```
 
-## Get picker config
+### Get picker config
 
 ```lua
 -- WORKS:
@@ -441,7 +444,49 @@ local items = {
 }
 ```
 
+## picker
+
+The built-in picker functions are useful in some cases.
+
+See `:h snacks.nvim-picker-snacks.picker.core.picker`
+
+```lua
+picker:action(actions)   -- Execute actions
+picker:close()           -- Close picker
+picker:count()
+picker:current(opts)     -- Get current item
+picker:current_win()     -- Get current win name
+picker:cwd()             -- Get cwd
+picker:dir()             -- Get current item's parent dir (or cwd)
+picker:empty()           -- Check if the picker is empty
+picker:filter()          -- Get the active filter
+picker:find()
+picker:focus(win, opts)  -- Focuses the given or configured window "input"|"list"|"preview"
+picker:hist(forward)     -- Move the history cursor
+picker:is_active()       -- Check if the finder or matcher is running
+picker:is_focused()
+picker:items()           -- Get all filtered items in the picker.
+picker:iter()            -- Returns an iterator over the filtered items in the picker. Items will be in sorted order.
+picker:norm(cb)          -- Execute the callback in normal mode
+picker:on_current_tab()
+picker:ref()
+picker:resolve(item)      -- 
+picker:selected(opts)     -- Get the selected items
+picker:set_cwd(cwd)       -- Set cwd
+picker:set_layout(layout) -- Set layout
+picker:show_preview()     -- Show preview
+picker:toggle(win, opts)  -- Toggle the given window and optionally focus
+picker:word()             -- Get the word under the cursor or the current visual selection
+```
+
+
 ## Tips
+
+### Get picker
+```lua
+---@type snacks.Picker?
+local picker = Snacks.picker.get({source = "zk"})[1]
+```
 
 ### opts.finder
 

@@ -1,5 +1,6 @@
 local explorer_actions = require("snacks.explorer.actions")
 local zk = require("snacks.zk")
+local zk_util = require("snacks.zk.util")
 local zk_watch = require("snacks.zk.watch")
 
 local M = {}
@@ -30,19 +31,20 @@ M.zk_change_query = function()
   table.sort(items, function(a, b)
     return a.desc < b.desc
   end)
-  vim.ui.select(items, { prompt = "zk query", format_item = format_item }, function(item)
-    if not item then
+  vim.ui.select(items, { prompt = "zk query", format_item = format_item }, function(item, idx)
+    if not idx then
+      zk_util.picker.focus("list")
       return
     end
-    local picker = Snacks.picker.get({ source = "zk" })[1]
-    local cwd = picker and picker:cwd() or zk.notebook_path
+    local cwd = zk_util.picker.get_cwd()
     item.input(cwd, id, function(res)
-      zk.opts.query = res
-      zk.update_picker_title()
-      zk_watch.refresh(function()
-        print(string.format("zk_change_query: id: %s / cwd: %s", id, cwd))
-        zk.reveal({ file = id })
-      end)
+      if res then
+        zk.opts.query = res
+        zk.update_picker_title()
+        zk_watch.refresh(function()
+          zk.reveal({ file = id })
+        end)
+      end
     end)
   end)
 end
@@ -55,7 +57,7 @@ M.zk_reset_query = function()
   zk.opts.query = zk.opts.default_query
   zk.update_picker_title()
   zk_watch.refresh(function()
-    print(string.format("zk_reset_query: id: %s / cwd: %s", id, cwd))
+    -- print(string.format("zk_reset_query: id: %s / cwd: %s", id, cwd)) -- DEBUG:
     zk.reveal({ file = id })
   end)
 end
@@ -63,7 +65,6 @@ end
 ---Change the sort dynamically
 M.zk_change_sort = function()
   local id = get_current_id()
-
   local items = {}
   for _, item in pairs(require("snacks.zk.sorters")) do
     table.insert(items, item)
@@ -71,8 +72,9 @@ M.zk_change_sort = function()
   table.sort(items, function(a, b)
     return a.desc < b.desc
   end)
-  vim.ui.select(items, { prompt = "zk sort", format_item = format_item }, function(item)
-    if not item then
+  vim.ui.select(items, { prompt = "zk sort", format_item = format_item }, function(item, idx)
+    if not idx then
+      zk_util.picker.focus("list")
       return
     end
     if type(item.sort) == "table" then -- snacks.picker.zk.sort.Fields[]

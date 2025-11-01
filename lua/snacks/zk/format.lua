@@ -60,7 +60,7 @@ rawset(M, "filename", function(item, picker)
   local note = require("snacks.zk").notes_cache[item.file] or nil
   local title = note and note.title
 
-  if picker.opts.formatters.file.filename_only then -- `filename` only (or title)
+  if picker.opts.formatters.file.filename_only then
     path = vim.fn.fnamemodify(item.file, ":t")
     path = path == "" and item.file or path
     ret[#ret + 1] = { title or path, base_hl, field = "file" }
@@ -82,11 +82,9 @@ rawset(M, "filename", function(item, picker)
             resolved[#resolved + 1] = { dir, dir_hl, field = "file" }
           else
             resolved[#resolved + 1] = { dir .. "/", dir_hl, field = "file" }
-            -- resolved[#resolved + 1] = { title or base, base_hl, field = "file" }
-            resolved[#resolved + 1] = { title or base or path, base_hl, field = "file" }
+            resolved[#resolved + 1] = { title or base, base_hl, field = "file" }
           end
         else
-          -- resolved[#resolved + 1] = { title or truncpath or path, base_hl, field = "file" }
           resolved[#resolved + 1] = { title or truncpath, base_hl, field = "file" }
         end
         return resolved

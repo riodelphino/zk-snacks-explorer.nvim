@@ -1,5 +1,3 @@
-local notes = require("snacks.zk").notes_cache
-
 local M = {}
 
 ---@type snacks.picker.zk.Sort

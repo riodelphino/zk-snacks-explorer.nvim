@@ -2,15 +2,41 @@ local uv = vim.loop
 local zk = require("snacks.zk")
 
 local M = {}
+M.picker = {}
+
+---Get zk picker
+---@return snacks.Picker?
+function M.picker.get_picker()
+  return Snacks.picker.get({ source = "zk" })[1]
+end
+
+---Get cwd (when ctx.filter.cwd is not available)
+---@return string?
+function M.picker.get_cwd()
+  local picker = M.picker.get_picker()
+  if picker then
+    return picker.cwd(picker)
+  end
+end
+
+---Focus
+---@param win string? "input"|"list"|"preview"
+---@param opts? {show?: boolean}
+function M.picker.focus(win, opts)
+  local picker = M.picker.get_picker()
+  if picker then
+    return picker:focus(win, opts)
+  end
+end
 
 ---Get a sort key (part)
--- (e.g.
---   [!+_]visible_dir
---   [!._].hidden_dir
---   [#+@]file_with_zk
---   [#+_]file_not_zk
---   [#._].hidden_file
--- directories are always considered as none-zk.
+---(e.g.
+---  [!+_]visible_dir
+---  [!._].hidden_dir
+---  [#+@]file_with_zk
+---  [#+_]file_not_zk
+---  [#._].hidden_file
+---directories are always considered as none-zk.
 ---@param part string
 ---@param is_last boolean
 ---@reaturn string
@@ -57,13 +83,6 @@ function M.sort(opts)
   elseif type(sort) == "function" then
     return sort
   end
-end
-
----Get cwd easily (when ctx.filter.cwd is not available)
----@return string
-function M.get_cwd()
-  local picker = Snacks.picker.get({ source = "zk" })[1]
-  return picker.cwd(picker)
 end
 
 return M

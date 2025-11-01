@@ -13,13 +13,11 @@ M.meta = {
   needs_setup = true,
 }
 
+---@diagnostic disable-next-line missing-fields
 M.opts = {} ---@type snacks.picker.zk.Config
 
 M.notes_cache = {} ---@type table
 M.notebook_path = nil ---@type string?
-
--- M.query = nil ---@type table?
--- M.sorter = nil ---@type table?
 
 --- These are just the general explorer settings.
 --- To configure the explorer picker, see `snacks.picker.explorer.Config`

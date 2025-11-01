@@ -1,5 +1,6 @@
 local log = Snacks.debug.log
 local input_postfix = ": "
+local zk_util = require("snacks.zk.util")
 
 local M = {}
 
@@ -45,6 +46,8 @@ M.match_fts = {
             matchStrategy = "fts",
           },
         })
+      else
+        zk_util.picker.focus("list")
       end
     end)
   end,
@@ -61,6 +64,8 @@ M.match_re = {
             matchStrategy = "re",
           },
         })
+      else
+        zk_util.picker.focus("list")
       end
     end)
   end,
@@ -77,6 +82,8 @@ M.match_exact = {
             matchStrategy = "exact",
           },
         })
+      else
+        zk_util.picker.focus("list")
       end
     end)
   end,
@@ -102,6 +109,8 @@ M.tag = {
               tags = { tag.name },
             },
           })
+        else
+          zk_util.picker.focus("list")
         end
       end)
     end)
@@ -130,6 +139,8 @@ local function link(field, desc, extra)
               desc = desc .. " " .. format_item_note(note),
               query = query,
             })
+          else
+            zk_util.picker.focus("list")
           end
         end)
       end)
@@ -170,6 +181,8 @@ local function date(field, refField, desc)
                 [field] = input,
               },
             })
+          else
+            zk_util.picker.focus("list")
           end
         end)
       end)
