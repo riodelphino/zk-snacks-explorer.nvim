@@ -2,32 +2,56 @@ local uv = vim.loop
 local zk = require("snacks.zk")
 
 local M = {}
-M.picker = {}
 
----Get zk picker
----@return snacks.Picker?
-function M.picker.get_picker()
-  return Snacks.picker.get({ source = "zk" })[1]
-end
+M.picker = { -- wrapper functions for @snacks.Picker class
+  ---Get zk picker
+  ---@return snacks.Picker?
+  get_picker = function()
+    return Snacks.picker.get({ source = "zk" })[1]
+  end,
 
----Get cwd (when ctx.filter.cwd is not available)
----@return string?
-function M.picker.get_cwd()
-  local picker = M.picker.get_picker()
-  if picker then
-    return picker.cwd(picker)
-  end
-end
+  ---Get cwd (Useful when ctx.filter.cwd or picker.cwd is not available)
+  ---@return string?
+  get_cwd = function()
+    local picker = M.picker.get_picker()
+    if picker then
+      return picker.cwd(picker)
+    end
+  end,
 
----Focus
----@param win string? "input"|"list"|"preview"
----@param opts? {show?: boolean}
-function M.picker.focus(win, opts)
-  local picker = M.picker.get_picker()
-  if picker then
-    return picker:focus(win, opts)
-  end
-end
+  ---Focus on pickers window
+  ---@param win string? "input"|"list"|"preview"
+  ---@param opts? {show?: boolean}
+  focus = function(win, opts)
+    local picker = M.picker.get_picker()
+    if picker then
+      return picker:focus(win, opts)
+    end
+  end,
+}
+
+M.zk = { -- wrapper functions for zk-nvim
+  ---Get zk notebook path
+  ---@return string?
+  get_notebook_path = function()
+    local zk_util = require("zk.util")
+    local path = zk_util.notebook_root(vim.fn.getcwd())
+    return path
+  end,
+
+  ---Returns true if the path is inside the zk, or equal to it
+  ---@param path string
+  ---@return boolean
+  in_zk_dir = function(path)
+    local notebook_path = M.zk.get_notebook_path()
+    if not notebook_path then
+      return false
+    end
+    notebook_path = vim.fs.normalize(notebook_path)
+    path = vim.fs.normalize(path)
+    return path == notebook_path or path:find(notebook_path .. "/", 1, true) == 1
+  end,
+}
 
 ---Get a sort key (part)
 ---(e.g.
