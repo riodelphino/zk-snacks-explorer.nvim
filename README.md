@@ -364,7 +364,7 @@ sort = {
 
 A function can be set directly.
 
-Simple:
+Minimal example:
 ```lua
 ---@param a snacks.picker.zk.Node|snacks.picker.zk.Item
 ---@param b snacks.picker.zk.Node|snacks.picker.zk.Item
@@ -373,7 +373,7 @@ sort = function(a, b)
 end,
 ```
 
-Same with `sort = { fields = { "sort" } }`:
+Example: Almost same with `sort = { fields = { "sort" } }`:
 ```lua
 ---@type snacks.picker.zk.Sort
 sort = function(a, b)
@@ -516,14 +516,14 @@ queries = {
 },
 ```
 Use custom query `todo`:
-  `z` key in `zk-explorer`, then select `todo`.
+  In default keymaps, `z` key in `zk-explorer` will show the custom queries mixed with built-in queries.
+
 
 ## Actions
 
 ### Add Custom Actions
 
-Not implemented yet...
-
+Add custom action `zk_add_new`:
 ```lua
 actions = {
   zk_add_new = function()
@@ -532,7 +532,7 @@ actions = {
 },
 ```
 
-Use Custom Actions:
+Set it in keymaps:
 ```lua
 win = {
   list = {
@@ -545,13 +545,13 @@ win = {
 
 ## Issues
 
-- The focus is lost when queries/sorters `select.ui` is canceled.
 - For now, almost sorters disorders the tree in searching with `/` key.
 
 ## TODO
 
 - [ ] Add action for zk.api.new()
-- [ ] Fix the order in searching
+- [ ] Fix the items order in searching
+- [ ] Can `opts.transform = function() ... end` replaces redundant `files()` and `filename()` in `finder.lua`? (May enable customization for displaying text?)
 
 
 ## Related
