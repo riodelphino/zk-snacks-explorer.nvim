@@ -4,8 +4,36 @@ Some notes for developers to help understanding:
   - `picker` and `Snacks.explorer` from `snacks.nvim`
   - `Snacks.zk` from `snacks-zk.nvim`.
 
-
-
+<!-- mtoc start -->
+- [Structure](#structure)
+   - [zk (this repo)](#zk-this-repo)
+      - [Entry Point](#entry-point)
+   - [explorer (built-in)](#explorer-built-in)
+      - [Entry Point 1](#entry-point-1)
+      - [Entry Point 2](#entry-point-2)
+      - [Other files](#other-files)
+      - [finder](#finder)
+      - [matcher](#matcher)
+      - [filter](#filter)
+      - [searcher](#searcher)
+      - [watcher](#watcher)
+   - [Config](#config)
+- [Register a picker](#register-a-picker)
+   - [pickers](#pickers)
+   - [Several ways to call pickers](#several-ways-to-call-pickers)
+   - [Get picker config](#get-picker-config)
+- [Sort](#sort)
+   - [Customize sorting](#customize-sorting)
+   - [Sort config](#sort-config)
+- [Node](#node)
+- [Item](#item)
+- [picker](#picker)
+- [Config](#config)
+   - [confirm](#confirm)
+- [Tips](#tips)
+   - [Get picker](#get-picker)
+   - [opts.finder](#opts-finder)
+<!-- mtoc end -->
 
 ## Structure
 
@@ -327,7 +355,7 @@ Since `picker.opts.sort` does not evaluated in `explorer`, the items shoud be al
 Moved to [README.md #Sort](README.md#Sort)
 
 
-## node
+## Node
 
 An internally used hierarchical structure of files and directories by `Snacks.explorer` and `Snacks.zk`, including information such as parent/children/expand state.
 
@@ -477,6 +505,68 @@ picker:set_layout(layout) -- Set layout
 picker:show_preview()     -- Show preview
 picker:toggle(win, opts)  -- Toggle the given window and optionally focus
 picker:word()             -- Get the word under the cursor or the current visual selection
+```
+
+## Config
+
+### confirm
+
+opts.confirm accepts string|string[]|function()
+
+e.g.
+```lua
+confirm = "Choice"
+confirm = {"Choice A", "Choice B"}
+confirm = function(picker, item, action) ... end
+```
+
+opts.confirm:
+```lua
+M.man = {
+  finder = "system_man",
+  format = "man",
+  preview = "man",
+  confirm = function(picker, item, action)
+    ---@cast action snacks.picker.jump.Action
+    picker:close()
+    if item then
+      vim.schedule(function()
+        local cmd = "Man " .. item.ref ---@type string
+        if action.cmd == "vsplit" then
+          cmd = "vert " .. cmd
+        elseif action.cmd == "tab" then
+          cmd = "tab " .. cmd
+        end
+        vim.cmd(cmd)
+      end)
+    end
+  end,
+}
+```
+
+confirm() function:
+```lua
+---@param prompt string
+---@param fn fun()
+function M.confirm(prompt, fn)
+  Snacks.picker.select({ "No", "Yes" }, { prompt = prompt }, function(_, idx)
+    if idx == 2 then
+      fn()
+    end
+  end)
+end
+```
+Example:
+```lua
+local fn = function() ... end
+Snacks.picker.select(
+  { "Title", "Title (-)", "Created", "Created (-)" },
+  { prompt = prompt },
+  function(item, idx)
+    if idx ~= nil then
+      fn()
+    end
+end)
 ```
 
 
