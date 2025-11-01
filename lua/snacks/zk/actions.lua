@@ -57,7 +57,6 @@ M.zk_reset_query = function()
   zk.opts.query = zk.opts.default_query
   zk.update_picker_title()
   zk_watch.refresh(function()
-    -- print(string.format("zk_reset_query: id: %s / cwd: %s", id, cwd)) -- DEBUG:
     zk.reveal({ file = id })
   end)
 end
