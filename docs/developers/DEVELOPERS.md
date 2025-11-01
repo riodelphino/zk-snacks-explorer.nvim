@@ -1,9 +1,6 @@
 # DEVELOPERS
 
-Some notes for developers to help understanding:
-  - `picker` and `Snacks.explorer` from `snacks.nvim`
-  - `Snacks.zk` from `snacks-zk.nvim`.
-
+Some notes for developers to help understanding `snacks.explorer` and `snacks-zk-explorer`.
 <!-- mtoc start -->
 - [Structure](#structure)
    - [zk (this repo)](#zk-this-repo)
