@@ -128,8 +128,10 @@ require('snacks.zk').open(opts)
 
 Open in another layout:
 ```lua
-Snacks.zk({ layout = "default" }) -- bottom|default|dropdown|ivy|ivy_split|left|right|select|sidebar|telescope|top|vertical|vscode
 Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
+Snacks.zk({ layout = "default", jump = { close = true } }) -- floating & previewer (auto-closing on select)
+-- layout: bottom|default|dropdown|ivy|ivy_split|left|right|select|sidebar|telescope|top|vertical|vscode
+
 ```
 
 > [!Warning]
