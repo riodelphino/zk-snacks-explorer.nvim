@@ -8,29 +8,6 @@
 > Be careful to use it.
 > Any PR is apprecieated.
 
-<!-- mtoc start -->
-- [Features](#features)
-- [Screen shots](#screen-shots)
-- [Dependencies](#dependencies)
-- [Install](#install)
-- [Minimam Config](#minimam-config)
-- [Usage](#usage)
-- [Config](#config)
-   - [Defaults](#defaults)
-   - [Select](#select)
-   - [Sort](#sort)
-      - [Set Fields](#set-fields)
-      - [Set a Sorter Function](#set-a-sorter-function)
-      - [Change Sort](#change-sort)
-      - [Add Custom Sorter Presets](#add-custom-sorter-presets)
-   - [Queries](#queries)
-      - [Add Custom Queries](#add-custom-queries)
-- [Actions](#actions)
-   - [Add Custom Actions](#add-custom-actions)
-- [Issues](#issues)
-- [TODO](#todo)
-- [Related](#related)
-<!-- mtoc end -->
 
 Hereafter, abbreviated as `zk-explorer`.
 
@@ -176,7 +153,7 @@ zk = {
     transform = nil, -- (fixed) *1
   },
   select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
-  formatters = {
+  formatters = { -- formatter settings (Used in following zk_file func)
     file = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
@@ -184,7 +161,7 @@ zk = {
     },
     severity = { pos = "right" },
   },
-  format = nil, -- (fixed) *1
+  format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
   matcher = {
     sort_empty = false, -- (Skipped) *3
     fuzzy = true, -- (Skipped) *3
@@ -545,6 +522,128 @@ win = {
 },
 ```
 
+## Format
+
+### Default config
+
+```lua
+---@type snacks.picker.format
+format = require("snacks.zk.format").zk_file,
+```
+
+`zk_file()` calls `zk_filename()` to build filename or title segment.
+Both functions are copied from `lua/snacks/picker/format.lua` in `snacks.nvim`.
+
+It may not easy to modify because both are complex.
+
+
+### Custom format example: Modify directly
+
+Though if you want to custom it:
+```lua
+format = function(item, picker)
+  local format = require("snacks.picker.format")
+  local uv = vim.uv or vim.loop
+  local function zk_filename(item, picker)
+    ... -- Copy zk_filename() and modify it
+  end
+  ... -- Copy zk_file() and modify it
+end,
+```
+This is faster than below example.
+
+
+### Custom format example: Add text
+
+This is much easier.
+Combined with `zk_file()` function.
+
+1. Get highlights tables first through the default `zk_file()` function,
+2. Then modify the table.
+
+A little bit slower than above example.
+
+```lua
+format = function(item, picker)
+  local zk = require("snacks.zk")
+  local zk_file = require("snacks.zk.format").zk_file
+  local ret = zk_file(item, picker)
+  local note = zk.notes_cache[item.file]
+
+  -- Add author if note has 'book' tag
+  if note and note.metadata and note.metadata.tags and vim.tbl_contains(note.metadata.tags, "book") and note.metadata.author then
+    table.insert(ret, { note.metadata.author, "Comment" })
+  end
+
+  return ret
+end,
+```
+
+### Custom format example: Modify icon and highlight
+
+Change icon and highlight:
+```lua
+format = function(item, picker)
+  local zk = require("snacks.zk")
+  local zk_file = require("snacks.zk.format").zk_file
+  local ret = zk_file(item, picker)
+  local note = zk.notes_cache[item.file]
+
+  if note then
+     local basename = vim.fn.fnamemodify(item.file, ':t')
+     for _, segment in ipairs(ret) do
+        if type(segment) == 'table' and type(segment[1]) == 'string' and segment[2] then
+           if not item.dir and segment.field == 'file' and note.title and segment[1] == note.title then -- Check if `note.title` matches
+              -- if not item.dir and segment.field == 'file' then -- or Simply check if `note` exists
+              segment[2] = 'ZkNote' -- Change title highlight
+           end
+           if not item.dir and segment.virtual and segment.virtual == true and (segment[2]:match('DevIcon') or segment[2]:match('MiniIcons')) then
+              segment[1] = '󰎞 ' -- Change icon
+              segment[2] = 'ZkNote' -- Change icon highlight
+           end
+        end
+     end
+  end
+
+  return ret
+end,
+```
+Ensure set highlight for `ZkNote`:
+```lua
+vim.api.nvim_set_hl(0, "ZkNote", { fg = "#E8AB53", bg = nil, bold = true })
+```
+
+### snacks.picker.Highlight
+
+```lua
+---@alias snacks.picker.Extmark vim.api.keyset.set_extmark|{col:number, row?:number, field?:string}
+---@alias snacks.picker.Text {[1]:string, [2]:string?, virtual?:boolean, field?:string, resolve?:snacks.picker.format.resolve}
+```
+Then, `snacks.picker.Highlight` is:
+```lua
+---@alias snacks.picker.Highlight snacks.picker.Text|snacks.picker.Extmark
+```
+`snacks.picker.Highlight` example:
+```lua
+-- file
+{
+  { "│ │ ├╴", "SnacksPickerTree" },
+  { "󰍔 ", "MiniIconsGrey", virtual = true },
+  { "A", "Markdown", field = "file" },
+  { " " },
+}
+
+-- directory
+{
+  { "│ │ ├╴", "SnacksPickerTree" },
+  { col = 0, hl_mode = "combine", virt_text = { { "●", "SnacksPickerGitStatusStaged" }, { " " } }, virt_text_pos = "right_align" },
+  { "󰍔 ", "MiniIconsGrey", virtual = true },
+  { "A", "Error", field = "file" },
+  { " " },
+},
+```
+
+
 ## Issues
 
 - For now, almost sorters disorders the tree in searching with `/` key.
@@ -553,7 +652,8 @@ win = {
 
 - [ ] Add action for zk.api.new()
 - [ ] Fix the items order in searching
-- [ ] Can `opts.transform = function() ... end` replaces redundant `files()` and `filename()` in `finder.lua`? (May enable customization for displaying text?)
+- [x] Can `opts.transform = function() ... end` replaces redundant `files()` and `filename()` in `finder.lua`? (May enable customization for displaying text?)
+    - [x] -> Yes it can, but a little bit slower with huge number of files.
 
 
 ## Related
