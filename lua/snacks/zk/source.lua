@@ -46,31 +46,7 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-
-  -- format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
-
-  -- format = function(item, picker) -- DEBUG: Custom format (A)
-  --   local ret = zk_file(item, picker)
-  --   local note = zk.notes_cache[item.file]
-  --
-  --   if note and note.title then
-  --     local basename = vim.fn.fnamemodify(item.file, ":t")
-  --     for _, segment in ipairs(ret) do
-  --       if type(segment) == "table" and segment.field == "file" and type(segment[1]) == "string" then
-  --         segment[1] = segment[1]:gsub(vim.pesc(basename), note.title)
-  --       end
-  --     end
-  --   end
-  --
-  --   -- Add author if note has 'book' tag
-  --   if note and note.metadata and note.metadata.tags and vim.tbl_contains(note.metadata.tags, "book") and note.metadata.author then
-  --     table.insert(ret, { " ", "file" })
-  --     table.insert(ret, { note.metadata.author, "Comment" })
-  --   end
-  --
-  --   return ret
-  -- end,
-
+  format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
   -- Sort
   -- sort = { fields = {} }, -- OK
   sort = { fields = { "sort" } }, -- OK
