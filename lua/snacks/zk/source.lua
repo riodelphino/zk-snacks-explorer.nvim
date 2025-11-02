@@ -1,3 +1,6 @@
+local zk = require("snacks.zk")
+local zk_file = require("snacks.zk.format").zk_file
+
 ---@type snacks.picker.zk.Config
 local source = {
   enabled = function() -- Enabled if zk directory
@@ -37,23 +40,36 @@ local source = {
     },
     severity = { pos = "right" },
   },
-  -- transform = function(item) -- DEBUG: transform is only for searching?
-  --   if item.zk and item.zk.title then
-  --     return item.zk.title
-  --   end
-  --   return vim.fn.fnamemodify(item.file, ":t")
-  -- end,
-  -- TODO: Can it もっと簡単な方法で実現できるか？
-  -- item.text や item.title, item.zk への zk 情報の追加を transform で行い、
-  -- zk() の中身は explorer() の内容そのままコピペorラッピングするとか。
-
-  format = nil, -- (fixed) *1
   matcher = {
     sort_empty = false,
     fuzzy = true,
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
+
+  -- format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
+
+  -- format = function(item, picker) -- DEBUG: Custom format (A)
+  --   local ret = zk_file(item, picker)
+  --   local note = zk.notes_cache[item.file]
+  --
+  --   if note and note.title then
+  --     local basename = vim.fn.fnamemodify(item.file, ":t")
+  --     for _, segment in ipairs(ret) do
+  --       if type(segment) == "table" and segment.field == "file" and type(segment[1]) == "string" then
+  --         segment[1] = segment[1]:gsub(vim.pesc(basename), note.title)
+  --       end
+  --     end
+  --   end
+  --
+  --   -- Add author if note has 'book' tag
+  --   if note and note.metadata and note.metadata.tags and vim.tbl_contains(note.metadata.tags, "book") and note.metadata.author then
+  --     table.insert(ret, { " ", "file" })
+  --     table.insert(ret, { note.metadata.author, "Comment" })
+  --   end
+  --
+  --   return ret
+  -- end,
 
   -- Sort
   -- sort = { fields = {} }, -- OK

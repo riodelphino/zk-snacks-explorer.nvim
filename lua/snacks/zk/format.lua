@@ -1,13 +1,15 @@
----@class snacks.picker.formatters
+local format = require("snacks.picker.format")
+
+-- ---@class snacks.picker.formatters
 local M = {}
 
-setmetatable(M, { __index = require("snacks.picker.format") }) -- Inherit from `snacks.picker.format`
+-- setmetatable(M, { __index = require("snacks.picker.format") }) -- Inherit from `snacks.picker.format`
 
 local uv = vim.uv or vim.loop
 
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
-rawset(M, "filename", function(item, picker)
+function M.zk_filename(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
@@ -77,7 +79,7 @@ rawset(M, "filename", function(item, picker)
         local resolved = {} ---@type snacks.picker.Highlight[]
         if base and dir then
           if picker.opts.formatters.file.filename_first then
-            resolved[#resolved + 1] = { base, base_hl, field = "file" }
+            resolved[#resolved + 1] = { title or base, base_hl, field = "file" }
             resolved[#resolved + 1] = { " " }
             resolved[#resolved + 1] = { dir, dir_hl, field = "file" }
           else
@@ -112,9 +114,9 @@ rawset(M, "filename", function(item, picker)
     end
   end
   return ret
-end)
+end
 
-rawset(M, "file", function(item, picker)
+function M.zk_file(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
 
@@ -124,18 +126,18 @@ rawset(M, "file", function(item, picker)
   end
 
   if item.parent then
-    vim.list_extend(ret, M.tree(item, picker))
+    vim.list_extend(ret, format.tree(item, picker))
   end
 
   if item.status then
-    vim.list_extend(ret, M.file_git_status(item, picker))
+    vim.list_extend(ret, format.file_git_status(item, picker))
   end
 
   if item.severity then
-    vim.list_extend(ret, M.severity(item, picker))
+    vim.list_extend(ret, format.severity(item, picker))
   end
 
-  vim.list_extend(ret, M.filename(item, picker))
+  vim.list_extend(ret, M.zk_filename(item, picker))
 
   if item.comment then
     table.insert(ret, { item.comment, "SnacksPickerComment" })
@@ -152,6 +154,6 @@ rawset(M, "file", function(item, picker)
   end
 
   return ret
-end)
+end
 
 return M
