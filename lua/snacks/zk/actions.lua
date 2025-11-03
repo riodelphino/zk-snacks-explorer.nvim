@@ -98,4 +98,14 @@ M.zk_reset_sort = function()
   end)
 end
 
+M.zk_show_item_info = function()
+  local picker = zk_util.picker.get_picker()
+  local item = picker:current()
+  if item.parent and type(item.parent) == "table" then
+    item.parent = "<...OMITTED...>"
+  end
+  -- vim.notify(vim.inspect(item), vim.log.levels.INFO, { title = "snacks-zk-explorer" }) -- Shown behind the snacks
+  print(vim.inspect(item))
+end
+
 return M

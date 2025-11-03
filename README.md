@@ -254,6 +254,7 @@ zk = {
         ["Q"] = "zk_reset_query",
         ["s"] = "zk_change_sort",
         ["S"] = "zk_reset_sort",
+        ["i"] = "zk_show_item_info",
         -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
         ["zb"] = false, -- "list_scroll_bottom",
         ["zt"] = false, -- "list_scroll_top",
@@ -425,13 +426,14 @@ Keymaps (in the file tree):
 
 
 Built-in sorters:
-  - Title
-  - Title (-)
-  - Created
-  - Created (-)
-  - Modified
-  - Modified (-)
-
+| Sorter       | Description |
+| ------------ | ----------- |
+| Title        |             |
+| Title (-)    |             |
+| Created      |             |
+| Created (-)  |             |
+| Modified     |             |
+| Modified (-) |             |
 no sign = "asc"
 (-)     = "desc"
 
@@ -497,26 +499,28 @@ require('snacks.zk.actions').actions.zk_reset_query()
 ```
 
 Built-in queries:
-  - All (default)
-  - Created
-  - Created after
-  - Created before
-  - Modified
-  - Modified after
-  - Modified before
-  - Match (exact)
-  - Match (full-text)
-  - Match (regular expression)
-  - Mention
-  - Mentioned by
-  - Link to
-  - Link to (recursive)
-  - Linked by (recursive)
-  - Linked by
-  - Filmsy
-  - Orphans
-  - Related
-  - Tag
+| Query                      | Description |
+| -------------------------- | ----------- |
+| All (default)              |             |
+| Created                    |             |
+| Created after              |             |
+| Created before             |             |
+| Modified                   |             |
+| Modified after             |             |
+| Modified before            |             |
+| Match (exact)              |             |
+| Match (full-text)          |             |
+| Match (regular expression) |             |
+| Mention                    |             |
+| Mentioned by               |             |
+| Link to                    |             |
+| Link to (recursive)        |             |
+| Linked by (recursive)      |             |
+| Linked by                  |             |
+| Filmsy                     |             |
+| Orphans                    |             |
+| Related                    |             |
+| Tag                        |             |
 
 #### Add Custom Queries
 
@@ -536,6 +540,15 @@ Use custom query `todo`:
 
 
 ### Actions
+
+Built-in Actions:
+| Action            | Description                                               |
+| ----------------- | --------------------------------------------------------- |
+| zk_change_query   | Open a picker to select a query                           |
+| zk_reset_query    | Clear the current query                                   |
+| zk_change_sort    | Open a picker to select a sorter                          |
+| zk_reset_sort     | Clear current sorter                                      |
+| zk_show_item_info | Show the current item's details including fetched zk info |
 
 #### Add Custom Actions
 
@@ -558,9 +571,6 @@ win = {
   },
 },
 ```
-
-
-
 
 
 ### Format
@@ -751,8 +761,6 @@ end,
 
 - [ ] Add action for zk.api.new()
 - [ ] Fix the items order in searching
-- [x] Can `opts.transform = function() ... end` replaces redundant `files()` and `filename()` in `finder.lua`? (May enable customization for displaying text?)
-    - [x] -> Yes it can, but a little bit slower with huge number of files.
 
 
 ## Related
