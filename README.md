@@ -15,6 +15,7 @@ Hereafter, abbreviated as `zk-explorer`.
 
 - Tree style like `Snacks.explorer`
 - Displays the title instead of the filename
+- Icon, text, and their highlights can be customized
 - Search by filename and title
 - Shows Git icons
 - Shows Diagnostics icons
@@ -50,17 +51,14 @@ Sorters
 
 ## Install
 
-for lazy.nvim:
+for lazy.nvim (snacks-zk-explorer):
 ```lua
 {
   'riodelphino/snacks-zk.nvim',
   dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
 }
 ```
-
-## Minimam Config
-
-for lazy.nvim:
+for lazy.nvim (snacks.nvim):
 ```lua
 {
   "folke/snacks.nvim",
@@ -154,23 +152,43 @@ zk = {
     transform = nil, -- (fixed) *1
   },
   select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
-  formatters = { -- formatter settings (Used in following zk_file func)
+  formatters = {
     file = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
+      ---@type snacks.picker.zk.formatters.file.zk.Config
       zk = {
         filename = require("snacks.zk.format").filename,
         transform = {
+          ---@type snacks.picker.zk.formatters.file.zk.transform.Icon
           icon = function(item, note, icon, hl)
-            if not item.dir and note and (note.title or note.metadata and note.metadata.title) then
+            -- A file has title
+            if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
               icon = "󰎞"
               hl = "SnacksPickerZkNote"
             end
+            -- A dir includes zk files
+            if item.dir and note then
+              icon = "󰉗"
+            end
             return icon, hl
           end,
-          highlights = function(item, note, base_hl, dir_hl, icon, hl)
-            return base_hl, dir_hl, icon, hl
+          ---@type snacks.picker.zk.formatters.file.zk.transform.Text
+          text = function(item, note, base, base_hl, dir_hl)
+            -- A dir includes zk files
+            if item.dir and not item.hidden and note then
+              dir_hl = "SnacksPickerZkDir"
+              base_hl = "SnacksPickerZkDir"
+            end
+            -- A file not zk
+            if not item.dir and not note then
+              print(item.file .. " is a file not zk")
+              base_hl = "SnacksPickerDimmed"
+            end
+            -- Use title if exists
+            base = not item.dir and note and (note.title or note.metadata and note.metadata.title) or base
+            return base, base_hl, dir_hl
           end,
         },
       },
@@ -193,9 +211,12 @@ zk = {
   query_postfix = ": ",
   -- Actions
   actions = require("snacks.zk.actions"),
-  -- config = function(opts) -- This functions is not evaluated.
-  --   return require("snacks.picker.source.zk").setup(opts)
-  -- end,
+  config = function(opts)
+    -- Set highlights
+    vim.api.nvim_set_hl(0, 'SnacksPickerZkNote', { link = 'WarningMsg', bold = true })
+    vim.api.nvim_set_hl(0, 'SnacksPickerZkDir', { link = 'SnacksPickerDirectory', bold = true })
+    -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
+  end,
   win = {
     list = {
       keys = {
@@ -514,9 +535,9 @@ Use custom query `todo`:
   In default keymaps, `z` key in `zk-explorer` will show the custom queries mixed with built-in queries.
 
 
-## Actions
+### Actions
 
-### Add Custom Actions
+#### Add Custom Actions
 
 Add custom action `zk_add_new`:
 ```lua
@@ -538,38 +559,42 @@ win = {
 },
 ```
 
-## Format
 
-### Default config
+
+
+
+### Format
+
+#### Default config
 
 ```lua
 ---@type snacks.picker.format
-format = require("snacks.zk.format").zk_file,
+format = require("snacks.zk.format").file,
 ```
+`file()` function builds a item highlights table to be displayed in the tree.
+And `file()` calls `filename()` insidely to get the dir and filename segment.
 
-`zk_file()` calls `zk_filename()` to build filename or title segment.
-Both functions are copied from `lua/snacks/picker/format.lua` in `snacks.nvim`.
+Most of both functions were copied from `lua/snacks/picker/format.lua` in `snacks.nvim`.
+It may not easy to modify directly, because both are complex.
 
-It may not easy to modify because both are complex.
+> [!Note]
+> For easier modification of highlights table, `transform.icon` and `transform.text` config are available.  
+> See [#Formatters](#formatters)
 
 
-### Custom format example: Modify directly
+#### Custom format example: Modify directly
 
 Though if you want to custom it:
 ```lua
 format = function(item, picker)
-  local format = require("snacks.picker.format")
-  local uv = vim.uv or vim.loop
-  local function zk_filename(item, picker)
-    ... -- Copy zk_filename() and modify it
-  end
-  ... -- Copy zk_file() and modify it
+  ... -- Copy file() and modify it
 end,
 ```
+
 This is faster than below example.
 
 
-### Custom format example: Add text
+#### Custom format example: Add text
 
 This is much easier.
 Combined with `zk_file()` function.
@@ -582,7 +607,7 @@ A little bit slower than above example.
 ```lua
 format = function(item, picker)
   local zk = require("snacks.zk")
-  local zk_file = require("snacks.zk.format").zk_file
+  local zk_file = require("snacks.zk.format").file
   local ret = zk_file(item, picker)
   local note = zk.notes_cache[item.file]
 
@@ -595,41 +620,87 @@ format = function(item, picker)
 end,
 ```
 
-### Custom format example: Modify icon and highlight
 
-Change icon and highlight:
+### Formatters
+
+Basically same with `snacks.explorer`.
+
+Followings are `zk-explorer` specific config.
+
+#### file.markdown_only
+
 ```lua
-format = function(item, picker)
-  local zk = require("snacks.zk")
-  local zk_file = require("snacks.zk.format").zk_file
-  local ret = zk_file(item, picker)
-  local note = zk.notes_cache[item.file]
+formatters = {
+  file = {
+    markdown_only = false, -- `true` = find only markdown files
+  },
+},
+```
 
-  if note then
-     local basename = vim.fn.fnamemodify(item.file, ':t')
-     for _, segment in ipairs(ret) do
-        if type(segment) == 'table' and type(segment[1]) == 'string' and segment[2] then
-           if not item.dir and segment.field == 'file' and note.title and segment[1] == note.title then -- Check if `note.title` matches
-              -- if not item.dir and segment.field == 'file' then -- or Simply check if `note` exists
-              segment[2] = 'ZkNote' -- Change title highlight
-           end
-           if not item.dir and segment.virtual and segment.virtual == true and (segment[2]:match('DevIcon') or segment[2]:match('MiniIcons')) then
-              segment[1] = '󰎞 ' -- Change icon
-              segment[2] = 'ZkNote' -- Change icon highlight
-           end
-        end
-     end
+#### file.zk
+
+##### filename
+
+A sub function which builds dir and filename segment with icon and highlight.
+It's called from `file()` function.
+
+default: `filename = require("snacks.zk.format").filename,`
+
+##### transform
+
+Two transformer functions to modify icon and text in the tree.
+
+> [!Warning]
+> Ensure that these highlights are set in config or somewhere.  
+> See `config` section below.
+
+###### icon
+
+A function to modify icon and it's highlight.
+
+Default:
+```lua
+---@type snacks.picker.zk.formatters.file.zk.transform.Icon
+icon = function(item, note, icon, hl)
+  -- A file has title
+  if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
+    icon = "󰎞"
+    hl = "SnacksPickerZkNote"
   end
-
-  return ret
+  -- A dir includes zk files
+  if item.dir and note then
+    icon = "󰉗"
+  end
+  return icon, hl
 end,
 ```
-Ensure set highlight for `ZkNote`:
+
+
+###### text
+
+A function to modify text (dir or filename or title) and it's highlight.
+
+Default:
 ```lua
-vim.api.nvim_set_hl(0, "ZkNote", { fg = "#E8AB53", bg = nil, bold = true })
+---@type snacks.picker.zk.formatters.file.zk.transform.Text
+text = function(item, note, base, base_hl, dir_hl)
+  -- A dir includes zk files
+  if item.dir and not item.hidden and note then
+    dir_hl = "SnacksPickerZkDir"
+    base_hl = "SnacksPickerZkDir"
+  end
+  -- A file not zk
+  if not item.dir and not note then
+    base_hl = "SnacksPickerDimmed"
+  end
+  -- Use title if exists
+  base = not item.dir and note and (note.title or note.metadata and note.metadata.title) or base
+  return base, base_hl, dir_hl
+end,
 ```
 
-### snacks.picker.Highlight
+
+#### NOTE: snacks.picker.Highlight
 
 ```lua
 ---@alias snacks.picker.Extmark vim.api.keyset.set_extmark|{col:number, row?:number, field?:string}
@@ -657,6 +728,18 @@ Then, `snacks.picker.Highlight` is:
   { "A", "Error", field = "file" },
   { " " },
 },
+```
+
+### config
+
+Add some code to execute in the `zk-explorer` setup.
+
+```lua
+config = function(opts)
+  -- Set highlights
+  vim.api.nvim_set_hl(0, 'SnacksPickerZkNote', { link = 'WarningMsg', bold = true })
+  vim.api.nvim_set_hl(0, 'SnacksPickerZkDir', { link = 'SnacksPickerDirectory', bold = true })
+end,
 ```
 
 

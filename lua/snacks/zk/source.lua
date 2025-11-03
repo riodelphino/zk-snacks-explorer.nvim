@@ -34,18 +34,37 @@ local source = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
+      ---@type snacks.picker.zk.formatters.file.zk.Config
       zk = {
         filename = require("snacks.zk.format").filename,
         transform = {
+          ---@type snacks.picker.zk.formatters.file.zk.transform.Icon
           icon = function(item, note, icon, hl)
-            if not item.dir and note and (note.title or note.metadata and note.metadata.title) then
+            -- A file has title
+            if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
               icon = "󰎞"
               hl = "SnacksPickerZkNote"
             end
+            -- A dir includes zk files
+            if item.dir and note then
+              icon = "󰉗"
+            end
             return icon, hl
           end,
-          highlights = function(item, note, base_hl, dir_hl, icon, hl)
-            return base_hl, dir_hl, icon, hl
+          ---@type snacks.picker.zk.formatters.file.zk.transform.Text
+          text = function(item, note, base, base_hl, dir_hl)
+            -- A dir includes zk files
+            if item.dir and not item.hidden and note then
+              dir_hl = "SnacksPickerZkDir"
+              base_hl = "SnacksPickerZkDir"
+            end
+            -- A file not zk
+            if not item.dir and not note then
+              base_hl = "SnacksPickerDimmed"
+            end
+            -- Use title if exists
+            base = not item.dir and note and (note.title or note.metadata and note.metadata.title) or base
+            return base, base_hl, dir_hl
           end,
         },
       },
@@ -63,6 +82,7 @@ local source = {
   -- sort = { fields = {} }, -- OK
   sort = { fields = { "sort" } }, -- OK
   -- sort = { fields = { "!zk" } }, -- OK (Caution: `*.md` files without YAML or title also have zk field)
+
   -- sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }, -- OK (Almost same with `fields = { "sort" }`)
   -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
   -- sort = function(a, b) -- OK
@@ -76,9 +96,12 @@ local source = {
   query_postfix = ": ",
   -- Actions
   actions = require("snacks.zk.actions"),
-  -- config = function(opts) -- This functions is not evaluated.
-  --   return require("snacks.picker.source.zk").setup(opts)
-  -- end,
+  config = function(opts)
+    -- Set highlights
+    vim.api.nvim_set_hl(0, "SnacksPickerZkNote", { link = "WarningMsg", bold = true })
+    vim.api.nvim_set_hl(0, "SnacksPickerZkDir", { link = "SnacksPickerDirectory", bold = true })
+    -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
+  end,
   win = {
     list = {
       keys = {

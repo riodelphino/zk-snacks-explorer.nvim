@@ -2,10 +2,7 @@ local uv = vim.uv or vim.loop
 local format = require("snacks.picker.format")
 local zk = require("snacks.zk")
 
--- ---@class snacks.picker.formatters
 local M = {}
-
--- setmetatable(M, { __index = require("snacks.picker.format") }) -- Inherit from `snacks.picker.format`
 
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
@@ -19,18 +16,16 @@ function M.filename(item, picker)
   local path = Snacks.picker.util.path(item) or item.file
   -- path = Snacks.picker.util.truncpath(path, picker.opts.formatters.file.truncate or 40, { cwd = picker:cwd() })
   local note = require("snacks.zk").notes_cache[item.file] or nil
-  local title = note and note.title
+  local zk_transform = picker.opts.formatters.file.zk.transform
 
-  -- Set icon and hl by directory or (file and extension)
   local name, cat = path, "file"
   if item.buf and vim.api.nvim_buf_is_loaded(item.buf) then
-    name = vim.bo[item.buf].filetype -- 拡張子か？
+    name = vim.bo[item.buf].filetype
     cat = "filetype"
   elseif item.dir then
     cat = "directory"
   end
 
-  -- The icon (and hl by cat or filetype)
   if picker.opts.icons.files.enabled ~= false then
     local icon, hl = Snacks.util.icon(name, cat, {
       fallback = picker.opts.icons.files,
@@ -39,9 +34,9 @@ function M.filename(item, picker)
       icon, hl = " ", "Special"
     end
     if item.dir and item.open then
-      icon = picker.opts.icons.files.dir_open -- icons.files こんなのあったんだ。こっちにセットしないとかな？
+      icon = picker.opts.icons.files.dir_open
     end
-    icon, hl = picker.opts.formatters.file.zk.transform.icon(item, note, icon, hl) -- DEBUG: transform
+    icon, hl = zk_transform.icon(item, note, icon, hl) -- Transform icon and hl
     icon = Snacks.picker.util.align(icon, picker.opts.formatters.file.icon_width or 2)
     ret[#ret + 1] = { icon, hl, virtual = true }
   end
@@ -66,12 +61,13 @@ function M.filename(item, picker)
   end
   local dir_hl = "SnacksPickerDir"
 
-  -- base_hl, dir_hl, icon, hl = picker.opts.formatters.file.zk.highlightes.transform(item, note, base_hl, dir_hl, icon, hl) -- DEBUG: 未実装
-
   if picker.opts.formatters.file.filename_only then
-    path = vim.fn.fnamemodify(item.file, ":t")
-    path = path == "" and item.file or path
-    ret[#ret + 1] = { title or path, base_hl, field = "file" }
+    base = vim.fn.fnamemodify(item.file, ":t")
+    base = base == "" and item.file or base
+
+    base, base_hl, dir_hl = zk_transform.text(item, note, base, base_hl, dir_hl) -- Transform text
+
+    ret[#ret + 1] = { base, base_hl, field = "file" }
   else
     ret[#ret + 1] = {
       "",
@@ -82,18 +78,21 @@ function M.filename(item, picker)
           { cwd = picker:cwd(), kind = picker.opts.formatters.file.truncate }
         )
         local dir, base = truncpath:match("^(.*)/(.+)$")
+
+        base, base_hl, dir_hl = zk_transform.text(item, note, base, base_hl, dir_hl) -- Transform text
+
         local resolved = {} ---@type snacks.picker.Highlight[]
         if base and dir then
           if picker.opts.formatters.file.filename_first then
-            resolved[#resolved + 1] = { title or base, base_hl, field = "file" }
+            resolved[#resolved + 1] = { base, base_hl, field = "file" }
             resolved[#resolved + 1] = { " " }
             resolved[#resolved + 1] = { dir, dir_hl, field = "file" }
           else
             resolved[#resolved + 1] = { dir .. "/", dir_hl, field = "file" }
-            resolved[#resolved + 1] = { title or base, base_hl, field = "file" }
+            resolved[#resolved + 1] = { base, base_hl, field = "file" }
           end
         else
-          resolved[#resolved + 1] = { title or truncpath, base_hl, field = "file" }
+          resolved[#resolved + 1] = { base or truncpath, base_hl, field = "file" }
         end
         return resolved
       end,
