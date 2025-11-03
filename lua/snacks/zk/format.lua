@@ -5,11 +5,10 @@ local M = {}
 
 -- setmetatable(M, { __index = require("snacks.picker.format") }) -- Inherit from `snacks.picker.format`
 
-local uv = vim.uv or vim.loop
-
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
 function M.zk_filename(item, picker)
+  local uv = vim.uv or vim.loop
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
