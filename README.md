@@ -426,16 +426,14 @@ Keymaps (in the file tree):
 
 
 Built-in sorters:
-| Sorter       | Description |
-| ------------ | ----------- |
-| Title        |             |
-| Title (-)    |             |
-| Created      |             |
-| Created (-)  |             |
-| Modified     |             |
-| Modified (-) |             |
-no sign = "asc"
-(-)     = "desc"
+| Sorter       | Sort key         | Order |
+| ------------ | ---------------- | ----- |
+| Title        | item.zk.title    | Asc   |
+| Title (-)    | item.zk.title    | Desc  |
+| Created      | item.zk.created  | Asc   |
+| Created (-)  | item.zk.created  | Desc  |
+| Modified     | item.zk.modified | Asc   |
+| Modified (-) | item.zk.modified | Desc  |
 
 
 #### Add Custom Sorter Presets
