@@ -123,6 +123,7 @@ See `lua/snacks/zk/source.lua`
 ### Defaults
 
 ```lua
+---@type snacks.picker.zk.Config
 zk = {
   enabled = function() -- Enabled only in zk directory
     local zk_util = require("snacks.zk.util")
@@ -158,10 +159,11 @@ zk = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
+      filename = require("snacks.zk.format").filename,
     },
     severity = { pos = "right" },
   },
-  format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
+  format = require("snacks.zk.format").file,
   matcher = {
     sort_empty = false, -- (Skipped) *3
     fuzzy = true, -- (Skipped) *3

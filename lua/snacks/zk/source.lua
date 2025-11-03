@@ -1,6 +1,3 @@
-local zk = require("snacks.zk")
-local zk_file = require("snacks.zk.format").zk_file
-
 ---@type snacks.picker.zk.Config
 local source = {
   enabled = function() -- Enabled if zk directory
@@ -37,16 +34,17 @@ local source = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
+      filename = require("snacks.zk.format").filename,
     },
     severity = { pos = "right" },
   },
+  format = require("snacks.zk.format").file,
   matcher = {
     sort_empty = false,
     fuzzy = true,
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  format = require("snacks.zk.format").zk_file, -- Call customized formatter for zk
   -- Sort
   -- sort = { fields = {} }, -- OK
   sort = { fields = { "sort" } }, -- OK

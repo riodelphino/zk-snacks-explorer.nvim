@@ -1,6 +1,8 @@
 # DEVELOPERS
 
 Some notes for developers to help understanding `snacks.explorer` and `snacks-zk-explorer`.
+
+Note that there may be many mis-understands.
 <!-- mtoc start -->
 - [Structure](#structure)
    - [zk (this repo)](#zk-this-repo)
@@ -8,13 +10,16 @@ Some notes for developers to help understanding `snacks.explorer` and `snacks-zk
    - [explorer (built-in)](#explorer-built-in)
       - [Entry Point 1](#entry-point-1)
       - [Entry Point 2](#entry-point-2)
-      - [Other files](#other-files)
-      - [finder](#finder)
-      - [matcher](#matcher)
-      - [filter](#filter)
-      - [searcher](#searcher)
-      - [watcher](#watcher)
-   - [Config](#config)
+- [Config](#config)
+   - [finder](#finder)
+   - [matcher](#matcher)
+   - [filter](#filter)
+   - [search](#search)
+   - [watch](#watch)
+   - [format](#format)
+   - [formatters](#formatters)
+   - [transform](#transform)
+- [Picker Config](#picker-config)
 - [Register a picker](#register-a-picker)
    - [pickers](#pickers)
    - [Several ways to call pickers](#several-ways-to-call-pickers)
@@ -148,24 +153,21 @@ end
 
 ```
 
-#### Other files
 
-- action.lua
-- diagnositics.lua
-- git.lua
-- tree.lua
-- watch.lua
+## Config
 
-#### finder
+### finder
+
+The finder is a items getter.
 
 - lua/snacks/picker/source/explorer.lua -> M.explorer
 
-- search : `M.search()`    `/`
+- search : `M.search()` or `/` in tree
 - finder : `M.explorer()`  Globs the cwd recursively as Nodes (also diagnostics, git, e.t.c.), then display them in picker as Items
 
 * The finder is specified like `{ finder = "explorer" }`.
 
-#### matcher
+### matcher
 
 The config is set here, but setup() in `explorer.lua` overwrites?
 - config  : `matcher = { sort_empty = false, fuzzy = false },`
@@ -175,32 +177,48 @@ This setting is used for matching in the Search function.
 
 on_match : Main purpose is to add the parent directories to picker automatically.
 
-#### filter
+### filter
+
+Generic filter used by some finders to pre-filter items
+
+### search
 
 - config  : Nothing is set
-- setup() : `transform = function(picker, filter) ... end`)
-
-filter ??? transform ???
-
-#### searcher
-
-- config  : Nothing is set
+- 
 in picker default config, `search = 'search_string'`. So it might be current search string.
-And above `matcher` is the additional function suports searching.
+And above `matcher` is the additional function supports searching.
 
 `zk-explorer` does not use built-in command like `fd`, `rg`, `find` or seach filesystem.
 It manually searches zk files from `M.note_cache` in `lua/snacks/zk/init.lua`, since `zk-explorer` has to search both the filename and the title.
 
-
-#### watcher
+### watch
 
 - config: `watch = true` this enables watcher.
 
 Detect files & folders modification.
 
+### format
+
+Specify a formatter to format highlights table in 2 ways.
+- config  : `format = 'file'` or `format = function(item, picker)`
+
+- A. Choose from `require(snacks.picker.formatters)` by formatter name (string).
+- B. Set formatter function directly.
+
+### formatters
+
+The options how columns are drawn in picker.
+
+### transform
+
+- config: `transform = function(item, ctx)`
+
+Modiying or filtering given `snacks.picker.finder.Item`.
+Can return modified Item or nil or boolean.
+This is executed before `formater`.
 
 
-### Config
+## Picker Config
 
 ```bash
 .

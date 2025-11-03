@@ -1,4 +1,6 @@
 local uv = vim.uv or vim.loop
+local format = require("snacks.picker.format")
+local zk = require("snacks.zk")
 
 -- ---@class snacks.picker.formatters
 local M = {}
@@ -8,7 +10,7 @@ local M = {}
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
 ---@return snacks.picker.Highlight[]
-function M.zk_filename(item, picker)
+function M.filename(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
@@ -118,7 +120,7 @@ end
 ---@param item snacks.picker.zk.Item
 ---@param picker snacks.Picker
 ---@return snacks.picker.Highlight[]
-function M.zk_file(item, picker)
+function M.file(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
 
@@ -139,7 +141,7 @@ function M.zk_file(item, picker)
     vim.list_extend(ret, format.severity(item, picker))
   end
 
-  vim.list_extend(ret, M.zk_filename(item, picker))
+  vim.list_extend(ret, zk.opts.formatters.file.filename(item, picker))
 
   if item.comment then
     table.insert(ret, { item.comment, "SnacksPickerComment" })
