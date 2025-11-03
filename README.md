@@ -159,7 +159,21 @@ zk = {
       filename_only = nil, -- (fixed) *1
       filename_first = false,
       markdown_only = false, -- find only markdown files
-      filename = require("snacks.zk.format").filename,
+      zk = {
+        filename = require("snacks.zk.format").filename,
+        transform = {
+          icon = function(item, note, icon, hl)
+            if not item.dir and note and (note.title or note.metadata and note.metadata.title) then
+              icon = "󰎞"
+              hl = "SnacksPickerZkNote"
+            end
+            return icon, hl
+          end,
+          highlights = function(item, note, base_hl, dir_hl, icon, hl)
+            return base_hl, dir_hl, icon, hl
+          end,
+        },
+      },
     },
     severity = { pos = "right" },
   },

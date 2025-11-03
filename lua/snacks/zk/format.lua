@@ -18,14 +18,19 @@ function M.filename(item, picker)
   end
   local path = Snacks.picker.util.path(item) or item.file
   -- path = Snacks.picker.util.truncpath(path, picker.opts.formatters.file.truncate or 40, { cwd = picker:cwd() })
+  local note = require("snacks.zk").notes_cache[item.file] or nil
+  local title = note and note.title
+
+  -- Set icon and hl by directory or (file and extension)
   local name, cat = path, "file"
   if item.buf and vim.api.nvim_buf_is_loaded(item.buf) then
-    name = vim.bo[item.buf].filetype
+    name = vim.bo[item.buf].filetype -- 拡張子か？
     cat = "filetype"
   elseif item.dir then
     cat = "directory"
   end
 
+  -- The icon (and hl by cat or filetype)
   if picker.opts.icons.files.enabled ~= false then
     local icon, hl = Snacks.util.icon(name, cat, {
       fallback = picker.opts.icons.files,
@@ -34,8 +39,9 @@ function M.filename(item, picker)
       icon, hl = " ", "Special"
     end
     if item.dir and item.open then
-      icon = picker.opts.icons.files.dir_open
+      icon = picker.opts.icons.files.dir_open -- icons.files こんなのあったんだ。こっちにセットしないとかな？
     end
+    icon, hl = picker.opts.formatters.file.zk.transform.icon(item, note, icon, hl) -- DEBUG: transform
     icon = Snacks.picker.util.align(icon, picker.opts.formatters.file.icon_width or 2)
     ret[#ret + 1] = { icon, hl, virtual = true }
   end
@@ -60,8 +66,7 @@ function M.filename(item, picker)
   end
   local dir_hl = "SnacksPickerDir"
 
-  local note = require("snacks.zk").notes_cache[item.file] or nil
-  local title = note and note.title
+  -- base_hl, dir_hl, icon, hl = picker.opts.formatters.file.zk.highlightes.transform(item, note, base_hl, dir_hl, icon, hl) -- DEBUG: 未実装
 
   if picker.opts.formatters.file.filename_only then
     path = vim.fn.fnamemodify(item.file, ":t")
@@ -141,7 +146,7 @@ function M.file(item, picker)
     vim.list_extend(ret, format.severity(item, picker))
   end
 
-  vim.list_extend(ret, zk.opts.formatters.file.filename(item, picker))
+  vim.list_extend(ret, zk.opts.formatters.file.zk.filename(item, picker))
 
   if item.comment then
     table.insert(ret, { item.comment, "SnacksPickerComment" })
