@@ -1,4 +1,4 @@
-local format = require("snacks.picker.format")
+local uv = vim.uv or vim.loop
 
 -- ---@class snacks.picker.formatters
 local M = {}
@@ -9,7 +9,6 @@ local M = {}
 ---@param picker snacks.Picker
 ---@return snacks.picker.Highlight[]
 function M.zk_filename(item, picker)
-  local uv = vim.uv or vim.loop
   ---@type snacks.picker.Highlight[]
   local ret = {}
   if not item.file then
