@@ -12,6 +12,8 @@
 ---@field default_query snacks.picker.zk.Query?
 ---@field queries snacks.picker.zk.Query[]?
 ---@field query_postfix string?
+---@field format snacks.picker.zk.format.Config?
+---
 
 ---@class snacks.picker.zk.Node : snacks.picker.explorer.Node
 ---@field sort string? -- A string used for sorting in the tree view (This field works alone)
@@ -40,3 +42,7 @@
 
 ---@alias snacks.picker.zk.sort.Func fun(a: snacks.picker.zk.Node|snacks.picker.zk.Item, b: snacks.picker.zk.Node|snacks.picker.zk.Item): boolean
 ---@alias snacks.picker.zk.sort.Config (string|snacks.picker.zk.sort.Field)[]|snacks.picker.zk.sort.Func)
+
+---@class snacks.picker.zk.format.Config
+---@field file fun(item: snacks.picker.zk.Item, picker: snacks.Picker): snacks.picker.Highlight[]
+---@field filename fun(item: snacks.picker.zk.Item, picker: snacks.Picker): snacks.picker.Highlight[]
