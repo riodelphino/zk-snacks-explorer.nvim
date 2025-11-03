@@ -7,6 +7,7 @@ local M = {}
 
 ---@param item snacks.picker.explorer.Item
 ---@param picker snacks.Picker
+---@return snacks.picker.Highlight[]
 function M.zk_filename(item, picker)
   local uv = vim.uv or vim.loop
   ---@type snacks.picker.Highlight[]
@@ -115,6 +116,9 @@ function M.zk_filename(item, picker)
   return ret
 end
 
+---@param item snacks.picker.zk.Item
+---@param picker snacks.Picker
+---@return snacks.picker.Highlight[]
 function M.zk_file(item, picker)
   ---@type snacks.picker.Highlight[]
   local ret = {}
