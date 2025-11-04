@@ -93,9 +93,9 @@ function Tree:get(cwd, cb, opts)
       end
     end
 
-    -- Skip if not listed in notes_cache with query enabled
+    -- Skip if not listed in notes_cache with `include_none_zk = true` in query
     local zk_note = notes_cache[n.path] or nil
-    if query_enabled and not zk_note then
+    if zk.opts.query.include_none_zk ~= true and not zk_note then
       return false
     end
 

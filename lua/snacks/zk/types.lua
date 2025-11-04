@@ -27,6 +27,7 @@
 ---@field desc string
 ---@field query table?
 ---@field input function?
+---@field include_none_zk boolean?
 
 ---@class snacks.picker.zk.Sort
 ---@field desc string

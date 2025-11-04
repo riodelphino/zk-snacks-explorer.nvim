@@ -87,7 +87,7 @@ local source = {
   --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
   -- end,
   sorters = require("snacks.zk.sorters"),
-  query = { desc = "all", query = {} },
+  query = { desc = "all", query = {}, include_none_zk = true },
   queries = require("snacks.zk.queries"),
   query_postfix = ": ",
   actions = require("snacks.zk.actions"),

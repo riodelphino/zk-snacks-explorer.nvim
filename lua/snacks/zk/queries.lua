@@ -10,6 +10,7 @@ M.all = {
     cb({
       desc = "All",
       query = {},
+      include_none_zk = true,
     })
   end,
 }

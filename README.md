@@ -8,8 +8,49 @@
 > Be careful to use it.
 > Any PR is apprecieated.
 
-
 Hereafter, abbreviated as `zk-explorer`.
+
+<!-- mtoc start -->
+- [Features](#features)
+- [Screen shots](#screen-shots)
+- [Dependencies](#dependencies)
+- [Install](#install)
+- [Usage](#usage)
+- [Keymaps](#keymaps)
+- [Config](#config)
+   - [Defaults](#defaults)
+   - [Select](#select)
+   - [Sort](#sort)
+      - [Set Fields](#set-fields)
+      - [Set a Sorter Function](#set-a-sorter-function)
+      - [Change Sort](#change-sort)
+      - [Add Custom Sorter Presets](#add-custom-sorter-presets)
+   - [Queries](#queries)
+      - [Query API](#query-api)
+      - [Built-in Queries](#built-in-queries)
+      - [Add Custom Queries Presets](#add-custom-queries-presets)
+   - [Actions](#actions)
+      - [Add Custom Actions](#add-custom-actions)
+   - [Format](#format)
+      - [Default config](#default-config)
+      - [Custom format example: Modify directly](#custom-format-example-modify-directly)
+      - [Custom format example: Add text](#custom-format-example-add-text)
+   - [Formatters](#formatters)
+      - [file.markdown_only](#file-markdown_only)
+      - [file.zk](#file-zk)
+         - [filename](#filename)
+         - [transform](#transform)
+            - [icon](#icon)
+            - [text](#text)
+   - [config](#config)
+- [Technical Notes](#technical-notes)
+   - [Extended zk info table](#extended-zk-info-table)
+   - [snacks.picker.Highlight](#snacks-picker-highlight)
+- [Issues](#issues)
+- [TODO](#todo)
+- [Related](#related)
+<!-- mtoc end -->
+
 
 ## Features
 
@@ -259,7 +300,7 @@ zk = {
   },
   sort = { fields = { "sort" } }, -- *2
   sorters = require("snacks.zk.sorters"),
-  query = { desc = "all", query = {} },
+  query = { desc = "all", query = {}, include_none_zk = true },
   queries = require("snacks.zk.queries"),
   query_postfix = ": ",
   actions = require("snacks.zk.actions"),
@@ -535,11 +576,9 @@ sorters = {
 
 ### Queries
 
-Keymaps (in the file tree):
-   - `z` key shows a list of queries.
-   - `Q` key reset the current query(=All).
 
-Queries in lua:
+#### Query API
+
 ```lua
 -- Change query
 require('snacks.zk.actions').actions.zk_change_query()
@@ -547,7 +586,8 @@ require('snacks.zk.actions').actions.zk_change_query()
 require('snacks.zk.actions').actions.zk_reset_query()
 ```
 
-Built-in queries:
+
+#### Built-in Queries
 | Query                      | Description |
 | -------------------------- | ----------- |
 | All (default)              |             |
@@ -573,7 +613,7 @@ Built-in queries:
 
 #### Add Custom Queries Presets
 
-Example: Add cusotm query `Todo`:
+Example: Add custom query `Todo`:
 ```lua
 queries = {
   todo = {
@@ -584,8 +624,17 @@ queries = {
   },
 },
 ```
-Use custom query `todo`:
-  In default keymaps, `z` key in `zk-explorer` will show the custom queries mixed with built-in queries.
+
+Example: Add custom query `show_all` (Almost same with default "All" query)
+```lua
+queries = {
+  show_all = {
+    desc = "show_all",
+    query = {},
+    include_none_zk = true, -- Enable to show all files and directories if not fetched by zk.api.list
+  },
+},
+```
 
 
 ### Actions
