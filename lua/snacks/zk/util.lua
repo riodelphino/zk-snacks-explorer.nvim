@@ -30,6 +30,58 @@ M.picker = { -- wrapper functions for @snacks.Picker class
   end,
 }
 
+M.win = {
+  ---@param text string
+  ---@param title? string
+  ---@param opts? table
+  show_popup = function(text, title, opts)
+    local lines = vim.split(text, "\n", { plain = true })
+
+    local width = 0
+    for _, line in ipairs(lines) do
+      width = math.max(width, vim.fn.strdisplaywidth(line))
+    end
+    local height = #lines
+
+    width = math.min(width + 4, math.floor(vim.o.columns * 0.9))
+    height = math.min(height + 2, math.floor(vim.o.lines * 0.8))
+
+    local winid = vim.api.nvim_get_current_win()
+    local cfg = vim.api.nvim_win_get_config(winid)
+    local zindex = (cfg.zindex or 50) + 1
+
+    local defaults = {
+      text = lines,
+      title = title or nil,
+      title_pos = "center",
+      relative = "editor",
+      position = "float",
+      border = "rounded", -- TODO: Get these opts from Snacks defaults
+      minimal = true,
+      fixbuf = true,
+      show = true,
+      enter = true,
+      focusable = true,
+      width = width,
+      height = height,
+      zindex = zindex + 1,
+      wo = {
+        wrap = false,
+        spell = false,
+        statuscolumn = " ",
+        conceallevel = 0,
+      },
+      scratch_ft = "snacks_zk_info",
+      keys = {
+        q = "close",
+        ["<esc>"] = "close",
+      },
+    }
+    opts = vim.tbl_deep_extend("force", defaults, opts or {})
+    Snacks.win(opts)
+  end,
+}
+
 M.zk = { -- wrapper functions for zk-nvim
   ---Get zk notebook path
   ---@return string?
@@ -48,7 +100,7 @@ M.zk = { -- wrapper functions for zk-nvim
     end
     notebook_path = vim.fs.normalize(notebook_path)
     path = vim.fs.normalize(path)
-    return path == notebook_path or path:find(notebook_path .. "/", 1, true) == 1
+    return M.in_dir(path, notebook_path)
   end,
 }
 
@@ -113,6 +165,16 @@ function M.set_highlights(hl_list)
   for hl_name, hl in pairs(hl_list) do
     vim.api.nvim_set_hl(0, hl_name, hl)
   end
+end
+
+---Returns true if the child is inside the parent dir
+---@param dir string
+---@param path string
+---@return boolean
+function M.in_dir(path, dir)
+  dir = vim.fs.normalize(dir)
+  path = vim.fs.normalize(path)
+  return path == dir or path:find(dir .. "/", 1, true) == 1
 end
 
 return M

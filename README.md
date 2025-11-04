@@ -10,46 +10,6 @@
 
 Hereafter, abbreviated as `zk-explorer`.
 
-<!-- mtoc start -->
-- [Features](#features)
-- [Screen shots](#screen-shots)
-- [Dependencies](#dependencies)
-- [Install](#install)
-- [Usage](#usage)
-- [Keymaps](#keymaps)
-- [Config](#config)
-   - [Defaults](#defaults)
-   - [Select](#select)
-   - [Sort](#sort)
-      - [Set Fields](#set-fields)
-      - [Set a Sorter Function](#set-a-sorter-function)
-      - [Change Sort](#change-sort)
-      - [Add Custom Sorter Presets](#add-custom-sorter-presets)
-   - [Queries](#queries)
-      - [Query API](#query-api)
-      - [Built-in Queries](#built-in-queries)
-      - [Add Custom Queries Presets](#add-custom-queries-presets)
-   - [Actions](#actions)
-      - [Add Custom Actions](#add-custom-actions)
-   - [Format](#format)
-      - [Default config](#default-config)
-      - [Custom format example: Modify directly](#custom-format-example-modify-directly)
-      - [Custom format example: Add text](#custom-format-example-add-text)
-   - [Formatters](#formatters)
-      - [file.markdown_only](#file-markdown_only)
-      - [file.zk](#file-zk)
-         - [filename](#filename)
-         - [transform](#transform)
-            - [icon](#icon)
-            - [text](#text)
-   - [config](#config)
-- [Technical Notes](#technical-notes)
-   - [Extended zk info table](#extended-zk-info-table)
-   - [snacks.picker.Highlight](#snacks-picker-highlight)
-- [Issues](#issues)
-- [TODO](#todo)
-- [Related](#related)
-<!-- mtoc end -->
 
 
 ## Features
@@ -81,6 +41,9 @@ Queries
 
 Sorters
 ![assets/images/screenshot_04_sorters.png](assets/images/screenshot_04_sorters.png)
+
+Show item info
+![assets/images/screenshot_05_item_info.png](assets/images/screenshot_05_item_info.png)
 
 
 ## Dependencies
@@ -196,6 +159,7 @@ The keymaps and actions from explorer are also available:
 |     [w     | explorer_warn_prev       |
 |     ]e     | explorer_error_next      |
 |     [e     | explorer_error_prev      |
+
 *1 TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
 
 
@@ -309,9 +273,6 @@ zk = {
     SnacksPickerZkDir = { link = "SnacksPickerDirectory", bold = true },
   },
   config = function(opts)
-    -- Set highlights
-    vim.api.nvim_set_hl(0, 'SnacksPickerZkNote', { link = 'WarningMsg', bold = true })
-    vim.api.nvim_set_hl(0, 'SnacksPickerZkDir', { link = 'SnacksPickerDirectory', bold = true })
     -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
   end,
   win = {
@@ -636,7 +597,6 @@ queries = {
 },
 ```
 
-
 ### Actions
 
 Built-in Actions:
@@ -745,16 +705,14 @@ formatters = {
 },
 ```
 
-#### file.zk
-
-##### filename
+#### file.zk.filename
 
 A sub function which builds dir and filename segment with icon and highlight.
 It's called from `file()` function.
 
 default: `filename = require("snacks.zk.format").filename,`
 
-##### transform
+#### file.zk.transform
 
 Two transformer functions to modify icon and text in the tree.
 
@@ -762,7 +720,7 @@ Two transformer functions to modify icon and text in the tree.
 > Ensure that these highlights are set in config or somewhere.  
 > See `config` section below.
 
-###### icon
+#### file.zk.transform.icon
 
 A function to modify icon and it's highlight.
 
@@ -783,8 +741,7 @@ icon = function(item, note, icon, hl)
 end,
 ```
 
-
-###### text
+#### file.zk.transform.text
 
 A function to modify text (dir or filename or title) and it's highlight.
 
