@@ -759,7 +759,24 @@ end,
 ```
 
 
-#### NOTE: snacks.picker.Highlight
+### config
+
+Add some code to execute in the `zk-explorer` setup.
+
+```lua
+config = function(opts)
+  -- your additional code here
+end,
+```
+
+## Technical Notes
+
+### Extended zk info table
+
+The extended `dir` field (boolean) is added by `zk-explorer` in `add_dir_to_notes()` function.
+
+
+### snacks.picker.Highlight
 
 ```lua
 ---@alias snacks.picker.Extmark vim.api.keyset.set_extmark|{col:number, row?:number, field?:string}
@@ -787,16 +804,6 @@ Then, `snacks.picker.Highlight` is:
   { "A", "Error", field = "file" },
   { " " },
 },
-```
-
-### config
-
-Add some code to execute in the `zk-explorer` setup.
-
-```lua
-config = function(opts)
-  -- your additional code here
-end,
 ```
 
 
