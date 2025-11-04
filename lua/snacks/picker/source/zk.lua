@@ -435,7 +435,7 @@ function M.search(opts, ctx)
       end
     end
 
-    local sorter = zk_util.sort(opts)
+    local sorter = zk_util.get_sorter(opts)
     table.sort(items, sorter)
 
     for _, item in ipairs(items) do

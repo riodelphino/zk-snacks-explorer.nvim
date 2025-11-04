@@ -43,7 +43,7 @@ function Tree:walk(node, fn, opts)
   end
 
   local children = vim.tbl_values(node.children) ---@type snacks.picker.zk.Node[]
-  local sorter = zk_util.sort(zk.opts) -- Use built-in sort system
+  local sorter = zk_util.get_sorter(zk.opts) -- Use built-in sort system
 
   table.sort(children, sorter)
 

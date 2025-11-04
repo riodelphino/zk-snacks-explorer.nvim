@@ -100,7 +100,7 @@ end
 ---Return sort function : copied from `lua/snacks/picker/config/init.lua: M.sort()`
 ---Use custom default() in `lua/snacks/zk/sort.lua` instead
 ---@param opts snacks.picker.Config
-function M.sort(opts)
+function M.get_sorter(opts)
   local sort = opts.sort or require("snacks.zk.sort").default()
   if type(sort) == "table" then
     return require("snacks.zk.sort").default(sort)
