@@ -40,7 +40,7 @@ local function add_dir_to_notes(notes)
   for _, path in pairs(vim.tbl_keys(notes)) do
     for dir in vim.fs.parents(path) do
       if not notes[dir] then
-        notes[dir] = { absPath = dir, is_dir = true }
+        notes[dir] = { absPath = dir, dir = true }
       end
     end
   end
