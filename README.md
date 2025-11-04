@@ -113,6 +113,61 @@ Snacks.zk({ layout = "default", jump = { close = true } }) -- floating & preview
 > `layout = "telescope"` breaks the order for `reverse = true` config.
 
 
+## Keymaps
+
+Keymaps specific for `zk-explorer`:
+| Keys | Action            |
+| :--: | ----------------- |
+|  z   | zk_change_query   |
+|  Q   | zk_reset_query    |
+|  s   | zk_change_sort    |
+|  S   | zk_reset_sort     |
+|  i   | zk_show_item_info |
+
+The keymaps and actions from explorer are also available:
+|    Keys    | Action                   |
+| :--------: | ------------------------ |
+|    <BS>    | explorer_up              |
+|     l      | confirm                  |
+|     h      | explorer_close           |
+|     a      | explorer_add             |
+|     d      | explorer_del             |
+|     r      | explorer_rename          |
+|     c      | explorer_copy            |
+|     m      | explorer_move            |
+|     o      | explorer_open            |
+|     P      | toggle_preview           |
+|     y      | explorer_yank            |
+|     p      | explorer_paste           |
+|     u      | explorer_update          |
+|   <c-c>    | tcd                      |
+| <leader>/  | picker_grep              |
+| <c-t> (*1) | terminal                 |
+|     .      | explorer_focus           |
+|     I      | toggle_ignored           |
+|     H      | toggle_hidden            |
+|     Z      | explorer_close_all       |
+|     ]g     | explorer_git_next        |
+|     [g     | explorer_git_prev        |
+|     ]d     | explorer_diagnostic_next |
+|     [d     | explorer_diagnostic_prev |
+|     ]w     | explorer_warn_next       |
+|     [w     | explorer_warn_prev       |
+|     ]e     | explorer_error_next      |
+|     [e     | explorer_error_prev      |
+*1 TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
+
+
+Unset default keymaps `z*` to avoid waiting next key after `z`. (Any other solutions?)
+| Keys | Action    | Original Action in snacks.explorer |
+| :--: | --------- | ---------------------------------- |
+|  zb  | - false - | list_scroll_bottom                 |
+|  zt  | - false - | list_scroll_top                    |
+|  zz  | - false - | list_scroll_center                 |
+
+
+
+
 ## Config
 
 See `lua/snacks/zk/source.lua`
@@ -420,11 +475,6 @@ end,
 
 #### Change Sort
 
-Keymaps (in the file tree):
-   - `s` key shows a list of sorters.
-   - `S` key reset the current sorter.
-
-
 Built-in sorters:
 | Sorter       | Sort key         | Order |
 | ------------ | ---------------- | ----- |
@@ -441,7 +491,7 @@ Built-in sorters:
 Custom sorter presets can be added into `sorters = {}` config.
 They will be appeared in the [change sort](#change-sort) list.
 
-Add `metadata.status` sorter:
+Example: Add `metadata.status` sorter:
 ```lua
 select = { "title", "absPath", "filename", "metadata"}, -- Ensure that the fields used in the sorter are set.
 sorters = {
@@ -454,7 +504,7 @@ sorters = {
 }
 ```
 
-Add sorters for custom YAML frontmatter fields:
+Example: Add sorters for custom YAML frontmatter fields:
 ```lua
 select = { "title", "absPath", "filename", "metadata"}, -- Ensure that the fields used in the sorter are set.
 sorters = {
@@ -520,9 +570,9 @@ Built-in queries:
 | Related                    |             |
 | Tag                        |             |
 
-#### Add Custom Queries
+#### Add Custom Queries Presets
 
-Add cusotm query `Todo`:
+Example: Add cusotm query `Todo`:
 ```lua
 queries = {
   todo = {
@@ -550,7 +600,7 @@ Built-in Actions:
 
 #### Add Custom Actions
 
-Add custom action `zk_add_new`:
+Example: Add custom action `zk_add_new`:
 ```lua
 actions = {
   zk_add_new = function()
