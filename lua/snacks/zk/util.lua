@@ -34,8 +34,7 @@ M.zk = { -- wrapper functions for zk-nvim
   ---Get zk notebook path
   ---@return string?
   get_notebook_path = function()
-    local zk_util = require("zk.util")
-    local path = zk_util.notebook_root(vim.fn.getcwd())
+    local path = require("zk.util").notebook_root(M.picker.get_cwd() or vim.fn.getcwd())
     return path
   end,
 
