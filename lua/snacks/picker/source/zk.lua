@@ -221,6 +221,7 @@ function M.setup(opts)
       local merged_opts = Snacks.config.merge(opts, runtime_opts or {})
       return Snacks.picker.pick("zk", merged_opts)
     end
+    zk_util.set_highlights(opts.highlights or {})
   end
   return opts
 end

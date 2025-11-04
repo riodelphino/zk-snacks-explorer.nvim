@@ -78,28 +78,24 @@ local source = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  -- Sort
   -- sort = { fields = {} }, -- OK
   sort = { fields = { "sort" } }, -- OK
   -- sort = { fields = { "!zk" } }, -- OK (Caution: `*.md` files without YAML or title also have zk field)
-
   -- sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }, -- OK (Almost same with `fields = { "sort" }`)
   -- sort = { fields = { "dir", "hidden:desc", "zk.metadata.created" } }, -- OK
   -- sort = function(a, b) -- OK
   --   return (a.title or a.path or a.file) < (b.title or b.path or b.file)
   -- end,
-
   sorters = require("snacks.zk.sorters"),
-  -- Query
   query = { desc = "all", query = {} },
   queries = require("snacks.zk.queries"),
   query_postfix = ": ",
-  -- Actions
   actions = require("snacks.zk.actions"),
+  highlights = {
+    SnacksPickerZkNote = { link = "WarningMsg", bold = true },
+    SnacksPickerZkDir = { link = "SnacksPickerDirectory", bold = true },
+  },
   config = function(opts)
-    -- Set highlights
-    vim.api.nvim_set_hl(0, "SnacksPickerZkNote", { link = "WarningMsg", bold = true })
-    vim.api.nvim_set_hl(0, "SnacksPickerZkDir", { link = "SnacksPickerDirectory", bold = true })
     -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
   end,
   win = {

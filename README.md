@@ -257,15 +257,16 @@ zk = {
     on_match = nil, -- (fixed) *1
     on_done = nil, -- (fixed) *1
   },
-  -- Sort
   sort = { fields = { "sort" } }, -- *2
   sorters = require("snacks.zk.sorters"),
-  -- Query
   query = { desc = "all", query = {} },
   queries = require("snacks.zk.queries"),
   query_postfix = ": ",
-  -- Actions
   actions = require("snacks.zk.actions"),
+  highlights = {
+    SnacksPickerZkNote = { link = "WarningMsg", bold = true },
+    SnacksPickerZkDir = { link = "SnacksPickerDirectory", bold = true },
+  },
   config = function(opts)
     -- Set highlights
     vim.api.nvim_set_hl(0, 'SnacksPickerZkNote', { link = 'WarningMsg', bold = true })
@@ -794,9 +795,7 @@ Add some code to execute in the `zk-explorer` setup.
 
 ```lua
 config = function(opts)
-  -- Set highlights
-  vim.api.nvim_set_hl(0, 'SnacksPickerZkNote', { link = 'WarningMsg', bold = true })
-  vim.api.nvim_set_hl(0, 'SnacksPickerZkDir', { link = 'SnacksPickerDirectory', bold = true })
+  -- your additional code here
 end,
 ```
 
