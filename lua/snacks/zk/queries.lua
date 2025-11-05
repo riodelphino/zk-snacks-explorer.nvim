@@ -1,6 +1,6 @@
 local log = Snacks.debug.log
 local input_postfix = ": "
-local zk_util = require("snacks.zk.util")
+local util = require("snacks.zk.util")
 
 local M = {}
 
@@ -48,7 +48,7 @@ M.match_fts = {
           },
         })
       else
-        zk_util.picker.focus("list")
+        util.picker.focus("list")
       end
     end)
   end,
@@ -66,7 +66,7 @@ M.match_re = {
           },
         })
       else
-        zk_util.picker.focus("list")
+        util.picker.focus("list")
       end
     end)
   end,
@@ -84,7 +84,7 @@ M.match_exact = {
           },
         })
       else
-        zk_util.picker.focus("list")
+        util.picker.focus("list")
       end
     end)
   end,
@@ -111,7 +111,7 @@ M.tag = {
             },
           })
         else
-          zk_util.picker.focus("list")
+          util.picker.focus("list")
         end
       end)
     end)
@@ -124,11 +124,11 @@ local function format_item_note(note)
 end
 
 local function link(field, desc, extra)
-  local zk_api_opts = { select = require("snacks.zk").opts.select }
+  local opts = { select = require("snacks.zk").opts.select }
   return {
     desc = desc,
     input = function(notebookPath, _, cb)
-      require("zk.api").list(notebookPath, zk_api_opts, function(err, tags)
+      require("zk.api").list(notebookPath, opts, function(err, tags)
         if err then
           log("Error while querying tags: ", err)
           return
@@ -141,7 +141,7 @@ local function link(field, desc, extra)
               query = query,
             })
           else
-            zk_util.picker.focus("list")
+            util.picker.focus("list")
           end
         end)
       end)
@@ -183,7 +183,7 @@ local function date(field, refField, desc)
               },
             })
           else
-            zk_util.picker.focus("list")
+            util.picker.focus("list")
           end
         end)
       end)

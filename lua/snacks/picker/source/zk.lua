@@ -1,7 +1,7 @@
 ---@diagnostic disable: await-in-sync
 
 local zk = require("snacks.zk")
-local zk_util = require("snacks.zk.util")
+local util = require("snacks.zk.util")
 
 local Tree = require("snacks.zk.tree")
 
@@ -22,7 +22,7 @@ State.__index = State
 ---@param picker snacks.Picker
 function State.new(picker)
   local self = setmetatable({}, State)
-  local zk_actions = zk.opts.actions
+  local actions = zk.opts.actions
 
   local opts = picker.opts --[[@as snacks.picker.zk.Config]]
   local r = picker:ref()
@@ -53,7 +53,7 @@ function State.new(picker)
     local p = ref()
     if p then
       Tree:refresh(ev.file)
-      zk_actions.update(p)
+      actions.update(p)
     end
   end)
 
@@ -105,13 +105,13 @@ function State.new(picker)
         if item and item.file == norm(file) then
           return
         end
-        zk_actions.update(p, { target = file })
+        actions.update(p, { target = file })
       end)
     end)
     self.on_find = function()
       local p = ref()
       if p and buf_file then
-        zk_actions.update(p, { target = buf_file })
+        actions.update(p, { target = buf_file })
       end
     end
   end
@@ -176,7 +176,7 @@ function M.setup(opts)
               parent.match_tick = matcher.tick
               parent.match_topk = nil
               parent.dir = true -- Ensure dir
-              parent.sort = zk_util.sort.get_sort_key(parent)
+              parent.sort = util.sort.get_sort_key(parent)
               picker.list:add(parent)
             else
               break
@@ -220,7 +220,7 @@ function M.setup(opts)
       local merged_opts = Snacks.config.merge(opts, runtime_opts or {})
       return Snacks.picker.pick("zk", merged_opts)
     end
-    zk_util.hl.set_highlights(opts.highlights or {})
+    util.hl.set_highlights(opts.highlights or {})
   end
   return opts
 end
@@ -376,7 +376,7 @@ function M.search(opts, ctx)
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
 
-      item.sort = zk_util.sort.get_sort_key(item, opts.cwd)
+      item.sort = util.sort.get_sort_key(item, opts.cwd)
       item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text .. " +"
 
@@ -435,7 +435,7 @@ function M.search(opts, ctx)
       end
     end
 
-    local sorter = zk_util.sort.get_sorter(opts)
+    local sorter = util.sort.get_sorter(opts)
     table.sort(items, sorter)
 
     for _, item in ipairs(items) do

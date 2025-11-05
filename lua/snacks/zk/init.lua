@@ -62,10 +62,10 @@ end
 ---@param cb function?
 function M.fetch_zk(cb)
   local zk_api = require("zk.api")
-  local zk_api_opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
+  local opts = vim.tbl_deep_extend("keep", { select = M.opts.select }, M.opts.query.query or {})
 
-  zk_api.index(M.notebook_path, zk_api_opts, function()
-    zk_api.list(M.notebook_path, zk_api_opts, function(err, notes)
+  zk_api.index(M.notebook_path, opts, function()
+    zk_api.list(M.notebook_path, opts, function(err, notes)
       if err then
         vim.schedule(function()
           vim.notify("Error: Cannot execute zk.api.list", vim.log.levels.ERROR)
@@ -151,7 +151,7 @@ end
 --- Reveals the given file/buffer or the current buffer in the explorer
 ---@param opts? {file?:string, buf?:number}
 function M.reveal(opts)
-  local zk_actions = require("snacks.zk.actions")
+  local actions = require("snacks.zk.actions")
   local Tree = require("snacks.zk.tree")
   opts = opts or {}
   local file = svim.fs.normalize(opts.file or vim.api.nvim_buf_get_name(opts.buf or 0))
@@ -166,7 +166,7 @@ function M.reveal(opts)
     end
   end
   Tree:open(file)
-  zk_actions.update(picker, { target = file, refresh = true })
+  actions.update(picker, { target = file, refresh = true })
   return picker
 end
 

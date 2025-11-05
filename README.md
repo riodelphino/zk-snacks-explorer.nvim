@@ -184,8 +184,8 @@ See `lua/snacks/zk/source.lua`
 ---@type snacks.picker.zk.Config
 zk = {
   enabled = function() -- Enabled only in zk directory
-    local zk_util = require("snacks.zk.util")
-    local notebook_path = zk_util.fs.get_notebook_path()
+    local util = require("snacks.zk.util")
+    local notebook_path = util.fs.get_notebook_path()
     return notebook_path ~= nil
   end,
   title = "Zk",
@@ -676,8 +676,8 @@ A little bit slower than above example.
 ```lua
 format = function(item, picker)
   local zk = require("snacks.zk")
-  local zk_file = require("snacks.zk.format").file
-  local ret = zk_file(item, picker)
+  local file = require("snacks.zk.format").file
+  local ret = file(item, picker)
   local note = zk.notes_cache[item.file]
 
   -- Add author if note has 'book' tag

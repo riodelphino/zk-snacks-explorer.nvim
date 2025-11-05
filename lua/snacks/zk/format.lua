@@ -16,7 +16,7 @@ function M.filename(item, picker)
   local path = Snacks.picker.util.path(item) or item.file
   -- path = Snacks.picker.util.truncpath(path, picker.opts.formatters.file.truncate or 40, { cwd = picker:cwd() })
   local note = require("snacks.zk").notes_cache[item.file] or nil
-  local zk_transform = picker.opts.formatters.file.zk.transform
+  local transform = picker.opts.formatters.file.zk.transform
 
   local name, cat = path, "file"
   if item.buf and vim.api.nvim_buf_is_loaded(item.buf) then
@@ -36,7 +36,7 @@ function M.filename(item, picker)
     if item.dir and item.open then
       icon = picker.opts.icons.files.dir_open
     end
-    icon, hl = zk_transform.icon(item, note, icon, hl) -- Transform icon and hl
+    icon, hl = transform.icon(item, note, icon, hl) -- Transform icon and hl
     icon = Snacks.picker.util.align(icon, picker.opts.formatters.file.icon_width or 2)
     ret[#ret + 1] = { icon, hl, virtual = true }
   end
@@ -65,7 +65,7 @@ function M.filename(item, picker)
     base = vim.fn.fnamemodify(item.file, ":t")
     base = base == "" and item.file or base
 
-    base, base_hl, dir_hl = zk_transform.text(item, note, base, base_hl, dir_hl) -- Transform text
+    base, base_hl, dir_hl = transform.text(item, note, base, base_hl, dir_hl) -- Transform text
 
     ret[#ret + 1] = { base, base_hl, field = "file" }
   else
@@ -79,7 +79,7 @@ function M.filename(item, picker)
         )
         local dir, base = truncpath:match("^(.*)/(.+)$")
 
-        base, base_hl, dir_hl = zk_transform.text(item, note, base, base_hl, dir_hl) -- Transform text
+        base, base_hl, dir_hl = transform.text(item, note, base, base_hl, dir_hl) -- Transform text
 
         local resolved = {} ---@type snacks.picker.Highlight[]
         if base and dir then

@@ -1,8 +1,8 @@
 ---@type snacks.picker.zk.Config
 local source = {
   enabled = function() -- Enabled if zk directory
-    local zk_util = require("snacks.zk.util")
-    local notebook_path = zk_util.fs.get_notebook_path()
+    local util = require("snacks.zk.util")
+    local notebook_path = util.fs.get_notebook_path()
     return notebook_path ~= nil
   end,
   title = "Zk",
