@@ -6,7 +6,7 @@ local source = {
     return notebook_path ~= nil
   end,
   title = "Zk",
-  finder = "zk", -- (fixed) Calls `require('snacks.picker.source.zk').zk()` function.
+  finder = "zk", -- Same with `finder = function(opts, ctx) return require('snacks.picker.source.zk').zk(opts, ctx) end`
   reveal = true,
   supports_live = true,
   tree = true, -- (fixed) Always true on this picker and `false` not works
