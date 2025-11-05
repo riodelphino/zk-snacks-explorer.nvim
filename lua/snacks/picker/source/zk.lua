@@ -19,7 +19,9 @@ end
 ---@field on_find? fun()?
 local State = {}
 State.__index = State
+
 ---@param picker snacks.Picker
+---@diagnostic disable-next-line duplicate-set-field
 function State.new(picker)
   local self = setmetatable({}, State)
   local actions = zk.opts.actions
@@ -105,12 +107,14 @@ function State.new(picker)
         if item and item.file == norm(file) then
           return
         end
+        ---@diagnostic disable-next-line missing-fields
         actions.update(p, { target = file })
       end)
     end)
     self.on_find = function()
       local p = ref()
       if p and buf_file then
+        ---@diagnostic disable-next-line missing-fields
         actions.update(p, { target = buf_file })
       end
     end
@@ -119,6 +123,7 @@ function State.new(picker)
 end
 
 ---@param ctx snacks.picker.finder.ctx
+---@diagnostic disable-next-line duplicate-set-field
 function State:setup(ctx)
   local opts = ctx.picker.opts --[[@as snacks.picker.zk.Config]]
   if opts.watch then
@@ -143,6 +148,7 @@ function M.setup(opts)
   -- Merge dynamic config
   opts = Snacks.config.merge(opts, {
     actions = {
+      ---@diagnostic disable-next-line undefined-filed
       confirm = opts.actions.actions.confirm,
     },
     filter = {
