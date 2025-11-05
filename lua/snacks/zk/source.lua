@@ -43,7 +43,7 @@ local source = {
             -- A file has title
             if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
               icon = "󰎞"
-              hl = "SnacksPickerZkNote"
+              hl = "SnacksPickerZkNoteIcon"
             end
             -- A dir includes zk files
             if item.dir and note then
@@ -55,8 +55,8 @@ local source = {
           text = function(item, note, base, base_hl, dir_hl)
             -- A dir includes zk files
             if item.dir and not item.hidden and note then
-              dir_hl = "SnacksPickerZkDir"
-              base_hl = "SnacksPickerZkDir"
+              dir_hl = "SnacksPickerZkDirText"
+              base_hl = "SnacksPickerZkDirText"
             end
             -- A file not zk
             if not item.dir and not note then
@@ -92,8 +92,10 @@ local source = {
   query_postfix = ": ",
   actions = require("snacks.zk.actions"),
   highlights = {
-    SnacksPickerZkNote = { link = "WarningMsg", bold = true },
-    SnacksPickerZkDir = { link = "SnacksPickerDirectory", bold = true },
+    SnacksPickerZkNoteIcon = { fg = "#E8AB53" },
+    SnacksPickerZkNoteText = { link = "SnacksPickerList" },
+    SnacksPickerZkDirIcon = { link = "SnacksPickerDirectory" },
+    SnacksPickerZkDirText = { link = "SnacksPickerDirectory" },
   },
   config = function(opts)
     -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
