@@ -1,7 +1,6 @@
 ---@diagnostic disable: await-in-sync
 
 local zk = require("snacks.zk")
-local zk_format = require("snacks.zk.format")
 local zk_util = require("snacks.zk.util")
 
 local Tree = require("snacks.zk.tree")
@@ -177,7 +176,7 @@ function M.setup(opts)
               parent.match_tick = matcher.tick
               parent.match_topk = nil
               parent.dir = true -- Ensure dir
-              parent.sort = zk_util.get_sort_key(parent)
+              parent.sort = zk_util.sort.get_sort_key(parent)
               picker.list:add(parent)
             else
               break
@@ -221,7 +220,7 @@ function M.setup(opts)
       local merged_opts = Snacks.config.merge(opts, runtime_opts or {})
       return Snacks.picker.pick("zk", merged_opts)
     end
-    zk_util.set_highlights(opts.highlights or {})
+    zk_util.hl.set_highlights(opts.highlights or {})
   end
   return opts
 end
@@ -377,7 +376,7 @@ function M.search(opts, ctx)
       dirname, basename = dirname or "", basename or item.file
       local parent = dirs[dirname] ~= item and dirs[dirname] or root
 
-      item.sort = zk_util.get_sort_key(item, opts.cwd)
+      item.sort = zk_util.sort.get_sort_key(item, opts.cwd)
       item.hidden = basename:sub(1, 1) == "."
       item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text .. " +"
 
@@ -436,7 +435,7 @@ function M.search(opts, ctx)
       end
     end
 
-    local sorter = zk_util.get_sorter(opts)
+    local sorter = zk_util.sort.get_sorter(opts)
     table.sort(items, sorter)
 
     for _, item in ipairs(items) do

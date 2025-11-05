@@ -2,7 +2,7 @@
 local source = {
   enabled = function() -- Enabled if zk directory
     local zk_util = require("snacks.zk.util")
-    local notebook_path = zk_util.zk.get_notebook_path()
+    local notebook_path = zk_util.fs.get_notebook_path()
     return notebook_path ~= nil
   end,
   title = "Zk",
