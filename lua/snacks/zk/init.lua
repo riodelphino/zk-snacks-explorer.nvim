@@ -73,7 +73,7 @@ function M.fetch_zk(cb)
         return
       end
       M.notes_cache = index_notes_by_path(notes)
-      add_dir_to_notes(M.notes_cache)
+      add_dir_to_notes(M.notes_cache) -- Add all directories (Need for tree building)
       if cb and type(cb) == "function" then
         vim.schedule(function()
           cb()
