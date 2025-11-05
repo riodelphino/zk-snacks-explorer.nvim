@@ -343,7 +343,6 @@ function M.zk(opts, ctx)
   end
 end
 
--- WORKS fine / but parent directory show as file
 ---@param opts snacks.picker.zk.Config
 ---@type snacks.picker.finder
 function M.search(opts, ctx)
@@ -394,14 +393,23 @@ function M.search(opts, ctx)
       table.insert(items, item)
     end
 
+    local function match(text, query, ignore_case)
+      if ignore_case then
+        return text:lower():find(query:lower(), 1, true)
+      else
+        return text:find(query, 1, true)
+      end
+    end
+
     -- Loop for notes_cache
     for path, note in pairs(notes_cache) do
-      local match_query = ctx.filter.search:lower()
-      local filename = vim.fn.fnamemodify(path, ":t"):lower()
-      local title = (note.title or ""):lower()
+      local match_query = ctx.filter.search
+      local ignore_case = match_query:lower() == match_query
+      local filename = vim.fn.fnamemodify(path, ":t")
+      local title = (note.title or "")
 
-      local matched_filename = filename:find(match_query, 1, true)
-      local matched_title = title:find(match_query, 1, true)
+      local matched_filename = match(filename, match_query, ignore_case)
+      local matched_title = match(title, match_query, ignore_case)
       if matched_filename or matched_title then
         local is_dir = vim.fn.isdirectory(path) == 1 and true or false
         ---@type snacks.picker.zk.Item
