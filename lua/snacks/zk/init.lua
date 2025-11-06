@@ -37,10 +37,13 @@ end
 
 ---@param notes table
 local function add_dir_to_notes(notes)
+  local util = require("snacks.zk.util")
   for _, path in pairs(vim.tbl_keys(notes)) do
     for dir in vim.fs.parents(path) do
       if not notes[dir] then
-        notes[dir] = { absPath = dir, dir = true }
+        if util.fs.in_dir(dir, M.notebook_path) then -- Add only if under cwd -- TODO: Should use cwd? (but picker does not exist now)
+          notes[dir] = { absPath = dir, dir = true }
+        end
       end
     end
   end

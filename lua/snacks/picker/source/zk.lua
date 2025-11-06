@@ -182,6 +182,7 @@ function M.setup(opts)
               parent.match_tick = matcher.tick
               parent.match_topk = nil
               parent.dir = true -- Ensure dir
+              parent.matched = nil -- Reset matched
               parent.sort = util.sort.get_sort_key(parent)
               picker.list:add(parent)
             else
@@ -410,45 +411,59 @@ function M.search(opts, ctx)
 
     -- Loop for notes_cache
     for path, note in pairs(notes_cache) do
-      local match_query = ctx.filter.search
-      local ignore_case = match_query:lower() == match_query
-      local filename = vim.fn.fnamemodify(path, ":t")
-      local title = (note.title or "")
+      -- print(path)
+      -- print(string.format("path: %s / opts.cwd: %s", path, opts.cwd))
+      if path ~= opts.cwd then
+        local match_query = ctx.filter.search
+        local ignore_case = match_query:lower() == match_query
+        local filename = vim.fn.fnamemodify(path, ":t")
+        local title = (note.title or "")
 
-      local matched_filename = match(filename, match_query, ignore_case)
-      local matched_title = match(title, match_query, ignore_case)
-      if matched_filename or matched_title then
-        local is_dir = vim.fn.isdirectory(path) == 1 and true or false
-        ---@type snacks.picker.zk.Item
-        local item = {
-          file = path,
-          dir = is_dir,
-          open = true,
-          text = title ~= "" and title or filename,
-          title = title ~= "" and note.title or nil,
-          score = 1,
-          matched = true,
-        }
+        local matched_filename = match(filename, match_query, ignore_case)
+        local matched_title = match(title, match_query, ignore_case)
+        if matched_filename or matched_title then
+          local is_dir = vim.fn.isdirectory(path) == 1 and true or false
+          ---@type snacks.picker.zk.Item
+          local item = {
+            file = path,
+            dir = is_dir,
+            open = true,
+            text = title ~= "" and title or filename,
+            title = title ~= "" and note.title or nil,
+            score = 1,
+            matched = true,
+          }
 
-        -- Add parent directories recursively
-        for dir in Snacks.picker.util.parents(item.file, opts.cwd) do
-          if not dirs[dir] then
-            ---@type snacks.picker.zk.Item
-            local parent_item = {
-              file = dir,
-              text = dir,
-              dir = true,
-              open = true,
-              internal = true,
-              sort = "",
-            }
-            dirs[dir] = parent_item
-            add(parent_item)
+          -- Add parent directories recursively
+          for dir in Snacks.picker.util.parents(item.file, opts.cwd) do
+            if not dirs[dir] then
+              ---@type snacks.picker.zk.Item
+              local parent_item = {
+                file = dir,
+                text = dir,
+                dir = true,
+                open = true,
+                internal = true,
+                sort = "",
+                matched = nil,
+              }
+              dirs[dir] = parent_item
+              add(parent_item)
+            end
           end
-        end
-        if not dirs[item.file] then
-          dirs[item.file] = item
-          add(item)
+          if not dirs[item.file] then
+            dirs[item.file] = item
+            add(item)
+          else
+            -- Update when matched, even if it already exists in dirs
+            local existing = dirs[item.file]
+            if not existing.matched and item.matched then
+              existing.matched = true
+              existing.score = item.score
+              existing.text = item.text
+              existing.title = item.title
+            end
+          end
         end
       end
     end
