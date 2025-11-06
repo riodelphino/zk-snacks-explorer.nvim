@@ -17,7 +17,7 @@ Hereafter, abbreviated as `zk-explorer`.
 - Tree style like `Snacks.explorer`
 - Displays the title instead of the filename
 - Icon, text, and their highlights can be customized
-- Search by filename and title
+- Search by filename and title (tree is broken...)
 - Shows Git icons
 - Shows Diagnostics icons
 - Watch for files and directories changing.
@@ -33,7 +33,7 @@ Hereafter, abbreviated as `zk-explorer`.
 Main
 ![assets/images/screenshot_01_main.png](assets/images/screenshot_01_main.png)
 
-Search
+Search (Sorry, the tree is still broken...)
 ![assets/images/screenshot_02_search.png](assets/images/screenshot_02_search.png)
 
 Queries

@@ -1,8 +1,8 @@
 local M = {}
 
 ---Returns true if the child is inside the parent dir
----@param dir string
 ---@param path string
+---@param dir string
 ---@return boolean
 M.in_dir = function(path, dir)
   dir = vim.fs.normalize(dir)
