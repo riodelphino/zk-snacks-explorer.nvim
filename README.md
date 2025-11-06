@@ -130,7 +130,7 @@ Keymaps specific for `zk-explorer`:
 The keymaps and actions from explorer are also available:
 |    Keys    | Action                   |
 | :--------: | ------------------------ |
-|    <BS>    | explorer_up              |
+|    `<BS>`    | explorer_up              |
 |     l      | confirm                  |
 |     h      | explorer_close           |
 |     a      | explorer_add             |
@@ -143,9 +143,9 @@ The keymaps and actions from explorer are also available:
 |     y      | explorer_yank            |
 |     p      | explorer_paste           |
 |     u      | explorer_update          |
-|   <c-c>    | tcd                      |
-| <leader>/  | picker_grep              |
-| <c-t> (*1) | terminal                 |
+|   `<c-c>`    | tcd                      |
+| `<leader>/`  | picker_grep              |
+| `<c-t>` (*1) | terminal                 |
 |     .      | explorer_focus           |
 |     I      | toggle_ignored           |
 |     H      | toggle_hidden            |
@@ -826,8 +826,12 @@ Then, `snacks.picker.Highlight` is:
 ## TODO
 
 - [ ] Add action for zk.api.new()
+
 - [ ] Resolve the complexitily in `search()` and `on_match()`. Or reuse the code from `zk()` and call `Tree:get()` (will it work? and fast enough?).
-  - [ ] Note that the speciality of `zk-explorer` is tree style. So, flat-full-path searching list is a bit out of the range. It's a roll of the picker in `zk-nvim`.
+> [!Note]
+> Note that the speciality of `zk-explorer` is tree style.  
+> So, flat-full-path searching list is a bit out of the range.  
+> It's a roll of the picker in `zk-nvim`.
 
 
 ## Related
