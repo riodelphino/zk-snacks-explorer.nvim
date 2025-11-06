@@ -40,6 +40,9 @@ M.show_popup = function(text, title, opts)
       statuscolumn = " ",
       conceallevel = 0,
     },
+    bo = {
+      modifiable = false,
+    },
     scratch_ft = "snacks_zk_info",
     keys = {
       q = "close",
