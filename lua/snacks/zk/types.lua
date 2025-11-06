@@ -19,6 +19,7 @@
 
 ---@class snacks.picker.zk.Item : snacks.picker.explorer.Item
 ---@field hidden boolean?
+---@field matched boolean?
 ---@field zk table?
 
 ---@class snacks.picker.zk.Tree : snacks.picker.explorer.Tree

@@ -200,7 +200,7 @@ function M.setup(opts)
           return
         end
         for item, idx in picker:iter() do
-          if not item.dir then
+          if item.matched then
             picker.list:view(idx)
             return
           end
@@ -364,6 +364,7 @@ function M.search(opts, ctx)
     text = "",
     sort = "",
     internal = true,
+    score = 0,
   }
 
   local dirs = {} ---@type table<string, snacks.picker.zk.Item>
@@ -425,6 +426,8 @@ function M.search(opts, ctx)
           open = true,
           text = title ~= "" and title or filename,
           title = title ~= "" and note.title or nil,
+          score = 1,
+          matched = true,
         }
 
         -- Add parent directories recursively
@@ -443,7 +446,8 @@ function M.search(opts, ctx)
             add(parent_item)
           end
         end
-        if not item.dir then
+        if not dirs[item.file] then
+          dirs[item.file] = item
           add(item)
         end
       end
