@@ -27,8 +27,19 @@ end
 ---@return string?
 M.get_notebook_path = function()
   local util = require("snacks.zk.util")
-  local path = require("zk.util").notebook_root(util.picker.get_cwd() or vim.fn.getcwd())
+  local path = require("zk.util").notebook_root(M.get_cwd() or vim.fn.getcwd())
   return path
+end
+
+---Get cwd (Useful when ctx.filter.cwd or picker.cwd is not available)
+---@return string?
+M.get_cwd = function()
+  local picker = require("snacks.zk.util").picker.get_picker()
+  if picker then
+    return picker.cwd(picker)
+  else
+    return vim.fn.getcwd()
+  end
 end
 
 return M

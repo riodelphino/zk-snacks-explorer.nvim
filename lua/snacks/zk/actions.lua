@@ -36,7 +36,7 @@ M.zk_change_query = function()
       util.picker.focus("list")
       return
     end
-    local cwd = util.picker.get_cwd()
+    local cwd = util.fs.get_cwd()
     item.input(cwd, id, function(res)
       if res then
         zk.opts.query = res
