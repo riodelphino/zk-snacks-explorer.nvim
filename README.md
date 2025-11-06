@@ -1,11 +1,10 @@
 # snacks-zk-explorer.nvim
 
 
-`snacks-zk-explorer.nvim` is a snacks source for zk, based on `Snacks.explorer`.
+`snacks-zk-explorer.nvim` is a zk source for `snacks.picker` based on `Snacks.explorer`.
 
 > [!Caution]
 > This repository is still experimental. And this `README.md` is also work in progress.
-> Be careful to use it.
 > Any PR is apprecieated.
 
 Hereafter, abbreviated as `zk-explorer`.
@@ -17,7 +16,7 @@ Hereafter, abbreviated as `zk-explorer`.
 - Tree style like `Snacks.explorer`
 - Displays the title instead of the filename
 - Icon, text, and their highlights can be customized
-- Search by filename and title (tree is broken...)
+- Search by filename and title
 - Shows Git icons
 - Shows Diagnostics icons
 - Watch for files and directories changing.
@@ -33,7 +32,7 @@ Hereafter, abbreviated as `zk-explorer`.
 Main
 ![assets/images/screenshot_01_main.png](assets/images/screenshot_01_main.png)
 
-Search (Sorry, the tree is still broken...)
+Search
 ![assets/images/screenshot_02_search.png](assets/images/screenshot_02_search.png)
 
 Queries
@@ -816,12 +815,19 @@ Then, `snacks.picker.Highlight` is:
 
 ## Issues
 
-- For now, almost sorters disorders the tree in searching with `/` key.
+- Searching:
+  - Sorters do not work correctly with some directories in searching.
+  - Cannot find the none-zk items. Because it uses `notes_cache` table for faster searching.
+  - After canceled searching. the keymaps do not work. Because the focus is lost from `list` and moved to `input` box.
+    - It may be a Snack's issue.
+    - Putting `picker:focus("list")` in somewhere in someway will fix this.
+
 
 ## TODO
 
 - [ ] Add action for zk.api.new()
-- [ ] Fix the items order in searching
+- [ ] Resolve the complexitily in `search()` and `on_match()`. Or reuse the code from `zk()` and call `Tree:get()` (will it work? and fast enough?).
+  - [ ] Note that the speciality of `zk-explorer` is tree style. So, flat-full-path searching list is a bit out of the range. It's a roll of the picker in `zk-nvim`.
 
 
 ## Related
