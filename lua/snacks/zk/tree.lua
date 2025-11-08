@@ -35,7 +35,7 @@ function Tree:walk(node, fn, opts)
   -- Ensure each child node has `sort` set before sorting
   ---@param child snacks.picker.zk.Node
   for _, child in pairs(node.children) do
-    if not child.sort then -- DEBUG: or should set sort string everytime? (If omit this `if ~ end` the item expantion does not work.)
+    if not child.sort then -- TODO: Or should set sort string everytime? (If omit this `if ~ end` the item expantion does not work.)
       local zk_note = zk.notes_cache[child.path]
       child.zk = zk_note or nil -- Add zk note data to the `Node`
       child.sort = util.sort.get_sort_key(child, opts.cwd)
@@ -47,17 +47,12 @@ function Tree:walk(node, fn, opts)
 
   table.sort(children, sorter)
 
-  -- if node.path == "/Users/rio/Projects/terminal/zk-md-tests" then -- DEBUG: REMOVE THIS
-  --   print("children: " .. vim.inspect(children))
-  -- end
-
   for c, child in ipairs(children) do
     if c == #children then
       child.last = true
     else
       child.last = false
     end
-    -- FIXME: A problem where the hidden dot file becomes last and the currently displayed final file does not become last.
     abort = false
     if child.dir and (child.open or (opts and opts.all)) then
       abort = self:walk(child, fn, opts)

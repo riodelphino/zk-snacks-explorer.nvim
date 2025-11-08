@@ -273,7 +273,6 @@ zk = {
     SnacksPickerZkDirText = { link = "SnacksPickerDirectory" },
   },
   config = function(opts)
-    -- return require("snacks.picker.source.zk").setup(opts) -- DEBUG: ???
   end,
   win = {
     list = {
@@ -298,7 +297,7 @@ zk = {
         ["."] = "explorer_focus",
         ["I"] = "toggle_ignored",
         ["H"] = "toggle_hidden",
-        ["Z"] = "explorer_close_all",
+        -- ["Z"] = "explorer_close_all",
         ["]g"] = "explorer_git_next",
         ["[g"] = "explorer_git_prev",
         ["]d"] = "explorer_diagnostic_next",
@@ -309,11 +308,11 @@ zk = {
         ["[e"] = "explorer_error_prev",
         -- zk actions
         ["z"] = "zk_change_query",
-        ["Q"] = "zk_reset_query",
+        ["Z"] = "zk_reset_query", -- Overwrite `explorer_close_all`
         ["s"] = "zk_change_sort",
         ["S"] = "zk_reset_sort",
         ["i"] = "zk_show_item_info",
-        -- Unset default keymaps "z*" -- TODO: To avoid waiting next key after 'z'. Any other solutions?
+        -- Unset default keymaps "z*" -- Unset useless keys to avoid waiting next key after 'z'.
         ["zb"] = false, -- "list_scroll_bottom",
         ["zt"] = false, -- "list_scroll_top",
         ["zz"] = false, -- "list_scroll_center",

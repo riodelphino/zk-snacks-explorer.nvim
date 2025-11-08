@@ -49,18 +49,6 @@ local function add_dir_to_notes(notes)
   end
 end
 
--- DEBUG: NEED THIS ???
---
--- ---Get query (string -> return query table / query table -> return query table)
--- ---@param query snacks.picker.zk.Query
--- ---@return table
--- function M.get_query(query)
---   if not query.query and query.input then
---     error("query should have `query` field in `opts.query`. `input` field is not acceptable.")
---   end
---   return query.query
--- end
-
 ---Fetch and store zk info as M.notes_cache
 ---@param cb function?
 function M.fetch_zk(cb)
@@ -89,8 +77,7 @@ end
 ---@private
 ---@param event? vim.api.keyset.create_autocmd.callback_args
 function M.setup(event)
-  -- FIXME: Not called at all
-  print("lua/snacks/zk/init.lua M.setup()") -- DEBUG:
+  print("lua/snacks/zk/init.lua M.setup()") -- NOTE: Not called at all
   local opts = Snacks.config.get("zk", defaults) -- Get user-configured zk options
 
   if opts.replace_netrw then

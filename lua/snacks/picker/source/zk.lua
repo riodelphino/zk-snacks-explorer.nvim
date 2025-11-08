@@ -134,8 +134,6 @@ end
 
 ---@param opts snacks.picker.zk.Config
 function M.setup(opts)
-  print("lua/snacks/picker/source/zk.lua M.setup()") -- DEBUG:
-
   local searching = false
   local ref ---@type snacks.Picker.ref
 
@@ -293,6 +291,7 @@ function M.zk(opts, ctx)
       if node.dir and node.open and not opts.git_status_open then
         status = nil
       end
+
       local dirname, basename = node.path:match("(.*)/(.*)")
       dirname, basename = dirname or "", basename or node.path
       local severity = (not node.dir or not node.open or opts.diagnostics_open) and node.severity or nil
@@ -310,27 +309,13 @@ function M.zk(opts, ctx)
         status = status,
         type = node.type,
         severity = severity,
-        -- last = true, -- DEBUG:
         last = node.last or nil,
       }
-      -- if last[node.parent] then -- DEBUG: Breaks the tree icons (cause multiple `last = true`)
-      --   last[node.parent].last = false
-      -- end
-      -- last[node.parent] = item
-      -- DEBUG: --> May need customized code to get `last`, since the last item is drawn as `not last` when there are hidden items.
 
       if top == node then
         item.hidden = false
         item.ignored = false
       end
-
-      -- DEBUG: Is this block needed ?
-      -- item.text = item.text:sub(1, #opts.cwd) == opts.cwd and item.text:sub(#opts.cwd + 2) or item.text
-      -- if node then
-      --   item.dir = node.dir
-      --   item.type = node.type
-      --   item.status = (not node.dir or opts.git_status_open) and node.status or nil
-      -- end
 
       item.zk = note or nil
 
@@ -411,8 +396,6 @@ function M.search(opts, ctx)
 
     -- Loop for notes_cache
     for path, note in pairs(notes_cache) do
-      -- print(path)
-      -- print(string.format("path: %s / opts.cwd: %s", path, opts.cwd))
       if path ~= opts.cwd then
         local match_query = ctx.filter.search
         local ignore_case = match_query:lower() == match_query
