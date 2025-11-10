@@ -7,6 +7,10 @@
 > This repository is still experimental. And this `README.md` is also work in progress.
 > Any PR is apprecieated.
 
+> [!warning]
+> The search() function is unstable with my weird code, and the sorting doesn’t work correctly in it.  
+> Need your help!!
+
 Hereafter, abbreviated as `zk-explorer`.
 
 
