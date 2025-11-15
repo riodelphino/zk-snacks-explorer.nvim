@@ -4,6 +4,7 @@ Some notes for developers to help understanding `snacks.explorer` and `snacks-zk
 
 Note that there may be many mis-understands.
 <!-- mtoc start -->
+- [LSP settings](#lsp-settings)
 - [Structure](#structure)
    - [zk (this repo)](#zk-this-repo)
       - [Entry Point](#entry-point)
@@ -36,6 +37,55 @@ Note that there may be many mis-understands.
    - [Get picker](#get-picker)
    - [opts.finder](#opts-finder)
 <!-- mtoc end -->
+## LSP settings
+
+For `lua_ls` with nvim built-in lsp, I use the following config.
+
+after/lsp/lua_ls.lua:
+```lua
+---@type vim.lsp.Config
+return {
+   filetypes = { 'lua', 'luau' },
+   root_markers = {
+      '.luarc.json',
+      '.luarc.jsonc',
+      '.luacheckrc',
+      '.stylua.toml',
+      'stylua.toml',
+      'selene.toml',
+      'selene.yml',
+      '.editorconfig',
+      '.git',
+   },
+   cmd = { 'lua-language-server' },
+   settings = {
+      Lua = {
+         format = {
+            enable = false, -- Use 'stylua' instead
+         },
+         runtime = {
+            version = 'LuaJIT',
+            -- pathStrict = true,
+            -- path = { '?.lua', '?/init.lua' },
+         },
+         diagnostics = {
+            globals = { 'require', 'vim', 'use', 'use_rocks', 'bufnr', 'Snacks', 'neo-tree' }, -- Add 'Snacks' for lsp diagnostics and completions
+            disable = { 'lowercase-global', 'redundant-parameter', 'need-check-nil' },
+         },
+         workspace = {
+            checkThirdParty = false,
+            library = {
+               -- 'lazydev.nvim' takes carge instead
+            },
+         },
+      },
+   },
+   on_attach = function(client, bufnr)
+      -- Disable lua_ls's highlight on comment over @comment.*
+      vim.api.nvim_set_hl(0, '@lsp.type.comment', {})
+   end,
+}
+```
 
 ## Structure
 
