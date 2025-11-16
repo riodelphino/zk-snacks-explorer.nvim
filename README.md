@@ -154,7 +154,6 @@ Default keymaps for `snacks.explorer`:
 |      .       | explorer_focus           |
 |      I       | toggle_ignored           |
 |      H       | toggle_hidden            |
-|      Z       | explorer_close_all       |
 |      ]g      | explorer_git_next        |
 |      [g      | explorer_git_prev        |
 |      ]d      | explorer_diagnostic_next |
@@ -167,12 +166,14 @@ Default keymaps for `snacks.explorer`:
 *1 TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
 
 
-Unset default keymaps `z*` to avoid waiting next key after `z`. (Any other solutions?)
-| Keys | Action    | Original Action in snacks.explorer |
-| :--: | --------- | ---------------------------------- |
-|  zb  | - false - | list_scroll_bottom                 |
-|  zt  | - false - | list_scroll_top                    |
-|  zz  | - false - | list_scroll_center                 |
+Unset default keymaps `z*` to avoid waiting next key after `z`. (Any other solutions?)  
+Unset `Z` key to leave it for `zk_reset_query`.
+| Keys | Action | Original Action in snacks.explorer |
+| :--: | ------ | ---------------------------------- |
+|  zb  | false  | list_scroll_bottom                 |
+|  zt  | false  | list_scroll_top                    |
+|  zz  | false  | list_scroll_center                 |
+|  Z   | false  | explorer_close_all                 |
 
 
 
