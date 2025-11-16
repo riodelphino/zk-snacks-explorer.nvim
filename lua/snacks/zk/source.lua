@@ -132,7 +132,7 @@ local source = {
         ["[e"] = "explorer_error_prev",
         -- zk actions
         ["z"] = "zk_change_query",
-        ["Q"] = "zk_reset_query",
+        ["Z"] = "zk_reset_query",
         ["s"] = "zk_change_sort",
         ["S"] = "zk_reset_sort",
         ["i"] = "zk_show_item_info",
