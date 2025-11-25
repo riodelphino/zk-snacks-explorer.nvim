@@ -82,6 +82,9 @@ for lazy.nvim (snacks.nvim):
           },
         },
       },
+      input = { -- Recommend to use snacks input (Otherwise the default `vim.ui.input` will be hidden behind `zk-explorer` win.)
+        enabled = true,
+      },
     })
     require('snacks.picker.source.zk').setup({}) -- Setup snacks-zk-explorer
   end,
