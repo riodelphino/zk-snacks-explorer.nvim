@@ -1,35 +1,25 @@
-# snacks-zk-explorer.nvim
+# zk-snacks-explorer.nvim
 
 
-`snacks-zk-explorer.nvim` is a zk source for `snacks.picker` based on `Snacks.explorer`.
-
-> [!Caution]
-> This repository is still experimental. And this `README.md` is also work in progress.
-> Any PR is apprecieated.
+`zk-snacks-explorer.nvim` is a zk source for `snacks.picker` based on `Snacks.explorer`.
 
 > [!warning]
-> The search() function is unstable with my weird code, and the sorting doesn’t work correctly in it.  
-> Need your help!!
-
-Hereafter, abbreviated as `zk-explorer`.
-
+> Since the `search()` function is unstable with my weird code, the sorting doesn’t work correctly in it.  
+> With default sort, `search()` works correctly.
 
 
 ## Features
 
-- Tree style like `Snacks.explorer`
-- Displays the title instead of the filename
-- Icon, text, and their highlights can be customized
-- Search by filename and title
-- Shows Git icons
-- Shows Diagnostics icons
-- Watch for files and directories changing.
-- Sorters selector 
-- Queries selector
-- Built-in and custom Sorters
-- Built-in and custom Queries
-- Built-in and custom Actions
-- User Config
+- Tree-style display like `Snacks.explorer`
+- Display ZK note titles instead of filenames
+- Custumizable icons, text, and highlights
+- Display Git icons and diagnostics icons
+- Search by filename or ZK note title
+- Monitor the file and directory changes
+- Select a sorter from built-in sorters
+- Select a queries from built-in queries
+- Add custom sorters, queries and actions
+
 
 ## Screen shots
 
@@ -51,21 +41,22 @@ Show item info
 
 ## Dependencies
 
-- [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
-- [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
 - [zk-org/zk](https://github.com/zk-org/zk)
+- [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
+- [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
 
 
 ## Install
 
-for lazy.nvim (snacks-zk-explorer):
+Via [lazy.nvim](https://github.com/folke/lazy.nvim) (zk-snacks-explorer):
 ```lua
 {
-  'riodelphino/snacks-zk.nvim',
-  dependencies = { 'folke/snacks.nvim', 'zk-org/zk-nvim' },
+  "riodelphino/zk-snacks-explorer.nvim",
+  dependencies = { "folke/snacks.nvim", "zk-org/zk-nvim" },
+  -- Configure via snacks.nvim options
 }
 ```
-for lazy.nvim (snacks.nvim):
+Via [lazy.nvim](https://github.com/folke/lazy.nvim) (snacks.nvim):
 ```lua
 {
   "folke/snacks.nvim",
@@ -78,15 +69,15 @@ for lazy.nvim (snacks.nvim):
         enabled = true,
         sources = {
           zk = {
-            -- Set your custom config here (See #default-config)
+            -- Set your custom config here (See #defaults)
           },
         },
       },
-      input = { -- Recommend to use snacks input (Otherwise the default `vim.ui.input` will be hidden behind `zk-explorer` win.)
+      input = { -- Recommend to use snacks input (Otherwise the default `vim.ui.input` will be hidden behind `zk-snacks-explorer` win.)
         enabled = true,
       },
     })
-    require('snacks.picker.source.zk').setup({}) -- Setup snacks-zk-explorer
+    require('snacks.picker.source.zk').setup({}) -- Setup zk-snacks-explorer
   end,
   keys = {
     { '<leader>ze', function() Snacks.zk() end, desc = 'Snacks.zk()' },
@@ -102,6 +93,7 @@ Snacks.zk() -- Shortcut for Snacks.picker.zk()
 Snacks.picker.zk()
 require('snacks.zk').open() -- Call open() function directry
 ```
+
 Open with custom config:
 ```lua
 ---@type (snacks.picker.zk.Config|{})?
@@ -113,7 +105,8 @@ require('snacks.zk').open(opts)
 
 Open in another layout:
 ```lua
-Snacks.zk({ layout = "left" }) -- 'left' (snacks-zk.nvim's default)
+Snacks.zk({ layout = "left" }) -- default on `zk-snacks-explorer.nvim`
+Snacks.zk({ layout = "default" }) -- floating & previewer
 Snacks.zk({ layout = "default", jump = { close = true } }) -- floating & previewer (auto-closing on select)
 -- layout: bottom|default|dropdown|ivy|ivy_split|left|right|select|sidebar|telescope|top|vertical|vscode
 
@@ -125,7 +118,7 @@ Snacks.zk({ layout = "default", jump = { close = true } }) -- floating & preview
 
 ## Keymaps
 
-Default keymaps specific for `zk-explorer`:
+Default keymaps specific for `zk-snacks-explorer`:
 | Keys | Action            |
 | :--: | ----------------- |
 |  z   | zk_change_query   |
@@ -173,166 +166,168 @@ Unset default keymaps `z*` to avoid waiting next key after `z`. (Any other solut
 Unset `Z` key to leave it for `zk_reset_query`.
 | Keys | Action | Original Action in snacks.explorer |
 | :--: | ------ | ---------------------------------- |
-|  zb  | false  | list_scroll_bottom                 |
-|  zt  | false  | list_scroll_top                    |
-|  zz  | false  | list_scroll_center                 |
-|  Z   | false  | explorer_close_all                 |
-
-
+|  zb  | unset  | list_scroll_bottom                 |
+|  zt  | unset  | list_scroll_top                    |
+|  zz  | unset  | list_scroll_center                 |
+|  Z   | unset  | explorer_close_all                 |
 
 
 ## Config
 
-See `lua/snacks/zk/source.lua`
-
-
 ### Defaults
 
 ```lua
----@type snacks.picker.zk.Config
-zk = {
-  enabled = function() -- Enabled only in zk directory
-    local util = require("snacks.zk.util")
-    local notebook_path = util.fs.get_notebook_path()
-    return notebook_path ~= nil
-  end,
-  title = "Zk",
-  finder = "zk", -- Same with `finder = function(opts, ctx) return require('snacks.picker.source.zk').zk(opts, ctx) end`
-  reveal = true,
-  supports_live = true,
-  tree = true, -- (fixed) Always true on this picker and `false` not works
-  watch = true,
-  diagnostics = true,
-  diagnostics_open = false,
-  git_status = true,
-  git_status_open = false,
-  git_untracked = true,
-  follow_file = true,
-  focus = "list",
-  auto_close = false,
-  jump = { close = false },
-  layout = { preset = "sidebar", preview = false },
-  include = {}, -- (e.g. "*.jpg")
-  exclude = {}, -- (e.g. "*.md")
-  ignored = false,
-  hidden = false,
-  filter = {
-    transform = nil, -- (fixed) *1
-  },
-  select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
-  formatters = {
-    file = {
-      filename_only = nil, -- (fixed) *1
-      filename_first = false,
-      markdown_only = false, -- find only markdown files
-      ---@type snacks.picker.zk.formatters.file.zk.Config
+require('snacks').setup({
+  picker = {
+    enabled = true,
+    sources = {
+      ---@type snacks.picker.zk.Config
       zk = {
-        filename = require("snacks.zk.format").filename,
-        transform = {
-          ---@type snacks.picker.zk.formatters.file.zk.transform.Icon
-          icon = function(item, note, icon, hl)
-            -- A file has title
-            if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
-              icon = "󰎞"
-              hl = "SnacksPickerZkNoteIcon"
-            end
-            -- A dir includes zk files
-            if item.dir and note then
-              icon = "󰉗"
-            end
-            return icon, hl
-          end,
-          ---@type snacks.picker.zk.formatters.file.zk.transform.Text
-          text = function(item, note, base, base_hl, dir_hl)
-            -- A dir includes zk files
-            if item.dir and not item.hidden and note then
-              dir_hl = "SnacksPickerZkDirText"
-              base_hl = "SnacksPickerZkDirText"
-            end
-            -- A file not zk
-            if not item.dir and not note then
-              base_hl = "SnacksPickerDimmed"
-            end
-            -- Use title if exists
-            base = not item.dir and note and (note.title or note.metadata and note.metadata.title) or base
-            return base, base_hl, dir_hl
-          end,
+        enabled = function() -- Enabled only in zk directory
+          local util = require("snacks.zk.util")
+          local notebook_path = util.fs.get_notebook_path()
+          return notebook_path ~= nil
+        end,
+        title = "Zk",
+        finder = "zk", -- Same with `finder = function(opts, ctx) return require('snacks.picker.source.zk').zk(opts, ctx) end`
+        reveal = true,
+        supports_live = true,
+        tree = true, -- (fixed) Always true on this picker and `false` not works
+        watch = true,
+        diagnostics = true,
+        diagnostics_open = false,
+        git_status = true,
+        git_status_open = false,
+        git_untracked = true,
+        follow_file = true,
+        focus = "list",
+        auto_close = false,
+        jump = { close = false },
+        layout = { preset = "sidebar", preview = false },
+        include = {}, -- (e.g. "*.jpg")
+        exclude = {}, -- (e.g. "*.md")
+        ignored = false,
+        hidden = false,
+        filter = {
+          transform = nil, -- (fixed) *1
+        },
+        select = { "absPath", "filename", "title" }, -- Fields fetched by `zk.api.list`
+        formatters = {
+          file = {
+            filename_only = nil, -- (fixed) *1
+            filename_first = false,
+            markdown_only = false, -- find only markdown files
+            ---@type snacks.picker.zk.formatters.file.zk.Config
+            zk = {
+              filename = require("snacks.zk.format").filename,
+              transform = {
+                ---@type snacks.picker.zk.formatters.file.zk.transform.Icon
+                icon = function(item, note, icon, hl)
+                  -- A file has title
+                  if not item.dir and not item.hidden and note and (note.title or note.metadata and note.metadata.title) then
+                    icon = "󰎞"
+                    hl = "SnacksPickerZkNoteIcon"
+                  end
+                  -- A dir includes zk files
+                  if item.dir and note then
+                    icon = "󰉗"
+                  end
+                  return icon, hl
+                end,
+                ---@type snacks.picker.zk.formatters.file.zk.transform.Text
+                text = function(item, note, base, base_hl, dir_hl)
+                  -- A dir includes zk files
+                  if item.dir and not item.hidden and note then
+                    dir_hl = "SnacksPickerZkDirText"
+                    base_hl = "SnacksPickerZkDirText"
+                  end
+                  -- A file not zk
+                  if not item.dir and not note then
+                    base_hl = "SnacksPickerDimmed"
+                  end
+                  -- Use title if exists
+                  base = not item.dir and note and (note.title or note.metadata and note.metadata.title) or base
+                  return base, base_hl, dir_hl
+                end,
+              },
+            },
+          },
+          severity = { pos = "right" },
+        },
+        format = require("snacks.zk.format").file,
+        matcher = {
+          sort_empty = false, -- (Skipped) *3
+          fuzzy = true, -- (Skipped) *3
+          on_match = nil, -- (fixed) *1
+          on_done = nil, -- (fixed) *1
+        },
+        sort = { fields = { "sort" } }, -- *2
+        sorters = require("snacks.zk.sorters"),
+        query = { desc = "all", query = {}, include_none_zk = true },
+        queries = require("snacks.zk.queries"),
+        query_postfix = ": ",
+        actions = require("snacks.zk.actions"),
+        highlights = {
+          SnacksPickerZkNoteIcon = { fg = "#E8AB53" },
+          SnacksPickerZkNoteText = { link = "SnacksPickerList" },
+          SnacksPickerZkDirIcon = { link = "SnacksPickerDirectory" },
+          SnacksPickerZkDirText = { link = "SnacksPickerDirectory" },
+        },
+        config = function(opts)
+        end,
+        win = {
+          list = {
+            keys = {
+              -- Supports explorer actions
+              ["<BS>"] = "explorer_up",
+              ["l"] = "confirm",
+              ["h"] = "explorer_close", -- close directory
+              ["a"] = "explorer_add",
+              ["d"] = "explorer_del",
+              ["r"] = "explorer_rename",
+              ["c"] = "explorer_copy",
+              ["m"] = "explorer_move",
+              ["o"] = "explorer_open", -- open with system application
+              ["P"] = "toggle_preview",
+              ["y"] = { "explorer_yank", mode = { "n", "x" } },
+              ["p"] = "explorer_paste",
+              ["u"] = "explorer_update",
+              ["<c-c>"] = "tcd",
+              ["<leader>/"] = "picker_grep",
+              -- ["<c-t>"] = "terminal", -- TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
+              ["."] = "explorer_focus",
+              ["I"] = "toggle_ignored",
+              ["H"] = "toggle_hidden",
+              -- ["Z"] = "explorer_close_all",
+              ["]g"] = "explorer_git_next",
+              ["[g"] = "explorer_git_prev",
+              ["]d"] = "explorer_diagnostic_next",
+              ["[d"] = "explorer_diagnostic_prev",
+              ["]w"] = "explorer_warn_next",
+              ["[w"] = "explorer_warn_prev",
+              ["]e"] = "explorer_error_next",
+              ["[e"] = "explorer_error_prev",
+              -- zk actions
+              ["z"] = "zk_change_query",
+              ["Z"] = "zk_reset_query", -- Overwrite `explorer_close_all`
+              ["s"] = "zk_change_sort",
+              ["S"] = "zk_reset_sort",
+              ["i"] = "zk_show_item_info",
+              -- Unset default keymaps "z*" -- Unset useless keys to avoid waiting next key after 'z'.
+              ["zb"] = false, -- "list_scroll_bottom",
+              ["zt"] = false, -- "list_scroll_top",
+              ["zz"] = false, -- "list_scroll_center",
+              -- See lua/snacks/picker/config/defaults.lua
+            },
+          },
         },
       },
-    },
-    severity = { pos = "right" },
-  },
-  format = require("snacks.zk.format").file,
-  matcher = {
-    sort_empty = false, -- (Skipped) *3
-    fuzzy = true, -- (Skipped) *3
-    on_match = nil, -- (fixed) *1
-    on_done = nil, -- (fixed) *1
-  },
-  sort = { fields = { "sort" } }, -- *2
-  sorters = require("snacks.zk.sorters"),
-  query = { desc = "all", query = {}, include_none_zk = true },
-  queries = require("snacks.zk.queries"),
-  query_postfix = ": ",
-  actions = require("snacks.zk.actions"),
-  highlights = {
-    SnacksPickerZkNoteIcon = { fg = "#E8AB53" },
-    SnacksPickerZkNoteText = { link = "SnacksPickerList" },
-    SnacksPickerZkDirIcon = { link = "SnacksPickerDirectory" },
-    SnacksPickerZkDirText = { link = "SnacksPickerDirectory" },
-  },
-  config = function(opts)
-  end,
-  win = {
-    list = {
-      keys = {
-        -- Supports explorer actions
-        ["<BS>"] = "explorer_up",
-        ["l"] = "confirm",
-        ["h"] = "explorer_close", -- close directory
-        ["a"] = "explorer_add",
-        ["d"] = "explorer_del",
-        ["r"] = "explorer_rename",
-        ["c"] = "explorer_copy",
-        ["m"] = "explorer_move",
-        ["o"] = "explorer_open", -- open with system application
-        ["P"] = "toggle_preview",
-        ["y"] = { "explorer_yank", mode = { "n", "x" } },
-        ["p"] = "explorer_paste",
-        ["u"] = "explorer_update",
-        ["<c-c>"] = "tcd",
-        ["<leader>/"] = "picker_grep",
-        -- ["<c-t>"] = "terminal", -- TODO: Duplicated key error with `["<c-t>"] = "tab"`. How to fix it?
-        ["."] = "explorer_focus",
-        ["I"] = "toggle_ignored",
-        ["H"] = "toggle_hidden",
-        -- ["Z"] = "explorer_close_all",
-        ["]g"] = "explorer_git_next",
-        ["[g"] = "explorer_git_prev",
-        ["]d"] = "explorer_diagnostic_next",
-        ["[d"] = "explorer_diagnostic_prev",
-        ["]w"] = "explorer_warn_next",
-        ["[w"] = "explorer_warn_prev",
-        ["]e"] = "explorer_error_next",
-        ["[e"] = "explorer_error_prev",
-        -- zk actions
-        ["z"] = "zk_change_query",
-        ["Z"] = "zk_reset_query", -- Overwrite `explorer_close_all`
-        ["s"] = "zk_change_sort",
-        ["S"] = "zk_reset_sort",
-        ["i"] = "zk_show_item_info",
-        -- Unset default keymaps "z*" -- Unset useless keys to avoid waiting next key after 'z'.
-        ["zb"] = false, -- "list_scroll_bottom",
-        ["zt"] = false, -- "list_scroll_top",
-        ["zz"] = false, -- "list_scroll_center",
-        -- See lua/snacks/picker/config/defaults.lua
-      },
+      -- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
+      -- *2 : `explorer` completely skips `opts.sort`. But `zk-snacks-explorer` evaluates it.
+      -- *3 : Since searching in both `filename` and `title` is required, zk-snacks-explorer` does not use built-in commands like `fd`, `rg` or `find`.
     },
   },
-},
--- *1 : Always dynamically overwritten by `setup()` in `zk.lua`
--- *2 : `explorer` completely skips `opts.sort`. But `zk-explorer` evaluates it.
--- *3 : Since searching in both `filename` and `title` is required, zk-explorer` does not use built-in commands like `fd`, `rg` or `find`.
+}
 ```
 
 > [!Note]
@@ -345,13 +340,13 @@ These fields are fetched by `zk.api.list`
 
 ```lua
 -- Default (Minimam)
-select = { "absPath", "filename", "title" },
+select = { "absPath", "filename", "title" }
 
 -- Add metadata (metadata includes all YAML fields.)
-select = { "absPath", "filename", "title", "metadata" },
+select = { "absPath", "filename", "title", "metadata" }
 
  -- Add created, modified
-select = { "absPath", "filename", "title", "created", "modified" },
+select = { "absPath", "filename", "title", "created", "modified" }
 ```
 
 The available fields are:
@@ -370,11 +365,11 @@ See [zk-list](https://zk-org.github.io/zk/tips/editors-integration.html#zk-list)
 ### Sort
 
 > [!Note]
-> Sorting is available for both Node and Item in `zk-explorer`.
+> (Technical info for developpers) Sorting is available for both `Node` and `Item` in `zk-snacks-explorer`.
 
 > [!Warning]
 > For now, sorters don't work correctly when searching with the `/` key.
-> Only the default sort works properly.
+> Only the default sorter works properly.
 
 There are two ways to define sorting.
 
@@ -406,7 +401,7 @@ sort = { fields = { 'zk.metadata.created' } } -- *
 -- * Ensure that "title" or "modified" or "metadata" fields are added into `opts.select`.
 
 -- Almost same with `fields = { "sort" }`
-sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } },
+sort = { fields = { "dir", "hidden:desc", "!zk.title", "zk.title", "name" } }
 
 -- by mutliple fields in item
 sort = {
@@ -701,7 +696,7 @@ end,
 
 Basically same with `snacks.explorer`.
 
-Followings are `zk-explorer` specific config.
+Followings are `zk-snacks-explorer` specific config.
 
 #### file.markdown_only
 
@@ -775,7 +770,7 @@ end,
 
 ### config
 
-Add some code to execute in the `zk-explorer` setup.
+Add some code to execute in the `zk-snacks-explorer` setup.
 
 ```lua
 config = function(opts)
@@ -787,7 +782,7 @@ end,
 
 ### Extended zk info table
 
-The extended `dir` field (boolean) is added by `zk-explorer` in `add_dir_to_notes()` function.
+The extended `dir` field (boolean) is added by `zk-snacks-explorer` in `add_dir_to_notes()` function.
 
 
 ### snacks.picker.Highlight
@@ -823,12 +818,18 @@ Then, `snacks.picker.Highlight` is:
 
 ## Issues
 
-- Searching:
+- Searching by `/` key:
   - Sorters do not work correctly with some directories in searching.
   - Cannot find the none-zk items. Because it uses `notes_cache` table for faster searching.
   - After canceled searching. the keymaps do not work. Because the focus is lost from `list` and moved to `input` box.
     - It may be a Snack's issue.
     - Putting `picker:focus("list")` in somewhere in someway will fix this.
+
+
+## Contributions
+
+This plugin still needs improvements.  
+Your PRs and contributions are appreciated.
 
 
 ## TODO
@@ -837,15 +838,15 @@ Then, `snacks.picker.Highlight` is:
 
 - [ ] Resolve the complexitily in `search()` and `on_match()`. Or reuse the code from `zk()` and call `Tree:get()` (will it work? and fast enough?).
 > [!Note]
-> Note that the speciality of `zk-explorer` is tree style.  
+> Note that the speciality of `zk-snacks-explorer` is tree style.  
 > So, flat-full-path searching list is a bit out of the range.  
 > It's a roll of the picker in `zk-nvim`.
 
 
 ## Related
 
+- [zk-org/zk](https://github.com/zk-org/zk)
+- [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
 - [zk-org/neo-tree-zk.nvim](https://github.com/zk-org/neo-tree-zk.nvim)
-- [zk-org/zk-nvim](https://github.com/zk-org/zk-nvim)
-- [zk-org/zk](https://github.com/zk-org/zk)
 
